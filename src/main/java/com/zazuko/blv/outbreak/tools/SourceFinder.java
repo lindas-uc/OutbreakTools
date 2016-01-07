@@ -18,7 +18,7 @@ import org.apache.clerezza.commons.rdf.IRI;
 public class SourceFinder {
     
     final static int interval = 24*60*60*1000;
-    final Tracer tracer = new Tracer(false);
+    final ContactTracer tracer = new ContactTracer(false);
     
     public Set<IRI> getPotentialSinglePointsOfOrigin(Set<IRI> infectedSites, 
             Date diagnosisDate, Date evaluateTill) throws IOException {
@@ -65,8 +65,8 @@ public class SourceFinder {
         
     
     public static void main(String... args) throws Exception {
-        final Date diagnosisdate = Tracer.dateFormat.parse("2012-02-1");
-        final Date evaluateTill = Tracer.dateFormat.parse("2012-01-01");
+        final Date diagnosisdate = ContactTracer.dateFormat.parse("2012-02-1");
+        final Date evaluateTill = ContactTracer.dateFormat.parse("2012-01-01");
         final Set<IRI> infectedSites = new HashSet<>();
         infectedSites.add(new IRI("http://foodsafety.data.admin.ch/business/50543"));
         infectedSites.add(new IRI("http://foodsafety.data.admin.ch/business/51947"));

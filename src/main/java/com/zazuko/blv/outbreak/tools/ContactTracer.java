@@ -19,7 +19,7 @@ import org.apache.clerezza.commons.rdf.RDFTerm;
  * Note that while this class support backward tracing the methods are appropriately
  * named for forward tracing.
  */
-public class Tracer {
+public class ContactTracer {
     
     /**
      * If true a site potentiallyInfected by a site potentially infected for the first 
@@ -34,7 +34,7 @@ public class Tracer {
     /**
      * Creates a forward tracer
      */
-    public Tracer() {
+    public ContactTracer() {
         this.forward = true;
     }
     
@@ -43,7 +43,7 @@ public class Tracer {
      * (towards potentially infecting sites)
      * @param forward true to trace forward, false for backward
      */
-    public Tracer(boolean forward) {
+    public ContactTracer(boolean forward) {
         this.forward = forward;
     }
     
@@ -125,7 +125,7 @@ public class Tracer {
         final Date startDate = dateFormat.parse("2012-01-01");
         final Date endDate = dateFormat.parse("2012-02-01");
         final IRI startingSite = new IRI("http://foodsafety.data.admin.ch/business/51122");
-        final Tracer tracer = new Tracer();
+        final ContactTracer tracer = new ContactTracer();
         final Set<IRI> result = tracer.getPotentiallyInfectedSites(startingSite, 
                 startDate,
                 endDate);
