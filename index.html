@@ -132,9 +132,8 @@
                             </div>
                         </div>
                         <div class="row" id="inputPeriod">
-                            <div class="col-md-12">
+                            <div class="col-md-12 paddingNull">
                                 <label>Zeitraum:</label>
-                                <div class="container">
                                     <div class="row">
                                         <div class='col-sm-4'>
                                             <div class="form-group">
@@ -178,17 +177,30 @@
                                                 });
                                         });
                                         </script>
+                                        <div class='col-sm-4'>
+                                            <div class="form-group">
+                                                <div class='input-group date' id='datetimepicker2'>
+                                                    <input type='text' class="form-control" placeholder="&lt;&lt;Anzahl Tage (fakulatativ)&gt;&gt;" ng-model="endDate"/>
+                                                    <span class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-calendar"></span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <div class="alert alert-danger" role="alert" ng-show="invalidStartOrEndDate">Bitte geben Sie Start und Endzeitpunkt ein</div>
+                                </div>
+                        </div>
+                        <div class="row margin-top-plus">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-primary bull" aria-label="Left Align" ng-click="initializeVisualisation()">
+                                            Absenden
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="alert alert-danger" role="alert" ng-show="invalidStartOrEndDate">Bitte geben Sie Start und Endzeitpunkt ein</div>
-                        </div>
-                        <label>Absenden:</label>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <button type="button" class="btn btn-primary" aria-label="Left Align" ng-click="initializeVisualisation()">
-                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                    Submit
-                                </button>
                             </div>
                         </div>
                     </fieldset>

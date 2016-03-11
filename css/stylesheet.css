@@ -39,3 +39,11 @@
 .btn:focus {
     outline:0px;
 }
+
+.paddingNull {
+    padding: 0;
+}
+
+.row.margin-top-plus {
+    margin-top: 5.5%;
+}
