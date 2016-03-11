@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+ <head>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="external/d3sparql.js"></script>
+  <script>
+  function exec() {
+    /* Uncomment to see debug information in console */
+    // d3sparql.debug = true
+    var endpoint = d3.select("#endpoint").property("value")
+    var sparql = d3.select("#sparql").property("value")
+    d3sparql.query(endpoint, sparql, render)
+  }
+  function render(json) {
+    console.log(json);
+    /* set options and call the d3spraql.xxxxx function in this library ... */
+    var config = {
+      "selector": "#result"
+    }
+    d3sparql.htmltable(json, config)
+  }
+  </script>
+  <style>
+  <!-- customize CSS -->
+     </style>
+ </head>
+ <body onload="exec()"> <!--<body onload="exec()">-->
+  <form style="display:block">
+   <input id="endpoint" value="http://test.lindas-data.ch/sparql" type="text">
+   <textarea id="sparql">
+    PREFIX blv: <http://blv.ch/>
+    PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+    SELECT DISTINCT ?T ?D FROM <http://test.lindas-data.ch/resource/animaltransports> 
+    WHERE { 
+     ?M blv:fromFarm <http://foodsafety.data.admin.ch/business/51122>.
+     ?M blv:toFarm ?T.
+     ?M blv:date ?D.
+    }
+
+   </textarea>
+  </form>
+  <div id="result"></div>
+ </body>
+</html>
