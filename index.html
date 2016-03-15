@@ -33,6 +33,9 @@
     <script type="text/javascript" src="external/moment/moment.js"></script>
     <script type="text/javascript" src="external/bootstrap-datetimepicker-master/build/js/bootstrap-datetimepicker.min.js"></script>
 
+    <!-- Include d3sparql.js-->
+    <script type="text/javascript" src="external/d3sparql.js"></script>
+
     <!--Include Angular.js-->
     <script type="text/javascript" src="external/angular_v1_4_8.js"></script>
     
@@ -138,7 +141,7 @@
                                         <div class='col-sm-4'>
                                             <div class="form-group">
                                                 <div class='input-group date' id='datetimepicker1'>
-                                                    <input type='text' class="form-control" placeholder="&lt;&lt;Datum von&gt;&gt;" ng-model="startDate"/>
+                                                    <input type='text' class="form-control" placeholder="&lt;&lt;Datum von&gt;&gt;" ng-model="startDate" required valid-date/>
                                                     <span class="input-group-addon">
                                                         <span class="glyphicon glyphicon-calendar"></span>
                                                     </span>
@@ -159,7 +162,7 @@
                                         <div class='col-sm-4'>
                                             <div class="form-group">
                                                 <div class='input-group date' id='datetimepicker2'>
-                                                    <input type='text' class="form-control" placeholder="&lt;&lt;Datum bis&gt;&gt;" ng-model="endDate"/>
+                                                    <input type='text' class="form-control" placeholder="&lt;&lt;Datum bis&gt;&gt;" ng-model="endDate" required valid-date/>
                                                     <span class="input-group-addon">
                                                         <span class="glyphicon glyphicon-calendar"></span>
                                                     </span>
@@ -179,16 +182,12 @@
                                         </script>
                                         <div class='col-sm-4'>
                                             <div class="form-group">
-                                                <div class='input-group date' id='datetimepicker2'>
-                                                    <input type='text' class="form-control" placeholder="&lt;&lt;Anzahl Tage (fakulatativ)&gt;&gt;" ng-model="endDate"/>
-                                                    <span class="input-group-addon">
-                                                        <span class="glyphicon glyphicon-calendar"></span>
-                                                    </span>
-                                                </div>
+                                                    <input type='text' class="form-control" placeholder="&lt;&lt;Anzahl Tage (fakulatativ)&gt;&gt;" ng-model="difference"/>
                                             </div>
                                         </div>
+                                        <p>{{difference + " " + endDate }}</p>
                                     </div>
-                                <div class="alert alert-danger" role="alert" ng-show="invalidStartOrEndDate">Bitte geben Sie Start und Endzeitpunkt ein</div>
+                                <div class="alert alert-danger" role="alert" ng-show="dateInvalid">Datum ungültig. Muss in Vergangenheit liegen</div>
                                 </div>
                         </div>
                         <div class="row margin-top-plus">
