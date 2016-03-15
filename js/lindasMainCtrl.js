@@ -20,20 +20,6 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator) {
         $scope.endDate = endDate;
     };
 
-    $scope.$watch('startDate', function() {
-        if ((validator.validateDate($scope.startDate)) || (validator.validateDate($scope.endDate)))
-            $scope.dateInvalid = true;
-        else
-            $scope.dateInvalid = false;
-    });
-
-    $scope.$watch('endDate', function() {
-        if ((validator.validateDate($scope.startDate)) || (validator.validateDate($scope.endDate)))
-            $scope.dateInvalid = true;
-        else
-            $scope.dateInvalid = false;
-    });
-
     $scope.$watch('difference', function() {
         if ($scope.difference == 0)
             return null;
@@ -44,6 +30,13 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator) {
 
     $scope.initializeVisualisation = function() {
         console.log("start Visualization");
+
+        if ((validator.validateDate($scope.startDate)) || (validator.validateDate($scope.endDate)))
+            $scope.dateInvalid = true;
+        else
+            $scope.dateInvalid = false;
+
+        console.log($scope.dateInvalid);
 
         //Validation of Inputfields
         var validId = false;
@@ -58,11 +51,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator) {
         } else
             $scope.invalidIds = false;
 
-        if (!validator.validateDate(startDate) || !validator.validateDate(endDate)) {
-            $scope.dateInvalid = true;
-            return null;
-        } else
-            $scope.dateInvalid = false;
+        sparql.addTieIds($scope.tieIds);
 
         //execute sparql query
         var result = sparql.executeSparql();
