@@ -9,6 +9,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <finalName>${project.artifactId}-${project.version}</finalName>
     </properties>
     <dependencies>
         <dependency>
@@ -84,6 +85,7 @@
         </dependencies>
     </dependencyManagement>
     <build>
+        <finalName>${finalName}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
