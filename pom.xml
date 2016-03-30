@@ -16,7 +16,7 @@
             <artifactId>rdf.ontologies</artifactId>
             <version>1.0.0</version>
         </dependency>
-       <dependency>
+        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.4</version>
@@ -31,5 +31,56 @@
             <artifactId>commons-rdf-impl-utils</artifactId>
             <version>0.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>9.3.8.v20160314</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <version>9.3.8.v20160314</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>2.22.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet-core</artifactId>
+            <version>2.22.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-jetty-http</artifactId>
+            <version>2.22.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-moxy</artifactId>
+            <version>2.22.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.stanbol</groupId>
+            <artifactId>org.apache.stanbol.commons.web.resources</artifactId>
+            <version>0.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.6.1</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <!-- ensuring compatible transitive dependency of jersey-container-jetty-http -->
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-util</artifactId>
+                <version>9.3.8.v20160314</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
