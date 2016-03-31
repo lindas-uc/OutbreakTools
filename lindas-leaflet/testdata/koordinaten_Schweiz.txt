@@ -1,0 +1,4 @@
+﻿östlichster Punkt: 46.615278°, 10.492222°
+westlichster Punkt: 46.150017°, 5.966648°
+nördlichster Punkt: 47.783336°, 8.599998°
+südlichster Punkt: 45.834719°, 9.031944°
