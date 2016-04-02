@@ -3,8 +3,11 @@ package com.zazuko.blv.outbreak.rest;
 import java.util.EnumSet;
 import javax.servlet.DispatcherType;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.resource.Resource;
  
 public class App {
     public static void main(String[] args) throws Exception {
@@ -12,19 +15,22 @@ public class App {
         context.setContextPath("/");
  
         Server jettyServer = new Server(5000);
-        jettyServer.setHandler(context);
+        
         EnumSet<DispatcherType> all = EnumSet.of(DispatcherType.ASYNC, DispatcherType.ERROR, DispatcherType.FORWARD,
-            DispatcherType.INCLUDE, DispatcherType.REQUEST);
-        context.addFilter(ResourceServingFilter.class, "/*", all);
-        ServletHolder jerseyServlet = context.addServlet(
-             org.glassfish.jersey.servlet.ServletContainer.class, "/*");
-        jerseyServlet.setInitOrder(0);
- 
-        // Tells the Jersey Servlet which REST service/class to load.
-        jerseyServlet.setInitParameter(
+            DispatcherType.INCLUDE, DispatcherType.REQUEST);      
+        FilterHolder jerseyFilter = context.addFilter(org.glassfish.jersey.servlet.ServletContainer.class, "/*", all);
+        jerseyFilter.setInitParameter(
            "jersey.config.server.provider.classnames",
            EntryPoint.class.getCanonicalName());
- 
+        jerseyFilter.setInitParameter(
+           "jersey.config.servlet.filter.forwardOn404",
+           "true");
+        Resource resourceRoot = Resource.newResource(App.class.getResource("/META-INF/resources/"));
+        context.setBaseResource(resourceRoot);
+        ServletHolder holderPwd = new ServletHolder("default",DefaultServlet.class);
+        holderPwd.setInitParameter("dirAllowed","true");
+        context.addServlet(holderPwd,"/");
+        jettyServer.setHandler(context);
         try {
             jettyServer.start();
             jettyServer.join();
