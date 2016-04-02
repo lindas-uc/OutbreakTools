@@ -1,7 +1,8 @@
 FROM maven:3.2-jdk-8
 MAINTAINER Reto Gmür <reto.gmuer@zazuko.com>
 
-EXPOSE 8080
+#Commented out for Dokku
+#EXPOSE 5000
 
 #Prepare
 RUN mkdir -p /usr/src/app

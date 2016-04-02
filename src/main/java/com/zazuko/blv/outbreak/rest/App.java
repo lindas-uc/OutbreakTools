@@ -11,7 +11,7 @@ public class App {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
  
-        Server jettyServer = new Server(8080);
+        Server jettyServer = new Server(5000);
         jettyServer.setHandler(context);
         EnumSet<DispatcherType> all = EnumSet.of(DispatcherType.ASYNC, DispatcherType.ERROR, DispatcherType.FORWARD,
             DispatcherType.INCLUDE, DispatcherType.REQUEST);
