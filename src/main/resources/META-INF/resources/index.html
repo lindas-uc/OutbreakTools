@@ -4,7 +4,7 @@
 <html>
 
 <head>
-	<title>Titel der Seite</title>
+	<title>Outbreak Tools</title>
 
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="language" content="de">
@@ -23,15 +23,19 @@
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css"/>
     <link rel="stylesheet" href="external/bootstrap-datetimepicker-master/build/css/bootstrap-datetimepicker.min.css"/>
     
-    <!-- include bootstrap, jquery, leaflet and d3.js-->
+    <!-- include bootstrap, jquery, openLayers and d3.js-->
     <script type="text/javascript" src="external/jquery/jquery.js"></script>
     <script type="text/javascript" src="external/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="external/d3/d3.min.js"></script>
-    <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
-    
+    <script src="http://api3.geo.admin.ch/loader.js?lang=en" type="text/javascript"></script>
+
     <!--Include javascripts and CSS for Datetimepicker-->
     <script type="text/javascript" src="external/moment/moment.js"></script>
     <script type="text/javascript" src="external/bootstrap-datetimepicker-master/build/js/bootstrap-datetimepicker.min.js"></script>
+    
+    <!--Include javascripts and CSS for d3.slider-->
+    <script type="text/javascript" src="external/d3-slider-master/d3.slider.js"></script>
+    <link rel="stylesheet" type="text/css" href="external/d3-slider-master/d3.slider.css">
 
     <!-- Include d3sparql.js-->
     <script type="text/javascript" src="external/d3sparql.js"></script>
@@ -41,9 +45,10 @@
     
 	<link rel="shortcut icon" href="img/favicon.ico">
 
-	<script type="text/javascript">
+    <!--Include d3-tip-->
+    <link rel="stylesheet" href="external/d3-tip-master/examples/example-styles.css">
+    <script type="text/javascript" src="external/d3-tip-master/index.js"></script>
 
-	</script>
 </head>
 
 <body>
@@ -86,11 +91,26 @@
 
 <div class="container" ng-app="lindasMain" ng-controller="lindasMainCtrl" id="lindasMainContainer">
 
-    <div class="row">
+    <div class="row" ng-show="mapVisible">
+        <div class="box">
+            <div class="col-lg-10 text-center">
+                <div id="slider"></div>
+            </div>
+            <div class="col-lg-2">
+                <button id="startAnimation" class="btn" aria-label="Left Align">
+                    <span class="glyphicon glyphicon-play" aria-hidden="true" ng-hide="animationRunning"></span>
+                    <span class="glyphicon glyphicon-stop" aria-hidden="true" ng-show="animationRunning"></span>
+                    Animation starten
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-show="mapVisible">
         <div class="box">
             <div class="col-lg-12 text-center">
                 <div id="map" style="width: 100%; height: 500px">
-                    <button id="centerMap" onclick="map.centerMap()" type="button" class="btn btn-default btn-circle btn-lg"><i class="glyphicon glyphicon-screenshot"></i></button>
+                    <button id="centerMap" ng-click="centerMap()" type="button" class="btn btn-default btn-circle btn-lg"><i class="glyphicon glyphicon-screenshot"></i></button>
                 </div>
             </div>
         </div>
@@ -111,26 +131,33 @@
                             </div>
                         </div>
                         <div id="inputFieldID">
-                            <div class="row">
-                                <div class="col-md-8" ng-repeat="x in tieIds track by $index">
-                                    <div class="form-group">
-                                        <input class="form-control" type="text" placeholder="&lt;&lt;ID Eingeben&gt;&gt;" ng-model="tieIds[$index]">
+                            <div class="row" ng-repeat="x in tieIds track by $index">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <input class="form-control" type="text" placeholder="&lt;&lt;ID Eingeben&gt;&gt;" ng-model="tieIds[$index].id">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <button type="submit" class="btn btn-primary" aria-label="Left Align">
-                                        <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-                                        CSV hochladen
-                                    </button>
-                                </div>
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn" aria-label="Left Align" ng-click="removeTieIds($index)">
+                                            <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="alert alert-danger" role="alert" ng-hide="tieIds[$index].valid">Id ungültig</div>
+                                    </div>
                             </div>
-                            <div class="alert alert-danger" role="alert" ng-show="invalidIds">Bitte geben Sie mindestens eine gültige ID ein</div>
                         </div>
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <button type="button" class="btn btn-primary" aria-label="Left Align" ng-click="addEmptyTieIds()">
                                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                     Weitere ID eingeben
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary" aria-label="Left Align">
+                                    <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                                    CSV hochladen
                                 </button>
                             </div>
                         </div>
@@ -182,10 +209,14 @@
                                         </script>
                                         <div class='col-sm-4'>
                                             <div class="form-group">
+                                                <div class='input-group' id="difference">
                                                     <input type='text' class="form-control" placeholder="&lt;&lt;Anzahl Tage (fakulatativ)&gt;&gt;" ng-model="difference"/>
+                                                    <span class="input-group-addon" ng-click="calculateDifference()">
+                                                        <span class="glyphicon glyphicon-refresh"></span>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
-                                        <p>{{difference + " " + endDate }}</p>
                                     </div>
                                 <div class="alert alert-danger" role="alert" ng-show="dateInvalid">Datum ungültig. Muss in Vergangenheit liegen</div>
                                 </div>
@@ -193,10 +224,14 @@
                         <div class="row margin-top-plus">
                             <div class="col-md-12">
                                 <div class="row">
-                                    
-                                    <div class="col-md-12">
+                                    <div class="col-md-2">
                                         <button type="button" class="btn btn-primary bull" aria-label="Left Align" ng-click="initializeVisualisation()">
                                             Absenden
+                                        </button>
+                                    </div>
+                                    <div class="col-md-2 pull-right">
+                                        <button type="button" class="btn btn-primary bull" aria-label="Left Align" onclick="test.testInitializeVisualisation()">
+                                            Test
                                         </button>
                                     </div>
                                 </div>
@@ -231,11 +266,7 @@
 <!-- Scripts for Tester Object -->
 <script src="js/testerObject.js"></script>
 
-<script type="text/javascript">
-    map.drawMap();
-</script>
-
 
 </body>
 
-</html>>
+</html>

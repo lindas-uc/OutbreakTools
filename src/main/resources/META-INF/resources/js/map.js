@@ -20,15 +20,15 @@ var map = {
         var svg = d3.select("#map").select("svg"),
             g = svg.append("g");
 
-        d3.json("testdata/circles.json", function(collection) {
+        d3.csv("testdata/testdata.csv", function(collection) {
             /* Add a LatLng object to each item in the dataset */
-            collection.objects.forEach(function(d) {
-                d.LatLng = new L.LatLng(d.circle.coordinates[0],
-                    d.circle.coordinates[1])
+            collection.forEach(function(d) {
+                d.LatLng = new L.LatLng(d.lat,
+                    d.long)
             })
 
             var feature = g.selectAll("circle")
-                .data(collection.objects)
+                .data(collection)
                 .enter().append("circle")
                 .style("stroke", "black")
                 .style("opacity", .6)

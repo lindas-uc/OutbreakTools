@@ -1,3 +1,7 @@
+text {font-family:Verdana,sans-serif; font-size:12px;}
+polyline {fill:none; stroke:black; stroke-width:1px;}
+polygon {fill:none; stroke:black; stroke-width:1px;}
+
 
 #inputPeriod {
     margin-top: 3%;
@@ -47,3 +51,57 @@
 .row.margin-top-plus {
     margin-top: 5.5%;
 }
+
+.connection {
+    stroke: grey;
+    stroke-width:2;
+}
+
+.circleToFarm {
+    stroke: black;
+    opacity: 0.6;
+    fill: red;
+    cursor: pointer !important;
+}
+
+.circleFromFarm {
+    stroke: black;
+    opacity: 0.6;
+    fill: red;
+    cursor: pointer !important;
+}
+
+marker path {
+    fill: black;
+    opacity: 0.6;
+}
+
+.tmpCircle {
+    fill: grey;
+    border-width: 2px;
+    border-color: black;
+    border-style: solid;
+}
+
+.d3-slider-handle {
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+}
+
+#difference span{
+    cursor: pointer;
+}
+
+svg {
+    pointer-events: none;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+}
+
+
+
+
+
+
+
+
