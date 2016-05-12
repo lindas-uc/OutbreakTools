@@ -21,7 +21,7 @@ public class App {
         FilterHolder jerseyFilter = context.addFilter(org.glassfish.jersey.servlet.ServletContainer.class, "/*", all);
         jerseyFilter.setInitParameter(
            "jersey.config.server.provider.classnames",
-           EntryPoint.class.getCanonicalName());
+           Trace.class.getCanonicalName());
         jerseyFilter.setInitParameter(
            "jersey.config.servlet.filter.forwardOn404",
            "true");

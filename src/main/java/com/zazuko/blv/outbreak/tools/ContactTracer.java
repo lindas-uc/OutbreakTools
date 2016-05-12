@@ -25,7 +25,7 @@ public class ContactTracer {
      * If true a site potentiallyInfected by a site potentially infected for the first 
      * time within the same interval will count as potentially infected.
      */
-    final boolean allowMultipleHopsInInterval = true;
+    final public boolean allowMultipleHopsInInterval = true;
     final static int interval = 24*60*60*1000;
     final SparqlClient sparqlClient = new SparqlClient("http://test.lindas-data.ch/sparql");
     final static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
