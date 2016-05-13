@@ -24,13 +24,20 @@ public class Trace {
  
     
     @GET
-    @Path("")
-    public Graph trace(@QueryParam("startingSite") IRI startingSite) throws ParseException, IOException {
+    public Graph trace(@QueryParam("startingSite") IRI startingSite,
+            @QueryParam("startDate") String startDateString,
+            @QueryParam("endDate") String endDateString) throws ParseException, IOException {
         if (startingSite == null) {
             throw new WebApplicationException("must specify startingSite", Response.Status.BAD_REQUEST);
         }
-        final Date startDate = dateFormat.parse("2012-01-01");
-        final Date endDate = dateFormat.parse("2012-02-01");
+        if (startDateString == null) {
+            throw new WebApplicationException("must specify startDate", Response.Status.BAD_REQUEST);
+        }
+        if (endDateString == null) {
+            throw new WebApplicationException("must specify endDate", Response.Status.BAD_REQUEST);
+        }
+        final Date startDate = dateFormat.parse(startDateString);
+        final Date endDate = dateFormat.parse(endDateString);
         //final IRI startingSite = new IRI("http://foodsafety.data.admin.ch/business/51122");
         final ContactTracer tracer = new ContactTracer();
         final Set<IRI> resultSet = tracer.getPotentiallyInfectedSites(startingSite, 

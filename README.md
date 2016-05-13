@@ -19,7 +19,11 @@ It must not be used productively there is no guarantee that the results are corr
 
 ## Usage
 
-There is currently no frontend, however the classes `ContactTracer` and 
+There is currently only a partial HTTP API, also the classes `ContactTracer` and 
 `SourceFinder`in the package `com.zazuko.blv.outbreak.tools` are executable. At 
 the moment to provide the input data for the computation their Main methods
 must be adapted.
+
+The following is an example for the usage of the HTTP interface:
+
+ * http://localhost:5000/trace?startingSite=http://foodsafety.data.admin.ch/business/51122&startDate=2012-01-01&endDate=2012-02-01
