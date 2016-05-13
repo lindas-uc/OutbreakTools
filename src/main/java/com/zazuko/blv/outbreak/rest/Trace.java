@@ -1,9 +1,7 @@
 package com.zazuko.blv.outbreak.rest;
 
 import com.zazuko.blv.outbreak.tools.ContactTracer;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,12 +9,13 @@ import java.util.Date;
 import java.util.Set;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.IRI;
+import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
  
 @Path("trace")
 public class Trace {
@@ -25,9 +24,8 @@ public class Trace {
  
     
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
     @Path("")
-    public byte[] trace(@QueryParam("startingSite") IRI startingSite) throws ParseException, IOException {
+    public Graph trace(@QueryParam("startingSite") IRI startingSite) throws ParseException, IOException {
         if (startingSite == null) {
             throw new WebApplicationException("must specify startingSite", Response.Status.BAD_REQUEST);
         }
@@ -35,21 +33,18 @@ public class Trace {
         final Date endDate = dateFormat.parse("2012-02-01");
         //final IRI startingSite = new IRI("http://foodsafety.data.admin.ch/business/51122");
         final ContactTracer tracer = new ContactTracer();
-        final Set<IRI> result = tracer.getPotentiallyInfectedSites(startingSite, 
+        final Set<IRI> resultSet = tracer.getPotentiallyInfectedSites(startingSite, 
                 startDate,
                 endDate);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintWriter out = new PrintWriter(baos);
-        out.println(result.size()+" sites have potentially been infected");
-        if (!tracer.allowMultipleHopsInInterval) {
-            out.println("WARNING: not taking into account multiple hops per time interval.");
-        }
-        result.stream().forEach((iri) -> {
-            out.println("IRI: "+iri);
+        final Graph result = new SimpleGraph();
+        resultSet.stream().forEach((iri) -> {
+            result.add(new TripleImpl(startingSite, 
+                new IRI("http://blv.admin.ch/hasPathTo"), 
+                iri));
         });
-        out.flush();
-        return baos.toByteArray();
+        
+        return result;
     }
-   
+    
     
 }
