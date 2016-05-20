@@ -28,9 +28,15 @@ $("button").click(function() {
             "?G <https://gont.ch/municipality> <http://classifications.data.admin.ch/municipality/37> ." +
             "?G    <http://linkeddata.interlis.ch/IlisMeta07.MetaElemOID/swissBOUNDARIES3D_ili2_LV03_V1_3_ceis.TLM_GRENZEN.TLM_HOHEITSGEBIET.RefPoint> ?S." +
             "?S <http://www.opengis.net/ont/geosparql#asWKT> ?wtk}"
+
+/*            query: "SELECT ?farm,?wtk WHERE { " +
+            "?G <https://gont.ch/municipality> ?farm ." +
+            "?G    <http://linkeddata.interlis.ch/IlisMeta07.MetaElemOID/swissBOUNDARIES3D_ili2_LV03_V1_3_ceis.TLM_GRENZEN.TLM_HOHEITSGEBIET.RefPoint> ?S." +
+            "?S <http://www.opengis.net/ont/geosparql#asWKT> ?wtk}"*/
         }
     }).then(function(data) {
         alert(data["results"]["bindings"][0]["wtk"]["value"]);
+        //alert(data["results"]["bindings"][0]["farm"]["value"]);
     });
 });
 
