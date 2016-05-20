@@ -33,17 +33,21 @@
     <script>
         $(function() {
             var store = new LdpStore();
-            store.match(
-                    null,
-                    null,
-                    null,
-                    "http://outbreak-tool2.fdn.iwi.unibe.ch/trace?startingSite=http://foodsafety.data.admin.ch/business/51122&startDate=2012-01-01&endDate=2012-02-01",
-                    function (error, data) {
-                        console.log(data.toString());
-                        alert(data.toString());
-                        var rendered = new RDF2h(matchers).render(data, rdf.createNamedNode($("#resource").val()));
-                        $("#result").html(rendered);
-                    });
+            var matchersTtl = $("#matchers").text();
+            N3Parser.parse(matchersTtl, null, window.location.toString()).then(function (matchers) {
+                var municipalityURI = "http://foodsafety.data.admin.ch/business/51122";
+                store.match(
+                        null,
+                        null,
+                        null,
+                        "http://outbreak-tool2.fdn.iwi.unibe.ch/trace?startingSite="+municipalityURI+"&startDate=2012-01-01&endDate=2012-02-01",
+                        function (error, data) {
+                            console.log(data.toString());
+                            alert(data.toString());
+                            var rendered = new RDF2h(matchers).render(data, rdf.createNamedNode(municipalityURI));
+                            $("#result").html(rendered);
+                        });
+            });
         });
     </script>
 </head>
