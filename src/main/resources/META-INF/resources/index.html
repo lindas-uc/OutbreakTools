@@ -16,18 +16,24 @@
 	<!--<meta name="copyright" content="ProfessorWeb | www.professorweb.de">-->
 	<meta name="author" content="Janik Endtner">
 
+    <!--Include new Stylesheets CHANGE!!-->
+    <link rel="stylesheet" href="https://www.procrastinatio.org/mf-chsdi-build/build/api.css" type="text/css">
+    <script src="https://www.procrastinatio.org/gsm-coverage/js/proj4js-compressed.js"></script>
+    <script src="https://www.procrastinatio.org/assets/lib/ol2/OpenLayers-2.13.1/lib/OpenLayers.js"></script>
+
+    <script src="https://www.procrastinatio.org/examples/matrixDefs.js"></script>
+    <script src="http://d3js.org/d3.v2.min.js?2.9.3"></script>
+
 	<link rel="stylesheet" type="text/css" href="css/stylesheet.css">
-    <!--Stylesheets for bootstrap, business-casual template, leaflet-->
+    <!--Stylesheets for bootstrap, business-casual template-->
 	<link rel="stylesheet" type="text/css" href="external/bootstrap-3.3.6-dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/business-casual.css">
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css"/>
     <link rel="stylesheet" href="external/bootstrap-datetimepicker-master/build/css/bootstrap-datetimepicker.min.css"/>
     
     <!-- include bootstrap, jquery, openLayers and d3.js-->
     <script type="text/javascript" src="external/jquery/jquery.js"></script>
     <script type="text/javascript" src="external/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="external/d3/d3.min.js"></script>
-    <script src="http://api3.geo.admin.ch/loader.js?lang=en" type="text/javascript"></script>
 
     <!--Include javascripts and CSS for Datetimepicker-->
     <script type="text/javascript" src="external/moment/moment.js"></script>
@@ -48,6 +54,23 @@
     <!--Include d3-tip-->
     <link rel="stylesheet" href="external/d3-tip-master/examples/example-styles.css">
     <script type="text/javascript" src="external/d3-tip-master/index.js"></script>
+    <script type="text/javascript">
+
+        var errorCounter = 0;
+        window.onerror = function (errorMsg, url, lineNumber) {
+            errorCounter += 1;
+            if (errorCounter <= 15) {
+                console.log("external error catched");
+                return true;
+            }
+        }
+    </script>
+
+
+    <!--Include CSS for Checkboxes-->
+    <link rel="stylesheet" href="css/checkboxes.css">
+
+
 
 </head>
 
@@ -108,10 +131,121 @@
 
     <div class="row" ng-show="mapVisible">
         <div class="box">
+            <div class="col-lg-1">
+                <input type="checkbox" id="ToggleForms" ng-model="showDifferentForms" ng-checked="showDifferentForms"/>
+                <label for="ToggleForms"></label>
+            </div>
+            <div class="col-lg-2">
+                <p>Verschiedene Formen einblenden</p>
+            </div>
+            <div class="col-lg-1">
+                <input type="checkbox" id="toggleSchlachthoefe" ng-model="hideSlaughterhouse" ng-checked="hideSlaughterhouse" />
+                <label for="toggleSchlachthoefe"></label>
+            </div>
+            <div class="col-lg-2">
+                <p>Schlachthöfe ausblenden</p>
+            </div>
+            <div class="col-lg-1">
+                <input type="checkbox" id="individualArrowWidth" ng-model="individualArrowWidth" ng-checked="individualArrowWidth" />
+                <label for="individualArrowWidth"></label>
+            </div>
+            <div class="col-lg-2">
+                <p>Pfeilstärke anhand Anzahl Tiere definieren</p>
+            </div>
+            <div class="col-lg-1">
+                <input type="checkbox" id="protectionAndMonitoringZones" ng-model="showProtectionZone" ng-checked="showProtectionZone" ng-change="showMonitoringZone=showProtectionZone"/>
+                <label for="protectionAndMonitoringZones"></label>
+            </div>
+            <div class="col-lg-2">
+                <p>Schutz- und Überwachungszonen zeigen</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-show="mapVisible">
+        <div class="box">
             <div class="col-lg-12 text-center">
-                <div id="map" style="width: 100%; height: 500px">
-                    <button id="centerMap" ng-click="centerMap()" type="button" class="btn btn-default btn-circle btn-lg"><i class="glyphicon glyphicon-screenshot"></i></button>
+                <div id="map">
+                    <button id="centerMap" onclick="olMap.zoomInAndSetCenter()" type="button" class="btn btn-default btn-circle btn-lg"><i class="glyphicon glyphicon-screenshot"></i></button>
+                    <button id="changeOlMap" ng-click="toggleLayersVisibility()" type="button" class="btn btn-default btn-circle btn-lg"><i class="glyphicon glyphicon-globe"></i></button>
+                    <div id="allLayersBox" ng-show="showLayerPossibilities">
+                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row dataResults" ng-show="mapVisible">
+
+        <div class="box">
+
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Brand</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li ng-click="changeDataTable('dataTable1')" ng-hide="dataTable.dataTable1"><span>Data1</span></li>
+                        <li ng-click="changeDataTable('dataTable1')" ng-show="dataTable.dataTable1" class="activeDataTable"><span>Data1</span></li>
+                        <li ng-click="changeDataTable('dataTable2')" ng-hide="dataTable.dataTable2"><span>Data2</span></li>
+                        <li ng-click="changeDataTable('dataTable2')" ng-show="dataTable.dataTable2" class="activeDataTable"><span>Data2</span></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+            <div class="col-xs-12" ng-show="dataTable.dataTable1">
+                <h2>Data</h2>
+                <p>The .table-striped class adds zebra-stripes to a table:</p>
+                <button class="btn" export-to-csv>Download as CSV</button>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Lastname</th>
+                        <th>Email</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="d in data">
+                        <td>{{d.A_Business}}</td>
+                        <td>Doe</td>
+                        <td>john@example.com</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-xs-12" ng-show="dataTable.dataTable2">
+                <h2>Data2</h2>
+                <p>The .table-striped class adds zebra-stripes to a table:</p>
+                <button class="btn" export-to-csv>Download as CSV</button>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Lastname</th>
+                        <th>Email</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="d in data">
+                        <td>{{d.B_Business}}</td>
+                        <td>Jon</td>
+                        <td>john@example.com</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -257,14 +391,22 @@
 </footer>
 
 
-<script type="text/javascript" src="js/map.js"></script>
 
 <!--Scripts for Controller and Model-->
-<script src="js/lindasMain.js"></script>
-<script src="js/lindasMainCtrl.js"></script>
+<script type="text/javascript" src="js/lindasMainCtrl.js"></script>
 
+<!--Scripts for Services-->
+<script type="text/javascript" src="js/mapService/mapService.js"></script>
+<script type="text/javascript" src="js/mapService/olMap.js"></script>
+<script type="text/javascript" src="js/mapService/dataEdit.js"></script>
+<script type="text/javascript" src="js/mapService/d3Visualization.js"></script>
+<script type="text/javascript" src="js/mapService/WMTSLayers.js"></script>
+<script type="text/javascript" src="js/otherServicesAndDirectives/sparqlService.js"></script>
+<script type="text/javascript" src="js/validatorService/validatorService.js"></script>
+<script type="text/javascript" src="js/otherServicesAndDirectives/exportToCSVDirective.js"></script>
+    
 <!-- Scripts for Tester Object -->
-<script src="js/testerObject.js"></script>
+<script type="text/javascript" src="js/testerObject.js"></script>
 
 
 </body>

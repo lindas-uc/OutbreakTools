@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <style>
+        .map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+    <title>GeoAdmin API example</title>
+</head>
+<body>
+<h2>My first GeoAdmin map</h2>
+<script src="http://api3.geo.admin.ch/loader.js?lang=en" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<div id="map" class="map"></div>
+
+<button>click me</button>
+<script type="text/javascript">
+
+$("button").click(function() {
+    $.get({
+        url: "http://lindas.zazuko.com/blazegraph/namespace/swisstopo/sparql",
+        dataType: "json",
+        data: {
+            query: "SELECT ?wtk WHERE { " +
+            "?G <https://gont.ch/municipality> <http://classifications.data.admin.ch/municipality/37> ." +
+            "?G    <http://linkeddata.interlis.ch/IlisMeta07.MetaElemOID/swissBOUNDARIES3D_ili2_LV03_V1_3_ceis.TLM_GRENZEN.TLM_HOHEITSGEBIET.RefPoint> ?S." +
+            "?S <http://www.opengis.net/ont/geosparql#asWKT> ?wtk}"
+
+/*            query: "SELECT ?farm,?wtk WHERE { " +
+            "?G <https://gont.ch/municipality> ?farm ." +
+            "?G    <http://linkeddata.interlis.ch/IlisMeta07.MetaElemOID/swissBOUNDARIES3D_ili2_LV03_V1_3_ceis.TLM_GRENZEN.TLM_HOHEITSGEBIET.RefPoint> ?S." +
+            "?S <http://www.opengis.net/ont/geosparql#asWKT> ?wtk}"*/
+        }
+    }).then(function(data) {
+        alert(data["results"]["bindings"][0]["wtk"]["value"]);
+        //alert(data["results"]["bindings"][0]["farm"]["value"]);
+    });
+});
+
+
+
+</script>
+</body>
+</html>

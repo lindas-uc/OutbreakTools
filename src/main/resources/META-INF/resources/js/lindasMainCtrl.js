@@ -1,3 +1,5 @@
+var app = angular.module('lindasMain', []);
+
 app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeout) {
     //tie => tested infected entities
     $scope.tieIds = new Array({id:null,valid:true});
@@ -16,7 +18,19 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.leafletMap = {};
     $scope.originalData = [];
     $scope.animationRunning = false;
-
+    $scope.data = [];
+    $scope.dataTable = {
+        dataTable1: true,
+        dataTable2: false,
+    };
+    $scope.showDifferentForms = false;
+    $scope.hideSlaughterhouse = false;
+    $scope.individualArrowWidth = false;
+    $scope.appStarted = false;
+    $scope.showProtectionZone = false;
+    $scope.showMonitoringZone = false;
+    $scope.showLayerPossibilities = false;
+    
     $scope.addEmptyTieIds = function() {
         $scope.tieIds.push({id:null,valid:true});
     };
@@ -43,18 +57,39 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         $scope.startDate = moment(d).format('DD/MM/YYYY');
     };
 
+    //draw Visualization again if something in Settings change
+    $scope.$watchGroup(['filterStartDateMilliseconds','filterEndDateMilliseconds', 'hideSlaughterhouse', 'individualArrowWidth', 'showDifferentForms', 'showProtectionZone'], function(){
+        if (!$scope.appStarted)
+            return null;
+
+        $scope.data = $scope.originalData.filter(function (d) {
+            var date = d.Date.getTime();
+            if ($scope.hideSlaughterhouse)
+                return (date > $scope.filterStartDateMilliseconds && date < $scope.filterEndDateMilliseconds
+                && d.Betriebsart.localeCompare("Schlachthof") != 0);
+            else
+                return (date > $scope.filterStartDateMilliseconds && date < $scope.filterEndDateMilliseconds);
+        });
+        try {
+            d3Vis.update($scope);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
     //convert startDate to Milliseconds since 01.01.1970
     $scope.$watch('startDate',function() {
         $scope.startDateMilliseconds = moment($scope.startDate,"DD/MM/YYYY").toDate().getTime();
-    })
+    });
 
     //convert endDate to Milliseconds since 01.01.1970
     $scope.$watch('startDate',function() {
         $scope.endDateMilliseconds = moment($scope.endDate,"DD/MM/YYYY").toDate().getTime();
-    })
+    });
 
     $scope.initializeVisualisation = function() {
         console.log("start Visualization");
+        $scope.appStarted = true;
 
         //validate date
         if ((validator.validateDate($scope.startDate)) || (validator.validateDate($scope.endDate))) {
@@ -94,7 +129,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
             map.initializeMap($scope.startDateMilliseconds, $scope.endDateMilliseconds, $scope);
         },50);
 
-    }
+    };
 
     $scope.centerMap = function() {
         $scope.map.setView(new ol.View({
@@ -102,5 +137,16 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
             center: [680000, 185655],
             extent: [430250, 73155, 929750, 298155]
         }));
+    };
+
+    $scope.changeDataTable= function(table) {
+        $scope.dataTable.dataTable1 = false;
+        $scope.dataTable.dataTable2 = false;
+        $scope.dataTable[table] = true;
+    };
+
+    $scope.toggleLayersVisibility = function() {
+        $scope.showLayerPossibilities ? $scope.showLayerPossibilities = false : $scope.showLayerPossibilities = true;
+        console.log($scope.showLayerPossibilities);
     }
 });

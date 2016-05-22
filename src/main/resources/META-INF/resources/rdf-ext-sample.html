@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf-ext.js"></script>
+    <script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf2h.js"></script>
+    <script src="//cdn.rawgit.com/retog/rdf-parser-n3-browser/v0.3.0b/dist/n3-parser.js"></script>
+    <script src="//cdn.rawgit.com/retog/rdf-store-ldp-browser/v0.3.0-rc2f/dist/rdf-store-ldp.js"></script>
+    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script id="matchers" type="text/turtle">
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
+    @prefix blv: <http://blv.admin.ch/>.
+    [ a r2h:Matcher ;
+      r2h:triplePattern [
+        r2h:subject r2h:this;
+        r2h:predicate blv:hasPathTo;
+      ];
+      r2h:template [
+        r2h:context r2h:Default;
+        r2h:mustache """
+        <ul>
+            {{#blv:hasPathTo}}
+                <li>Has path to: {{.}}</li>
+            {{/blv:hasPathTo}}
+        </ul>
+        """
+      ]
+    ].
+
+        </script>
+    <script>
+        $(function() {
+            var store = new LdpStore();
+            var matchersTtl = $("#matchers").text();
+            N3Parser.parse(matchersTtl, null, window.location.toString()).then(function (matchers) {
+                var municipalityURI = "http://foodsafety.data.admin.ch/business/51122";
+                store.match(
+                        null,
+                        null,
+                        null,
+                        "/trace?startingSite="+municipalityURI+"&startDate=2012-01-01&endDate=2012-02-01",
+                        function (error, data) {
+                            console.log(data.toString());
+                            alert(data.toString());
+                            var rendered = new RDF2h(matchers).render(data, rdf.createNamedNode(municipalityURI));
+                            $("#result").html(rendered);
+                        });
+            });
+        });
+    </script>
+</head>
+<body>
+ <div id="result">result will show up here</div>
+</body>
+</html>
