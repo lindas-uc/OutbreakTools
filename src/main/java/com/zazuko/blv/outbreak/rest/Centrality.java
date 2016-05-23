@@ -4,6 +4,7 @@ import com.zazuko.blv.outbreak.tools.CentralPredecessorFinder;
 import com.zazuko.blv.outbreak.tools.ContactTracer;
 import com.zazuko.blv.outbreak.tools.Move;
 import com.zazuko.blv.outbreak.tools.Ontology;
+import com.zazuko.blv.outbreak.tools.SourceFinder;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -17,12 +18,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import org.apache.clerezza.commons.rdf.BlankNode;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.TypedLiteralImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.rdf.core.LiteralFactory;
 import org.apache.clerezza.rdf.ontologies.DCTERMS;
+import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.clerezza.rdf.ontologies.XSD;
  
 @Path("centrality")
@@ -46,12 +50,13 @@ public class Centrality {
         final Date startDate = dateFormat.parse(startDateString);
         final Date endDate = dateFormat.parse(endDateString);
         //final IRI startingSite = new IRI("http://foodsafety.data.admin.ch/business/51122");
-        final ContactTracer tracer = new ContactTracer(false);
-        final Set<Move> resultSet = tracer.getPotentiallyInfectedSites(startingSites, 
+        final SourceFinder tracer = new SourceFinder();
+        SourceFinder.Report report = tracer.findSources(startingSites, 
                 startDate,
                 endDate);
+        final Set<Move> moves = report.getAllMoves();
         final Graph result = new SimpleGraph();
-        resultSet.stream().forEach((move) -> {
+        moves.stream().forEach((move) -> {
             result.add(new TripleImpl(move.id, 
                     DCTERMS.date, 
                     new TypedLiteralImpl(dateFormat.format(move.date), XSD.date)));
@@ -61,7 +66,16 @@ public class Centrality {
             result.add(new TripleImpl(move.id, 
                     Ontology.FROM_LOCATION, 
                     move.from));    
-        });       
+        });   
+        report.getPotentialSinglePointsOfOrigin().forEach((site) -> {
+            BlankNode centralityAssertion = new BlankNode();
+            result.add(new TripleImpl(centralityAssertion, 
+                    DCTERMS.subject, 
+                    site));
+            result.add(new TripleImpl(centralityAssertion, 
+                    RDF.value, 
+                    LiteralFactory.getInstance().createTypedLiteral(1.0)));
+        });
         return result;
     }
     

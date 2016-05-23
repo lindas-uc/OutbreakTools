@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import org.apache.clerezza.commons.rdf.IRI;
 
@@ -22,34 +21,66 @@ public class SourceFinder {
     final static int interval = 24*60*60*1000;
     final ContactTracer tracer = new ContactTracer(false);
     
-    public Set<IRI> getPotentialSinglePointsOfOrigin(Set<IRI> infectedSites, 
-            Date diagnosisDate, Date evaluateTill) throws IOException {
+    public interface Report {
+        Set<IRI> getPotentialSinglePointsOfOrigin();
+        Set<Move> getAllMoves();
+    }
+    
+    public Report findSources(final Set<IRI> infectedSites, 
+            final Date diagnosisDate, final Date evaluateTill) throws IOException {
         if (infectedSites.size() < 2) {
-            throw new IllegalArgumentException("Must specify at leat 2 infeted sites");
+            final ContactTracer ct = new ContactTracer(false);
+            final Set<Move> allMoves = ct.getPotentiallyInfectedSites(infectedSites, diagnosisDate, evaluateTill);
+            return new Report() {
+                
+                @Override
+                public Set<IRI> getPotentialSinglePointsOfOrigin() {
+                    return Collections.emptySet();
+                }
+
+                @Override
+                public Set<Move> getAllMoves() {
+                    return allMoves;
+                }
+            };
         }
         final List<Set<IRI>> ancestorSets = new ArrayList<>();
         for (IRI infectedSite : infectedSites) {
             ancestorSets.add(Collections.singleton(infectedSite));
         }
+        final Set<Move> allMoves = new HashSet<>();
         final Set<IRI> result = new HashSet<>();
         Date evaluationDate = diagnosisDate;
         while (!evaluateTill .after(evaluationDate)) {
-            evaluationDate = expandAncestorSets(ancestorSets, evaluationDate);
+            evaluationDate = expandAncestorSets(ancestorSets, evaluationDate, allMoves);
             final Set<IRI> intersection = getIntersection(ancestorSets);
             result.addAll(intersection);
             for (Set<IRI> ancestorSet : ancestorSets) {
                 ancestorSet.removeAll(intersection);
             }
         }
-        return result;
+        return new Report() {
+                
+            @Override
+            public Set<IRI> getPotentialSinglePointsOfOrigin() {
+                return result;
+            }
+
+            @Override
+            public Set<Move> getAllMoves() {
+                return allMoves;
+            }
+        };
     }
 
 
-    private Date expandAncestorSets(List<Set<IRI>> ancestorSets, Date date) throws IOException {
+    private Date expandAncestorSets(List<Set<IRI>> ancestorSets, Date date, Set<Move> allMoves) throws IOException {
         final Date previousInterval = new Date(date.getTime() - interval);
         for (int i = 0; i < ancestorSets.size(); i++) {
-            final Set<IRI> expandedSet = tracer.getPotentiallyInfectedSites(ancestorSets.get(i), date, previousInterval)
-                    .stream().map(m -> m.from).collect(Collectors.toSet());
+            final Set<Move> moves = tracer.getPotentiallyInfectedSites(ancestorSets.get(i), date, previousInterval);
+            allMoves.addAll(moves);
+            final Set<IRI> expandedSet = moves.stream().map(m -> m.from).collect(Collectors.toSet());
+            expandedSet.addAll(ancestorSets.get(i));
             ancestorSets.set(i, expandedSet);
         }
         return previousInterval;
@@ -75,9 +106,9 @@ public class SourceFinder {
         infectedSites.add(new IRI("http://foodsafety.data.admin.ch/business/51947"));
         infectedSites.add(new IRI("http://foodsafety.data.admin.ch/business/51116"));
         final SourceFinder tracer = new SourceFinder();
-        final Set<IRI> result = tracer.getPotentialSinglePointsOfOrigin(infectedSites,
+        final Set<IRI> result = tracer.findSources(infectedSites,
                 diagnosisdate,
-                evaluateTill);
+                evaluateTill).getPotentialSinglePointsOfOrigin();
         System.out.println(result.size()+" sites are potential points of origin");
         result.stream().forEach((iri) -> {
             System.out.println("IRI: "+iri);
