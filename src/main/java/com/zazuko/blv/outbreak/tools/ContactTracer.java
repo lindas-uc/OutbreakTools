@@ -3,11 +3,13 @@ package com.zazuko.blv.outbreak.tools;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.RDFTerm;
 
@@ -47,76 +49,83 @@ public class ContactTracer {
         this.forward = forward;
     }
     
-    public Set<IRI> getPotentiallyInfectedSites(IRI startingSite, Date startingDate, Date evaluationDate) throws IOException {
+    public Set<Move> getPotentiallyInfectedSites(IRI startingSite, Date startingDate, Date evaluationDate) throws IOException {
         final Set<IRI> potentiallyInfectedSites = new HashSet();
         potentiallyInfectedSites.add(startingSite);
         return getPotentiallyInfectedSites(potentiallyInfectedSites, startingDate, evaluationDate);
     }
     
-    public Set<IRI> getPotentiallyInfectedSites(Set<IRI> startingSites, Date startingDate, Date evaluationDate) throws IOException {
+    public Set<Move> getPotentiallyInfectedSites(Set<IRI> startingSites, Date startingDate, Date evaluationDate) throws IOException {
         //even the most aggressive germ can't travel back in time
         if (forward && evaluationDate.before(startingDate)) {
-            return startingSites;
+            return Collections.emptySet();
         }
         if (!forward && startingDate.before(evaluationDate)) {
-            return startingSites;
+            return Collections.emptySet();
         }
         final Set<IRI> potentiallyInfectedSites = new HashSet();
         potentiallyInfectedSites.addAll(startingSites);
-        final Set<IRI> firstContactRound = getContactsInInterval(startingSites, startingDate);
-        potentiallyInfectedSites.addAll(firstContactRound);
+        final Set<Move> result = getContactsInInterval(startingSites, startingDate);
+        potentiallyInfectedSites.addAll(result.stream().map(m -> m.to).collect(Collectors.toSet()));
         final Date nextInterval = forward ? new Date(startingDate.getTime()+interval)
                 : new Date(startingDate.getTime()-interval);
-        potentiallyInfectedSites.addAll(getPotentiallyInfectedSites(potentiallyInfectedSites, nextInterval, evaluationDate));
-        return potentiallyInfectedSites;
+        result.addAll(getPotentiallyInfectedSites(potentiallyInfectedSites, nextInterval, evaluationDate));
+        return result;
     }
     
     /**
      * Returns a Set containing sites potentially infected during interval starting at `date`
      */
-    private Set<IRI> getContactsInInterval(Set<IRI> startingSites, Date date) throws IOException {
+    private Set<Move> getContactsInInterval(Set<IRI> startingSites, Date date) throws IOException {
         return getContactsInInterval(startingSites, date, new HashSet<>());
     }
     
     /**
      * expands staringSites if they are not in alreadyExpanded
      */
-    private Set<IRI> getContactsInInterval(Set<IRI> startingSites, Date date, Set<IRI> alreadyExpanded) throws IOException {
-        final Set<IRI> result = new HashSet<>();
+    private Set<Move> getContactsInInterval(Set<IRI> startingSites, Date date, Set<IRI> alreadyExpanded) throws IOException {
+        final Set<Move> result = new HashSet<>();
         for (IRI site : startingSites) {
             if (alreadyExpanded.add(site)) {
                 result.addAll(getContactsInInterval(site, date));
             }
         }
         if (allowMultipleHopsInInterval && result.size() > 0) {
-            result.addAll(getContactsInInterval(result, date, alreadyExpanded));
+            Set<IRI> recurseSite = result.stream()
+                .map(elt -> elt.to)
+                .collect(Collectors.toSet()); 
+            result.addAll(getContactsInInterval(recurseSite, date, alreadyExpanded));
         }
         return result;
     }
 
-    private Set<IRI> getContactsInInterval(IRI startingSite, Date date) throws IOException {
+    private Set<Move> getContactsInInterval(IRI startingSite, Date date) throws IOException {
         //TODO use interval rather than date
         final String query = forward ? 
                 "PREFIX blv: <http://blv.ch/>\n"
+                + "PREFIX schema:     <http://schema.org/>\n"
+                + "PREFIX dct:     <http://purl.org/dc/elements/1.1/>\n"
                 + "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>\n"
-                + "SELECT DISTINCT ?T FROM <http://test.lindas-data.ch/resource/animaltransports> "
+                + "SELECT DISTINCT ?M ?T FROM <http://test.lindas-data.ch/resource/animaltransports> "
                 + "WHERE { "
-                        + "   ?M blv:fromFarm <"+startingSite.getUnicodeString()+"> ."
-                        + "   ?M blv:toFarm ?T."
-                        + "   ?M blv:date \""+dateFormat.format(date)+"\"^^xsd:date."
+                        + "   ?M schema:fromLocation <"+startingSite.getUnicodeString()+"> ."
+                        + "   ?M schema:toLocation ?T."
+                        + "   ?M dct:date \""+dateFormat.format(date)+"\"^^xsd:date."
                         + "}"
                 : "PREFIX blv: <http://blv.ch/>\n"
+                + "PREFIX schema:     <http://schema.org/>\n"
+                + "PREFIX dct:     <http://purl.org/dc/elements/1.1/>\n"
                 + "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>\n"
                 + "SELECT DISTINCT ?T FROM <http://test.lindas-data.ch/resource/animaltransports> "
                 + "WHERE { "
-                        + "   ?M blv:toFarm <"+startingSite.getUnicodeString()+"> ."
-                        + "   ?M blv:fromFarm ?T."
-                        + "   ?M blv:date \""+dateFormat.format(date)+"\"^^xsd:date."
+                        + "   ?M schema:toLocation<"+startingSite.getUnicodeString()+"> ."
+                        + "   ?M schema:fromLocation ?T."
+                        + "   ?M dct:date \""+dateFormat.format(date)+"\"^^xsd:date."
                         + "}";
         final List<Map<String, RDFTerm>> queryResults = sparqlClient.queryResultSet(query);
-        final Set<IRI> result = new HashSet<>();
+        final Set<Move> result = new HashSet<>();
         for (Map<String, RDFTerm> queryResult : queryResults) {
-            result.add((IRI) queryResult.get("T"));
+            result.add(new Move((IRI) queryResult.get("M"), startingSite, (IRI) queryResult.get("T"), date));
         }
         return result;
     }
@@ -126,14 +135,15 @@ public class ContactTracer {
         final Date endDate = dateFormat.parse("2012-02-01");
         final IRI startingSite = new IRI("http://foodsafety.data.admin.ch/business/51122");
         final ContactTracer tracer = new ContactTracer();
-        final Set<IRI> result = tracer.getPotentiallyInfectedSites(startingSite, 
+        Set<Move> moves = tracer.getPotentiallyInfectedSites(startingSite, 
                 startDate,
                 endDate);
-        System.out.println(result.size()+" sites have potentially been infected");
+        final Set<IRI> sites = moves.stream().map(m -> m.to).collect(Collectors.toSet());
+        System.out.println(sites.size()+" sites have potentially been infected");
         if (!tracer.allowMultipleHopsInInterval) {
             System.out.println("WARNING: not taking into account multiple hops per time interval.");
         }
-        result.stream().forEach((iri) -> {
+        sites.stream().forEach((iri) -> {
             System.out.println("IRI: "+iri);
         });
     }

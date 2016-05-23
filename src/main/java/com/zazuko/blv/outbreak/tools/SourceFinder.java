@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import org.apache.clerezza.commons.rdf.IRI;
 
 /**
@@ -46,7 +48,8 @@ public class SourceFinder {
     private Date expandAncestorSets(List<Set<IRI>> ancestorSets, Date date) throws IOException {
         final Date previousInterval = new Date(date.getTime() - interval);
         for (int i = 0; i < ancestorSets.size(); i++) {
-            final Set<IRI> expandedSet = tracer.getPotentiallyInfectedSites(ancestorSets.get(i), date, previousInterval);
+            final Set<IRI> expandedSet = tracer.getPotentiallyInfectedSites(ancestorSets.get(i), date, previousInterval)
+                    .stream().map(m -> m.from).collect(Collectors.toSet());
             ancestorSets.set(i, expandedSet);
         }
         return previousInterval;

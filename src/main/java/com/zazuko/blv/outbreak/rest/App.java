@@ -22,6 +22,7 @@ public class App {
         jerseyFilter.setInitParameter(
            "jersey.config.server.provider.classnames",
            Trace.class.getCanonicalName()+", "+
+           Centrality.class.getCanonicalName()+", "+
            MyGraphWriter.class.getCanonicalName());
         jerseyFilter.setInitParameter(
            "jersey.config.servlet.filter.forwardOn404",

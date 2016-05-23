@@ -1,6 +1,8 @@
 package com.zazuko.blv.outbreak.rest;
 
 import com.zazuko.blv.outbreak.tools.ContactTracer;
+import com.zazuko.blv.outbreak.tools.Move;
+import com.zazuko.blv.outbreak.tools.Ontology;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -15,7 +17,10 @@ import javax.ws.rs.core.Response;
 import org.apache.clerezza.commons.rdf.Graph;
 import org.apache.clerezza.commons.rdf.IRI;
 import org.apache.clerezza.commons.rdf.impl.utils.TripleImpl;
+import org.apache.clerezza.commons.rdf.impl.utils.TypedLiteralImpl;
 import org.apache.clerezza.commons.rdf.impl.utils.simple.SimpleGraph;
+import org.apache.clerezza.rdf.ontologies.DCTERMS;
+import org.apache.clerezza.rdf.ontologies.XSD;
  
 @Path("trace")
 public class Trace {
@@ -40,16 +45,21 @@ public class Trace {
         final Date endDate = dateFormat.parse(endDateString);
         //final IRI startingSite = new IRI("http://foodsafety.data.admin.ch/business/51122");
         final ContactTracer tracer = new ContactTracer();
-        final Set<IRI> resultSet = tracer.getPotentiallyInfectedSites(startingSite, 
+        final Set<Move> resultSet = tracer.getPotentiallyInfectedSites(startingSite, 
                 startDate,
                 endDate);
         final Graph result = new SimpleGraph();
-        resultSet.stream().forEach((iri) -> {
-            result.add(new TripleImpl(startingSite, 
-                new IRI("http://blv.admin.ch/hasPathTo"), 
-                iri));
-        });
-        
+        resultSet.stream().forEach((move) -> {
+            result.add(new TripleImpl(move.id, 
+                    DCTERMS.date, 
+                    new TypedLiteralImpl(dateFormat.format(move.date), XSD.date)));
+            result.add(new TripleImpl(move.id, 
+                    Ontology.TO_LOCATION, 
+                    move.to));
+            result.add(new TripleImpl(move.id, 
+                    Ontology.FROM_LOCATION, 
+                    move.from));    
+        });       
         return result;
     }
     

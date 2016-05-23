@@ -5,14 +5,24 @@
  */
 package com.zazuko.blv.outbreak.tools;
 
+import java.util.Date;
 import org.apache.clerezza.commons.rdf.IRI;
 
 /**
  *
  * @author user
  */
-public class Ontology {
-    public static final IRI FROM_LOCATION = new IRI("http://schema.org/fromLocation");
-    public static final IRI TO_LOCATION = new IRI("http://schema.org/toLocation");
-            
+public class Move {
+    public final IRI from, to;
+    public final Date date;
+    public final IRI id;
+
+    public Move(IRI id, IRI from, IRI to, Date date) {
+        this.id = id;
+        this.from = from;
+        this.to = to;
+        this.date = date;
+    }
+    
+    
 }
