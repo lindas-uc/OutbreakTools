@@ -18,6 +18,9 @@ public class Move {
     public final IRI id;
 
     public Move(IRI id, IRI from, IRI to, Date date) {
+        if ((id == null) || (from == null) || (to == null) || (date == null)) {
+            throw new IllegalArgumentException("No argument may be null");
+        }
         this.id = id;
         this.from = from;
         this.to = to;
