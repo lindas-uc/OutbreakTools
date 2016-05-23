@@ -22,12 +22,12 @@ app.service('map', function() {
 
             var map = olMap.getMap();
 
-            dataEdit.loadCSVData(function (data) {
+            dataEditTestData.loadCSVData(function (data) {
                 $scope.originalData = data;
 
-                data = dataEdit.convertCSVDataAndCreateBounds(data);
+                data = dataEditTestData.convertCSVDataAndCreateBounds(data);
                 $scope.data = data;
-                bounds = dataEdit.getBounds();
+                bounds = dataEditTestData.getBounds();
 
                 var overlay = new OpenLayers.Layer.Vector("movements");
                 map.addLayer(overlay);

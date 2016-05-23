@@ -398,12 +398,48 @@
 <!--Scripts for Services-->
 <script type="text/javascript" src="js/mapService/mapService.js"></script>
 <script type="text/javascript" src="js/mapService/olMap.js"></script>
-<script type="text/javascript" src="js/mapService/dataEdit.js"></script>
+<script type="text/javascript" src="js/mapService/dataEditTestData.js"></script>
 <script type="text/javascript" src="js/mapService/d3Visualization.js"></script>
 <script type="text/javascript" src="js/mapService/WMTSLayers.js"></script>
 <script type="text/javascript" src="js/otherServicesAndDirectives/sparqlService.js"></script>
 <script type="text/javascript" src="js/validatorService/validatorService.js"></script>
 <script type="text/javascript" src="js/otherServicesAndDirectives/exportToCSVDirective.js"></script>
+<script type="text/javascript" src="js/dataService/javaConnector.js"></script>
+<script type="text/javascript" src="js/dataService/idToURIConverter.js"></script>
+<script type="text/javascript" src="js/dataService/businessObject.js"></script>
+<script type="text/javascript" src="js/dataService/dataInitialisator.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<!--Scripts for rdf-ext.js-->
+<script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf-ext.js"></script>
+<script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf2h.js"></script>
+<script src="//cdn.rawgit.com/retog/rdf-parser-n3-browser/v0.3.0b/dist/n3-parser.js"></script>
+<script src="//cdn.rawgit.com/retog/rdf-store-ldp-browser/v0.3.0-rc2f/dist/rdf-store-ldp.js"></script>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script id="matchers" type="text/turtle">
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
+    @prefix blv: <http://blv.admin.ch/>.
+    [ a r2h:Matcher ;
+      r2h:triplePattern [
+        r2h:subject r2h:this;
+        r2h:predicate blv:hasPathTo;
+        r2h:subject r2h:this;
+      ];
+      r2h:template [
+        r2h:context r2h:Default;
+        r2h:mustache """
+        <ul>
+            {{#blv:hasPathTo}}
+                <li>Has path to: {{.}}</li>
+            {{/blv:hasPathTo}}
+        </ul>
+        """
+      ]
+    ].
+
+</script>
     
 <!-- Scripts for Tester Object -->
 <script type="text/javascript" src="js/testerObject.js"></script>

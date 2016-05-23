@@ -30,6 +30,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.showProtectionZone = false;
     $scope.showMonitoringZone = false;
     $scope.showLayerPossibilities = false;
+    $scope.startBusiness = [];
     
     $scope.addEmptyTieIds = function() {
         $scope.tieIds.push({id:null,valid:true});
@@ -115,13 +116,11 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
             return null;
         }
 
+        for (var i = 0; i < $scope.tieIds.length; i++) {
+            $scope.startBusiness.push(new Business($scope.tieIds[i].id, idToURIConverter.convertIdToURI($scope.tieIds[i].id)));
+        }
 
-        /*
-        sparql.addTieIds($scope.tieIds);
-
-        //execute sparql query
-        var result = sparql.executeSparql();
-        console.log(result);*/
+        dataInitialisator.initializeData($scope);
 
         $scope.mapVisible = true;
         //add timeout. otherwise svg have not the right size

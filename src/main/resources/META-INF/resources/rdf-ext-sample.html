@@ -35,12 +35,13 @@
             var store = new LdpStore();
             var matchersTtl = $("#matchers").text();
             N3Parser.parse(matchersTtl, null, window.location.toString()).then(function (matchers) {
+                console.log(matchers);
                 var municipalityURI = "http://foodsafety.data.admin.ch/business/51122";
                 store.match(
                         null,
                         null,
                         null,
-                        "/trace?startingSite="+municipalityURI+"&startDate=2012-01-01&endDate=2012-02-01",
+                        "/trace?startingSite="+municipalityURI+"&startDate=2012-01-01&endDate=2012-01-02",
                         function (error, data) {
                             console.log(data.toString());
                             alert(data.toString());

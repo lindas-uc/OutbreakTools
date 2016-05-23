@@ -1,5 +1,5 @@
-var dataEdit;
-dataEdit = {
+var dataEditTestData;
+dataEditTestData = {
 
     bounds: {},
 
