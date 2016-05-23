@@ -116,7 +116,7 @@ public class ContactTracer {
                 + "PREFIX schema:     <http://schema.org/>\n"
                 + "PREFIX dct:     <http://purl.org/dc/elements/1.1/>\n"
                 + "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>\n"
-                + "SELECT DISTINCT ?T FROM <http://test.lindas-data.ch/resource/animaltransports> "
+                + "SELECT DISTINCT ?M ?T FROM <http://test.lindas-data.ch/resource/animaltransports> "
                 + "WHERE { "
                         + "   ?M schema:toLocation<"+startingSite.getUnicodeString()+"> ."
                         + "   ?M schema:fromLocation ?T."

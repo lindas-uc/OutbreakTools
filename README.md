@@ -24,6 +24,10 @@ There is currently only a partial HTTP API, also the classes `ContactTracer` and
 the moment to provide the input data for the computation their Main methods
 must be adapted.
 
-The following is an example for the usage of the HTTP interface:
+The following is an example for the usage of the HTTP interface for contact tracing (forward tracing):
 
  * http://localhost:5000/trace?startingSite=http://foodsafety.data.admin.ch/business/51122&startDate=2012-01-01&endDate=2012-02-01
+
+The following is to trace backwards and find central hot-spots:
+
+ * localhost:5000/centrality?startingSite=http://foodsafety.data.admin.ch/business/5112&startingSite=http://foodsafety.data.admin.ch/business/51122&startDate=2012-02-01&endDate=2012-01-20
