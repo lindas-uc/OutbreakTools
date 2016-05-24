@@ -12,22 +12,37 @@
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
     @prefix blv: <http://blv.admin.ch/>.
+    @prefix schema: <http://schema.org/>.
     [ a r2h:Matcher ;
       r2h:triplePattern [
-        r2h:subject r2h:this;
-        r2h:predicate blv:hasPathTo;
+        r2h:predicate schema:fromLocation;
+        r2h:object r2h:this;
       ];
       r2h:template [
         r2h:context r2h:Default;
         r2h:mustache """
-        <ul>
-            {{#blv:hasPathTo}}
-                <li>Has path to: {{.}}</li>
-            {{/blv:hasPathTo}}
-        </ul>
+            Site: {{{.}}}
+            <ul>
+            {{#schema:fromLocation<-}}
+                <li>has move: {{.}}<br/>
+                to {{{:render schema:toLocation}}}</li>
+            {{/schema:fromLocation<-}}
+            </ul>
+        """
+      ]
+    ] r2h:before [ a r2h:Matcher ;
+      r2h:triplePattern [
+        r2h:predicate schema:toLocation;
+        r2h:object r2h:this;
+      ];
+      r2h:template [
+        r2h:context r2h:Default;
+        r2h:mustache """
+        site: {{{.}}} (and no further)
         """
       ]
     ].
+    
 
         </script>
     <script>
