@@ -6,6 +6,7 @@ function  Business(id, URI) {
     this.getCoordinates = function(callback) {
         var coordinates = this.coordinates;
         if (this.coordinates == null) {
+            var obj = this;
 
             $.ajax({
                 url: "http://lindas.zazuko.com/blazegraph/namespace/swisstopo/sparql",
@@ -21,8 +22,8 @@ function  Business(id, URI) {
                 data = data["results"]["bindings"][0]["wtk"]["value"];
                 data =  data.substring(data.search("POINT") + 8, data.length-2);
                 data = data.split(" ");
-                coordinates = data;
-                callback(coordinates);
+                obj.coordinates = data;
+                callback(obj.coordinates);
             });
 
         } else {

@@ -15,21 +15,13 @@ javaConnector = {
         }
         console.log(businessString);
 
-        $(function() {
-            var store = new LdpStore();
-            var matchersTtl = $("#matchers").text();
-            N3Parser.parse(matchersTtl, null, window.location.toString()).then(function (matchers) {
-                store.match(
-                    null,
-                    null,
-                    null,
-                    "/trace?"+businessString+"startDate="+startDate+"&endDate=" + endDate,
-                    function (error, data) {
-                        callback(data);
-                        var rendered = new RDF2h(matchers).render(data, rdf.createNamedNode(municipalityURI));
-                        //$("#result").html(rendered);
-                    });
-            });
+        $.ajax({
+            type: "GET",
+         //   dataType: "json",
+            url: "/trace?"+businessString+"startDate="+startDate+"&endDate="+endDate,
+            success: function(data){
+                callback(data);
+            }
         });
     }        
 };

@@ -7,6 +7,7 @@
     <script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf2h.js"></script>
     <script src="//cdn.rawgit.com/retog/rdf-parser-n3-browser/v0.3.0b/dist/n3-parser.js"></script>
     <script src="//cdn.rawgit.com/retog/rdf-store-ldp-browser/v0.3.0-rc2f/dist/rdf-store-ldp.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
     <script id="matchers" type="text/turtle">
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -46,25 +47,14 @@
 
         </script>
     <script>
-        $(function() {
-            var store = new LdpStore();
-            var matchersTtl = $("#matchers").text();
-            N3Parser.parse(matchersTtl, null, window.location.toString()).then(function (matchers) {
-                console.log(matchers);
-                var municipalityURI = "http://foodsafety.data.admin.ch/business/51122";
-                store.match(
-                        null,
-                        null,
-                        null,
-                        "/trace?startingSite="+municipalityURI+"&startDate=2012-01-01&endDate=2012-01-02",
-                        function (error, data) {
-                            console.log(data.toString());
-                            alert(data.toString());
-                            var rendered = new RDF2h(matchers).render(data, rdf.createNamedNode(municipalityURI));
-                            $("#result").html(rendered);
-                        });
-            });
-        });
+        $.ajax({
+            type: "GET",
+            url: "/trace?startingSite=http://foodsafety.data.admin.ch/business/51122&startDate=2012-01-01&endDate=2012-02-01",
+            success: function(data){
+                console.log(data);
+            }
+        })
+
     </script>
 </head>
 <body>
