@@ -14,6 +14,7 @@ javaConnector = {
             businessString += "startingSite="+$scope.startBusiness[i].URI+"&";
         }
         console.log(businessString);
+        console.log("/trace?"+businessString+"startDate="+startDate+"&endDate="+endDate);
 
         $.ajax({
             type: "GET",
@@ -23,5 +24,17 @@ javaConnector = {
                 callback(data);
             }
         });
-    }        
+    },
+
+    startBackwardsTracing: function (callback) {
+
+        $.ajax({
+            type: "GET",
+            //   dataType: "json",
+            url: "/centrality?startingSite=http://foodsafety.data.admin.ch/business/5112&startingSite=http://foodsafety.data.admin.ch/business/51122&startDate=2012-02-01&endDate=2012-01-20",
+            success: function(data){
+                callback(data);
+            }
+        });
+    }
 };

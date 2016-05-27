@@ -57,6 +57,15 @@ var test = {
         console.log(business2);
     },
 
+    testAddMunicipalitiy: function() {
+        var business1 = new Business(51122, idToURIConverter.convertIdToURI(51122));
+        var business2 = new Business(51396, idToURIConverter.convertIdToURI(51396));
+
+        business1.getMunicipality(function (muni) {
+            console.log(muni)
+        });
+    },
+
     testAddCoordinates: function () {
         var business1 = new Business(51122, idToURIConverter.convertIdToURI(51122));
         var business2 = new Business(51396, idToURIConverter.convertIdToURI(51396));
@@ -102,6 +111,13 @@ var test = {
             app.initializeVisualisation();
             app.$apply();
         },100);
+
+    },
+
+    testBackwardsTracing: function() {
+       javaConnector.startBackwardsTracing(function(data) {
+           console.log(data);
+       })
 
     }
 };
