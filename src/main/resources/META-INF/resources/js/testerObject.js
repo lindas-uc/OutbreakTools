@@ -3,8 +3,8 @@ var test = {
         var element = $("#lindasMainContainer");
         var app = angular.element(element).scope();
         app.startDate = "01/01/2012";
-        app.endDate = "29/04/2013";
-        app.tieIds = [{id:2000,valid:true},{id:3000,valid:true},{id:5000,valid:true}];
+        app.endDate = "05/01/2012";
+        app.tieIds = [{id:51122,valid:true}];
 
         //start watch cycle manaual
         app.$apply();

@@ -64,7 +64,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
             return null;
 
         $scope.data = $scope.originalData.filter(function (d) {
-            var date = d.Date.getTime();
+            var date = d.date.getTime();
             if ($scope.hideSlaughterhouse)
                 return (date > $scope.filterStartDateMilliseconds && date < $scope.filterEndDateMilliseconds
                 && d.Betriebsart.localeCompare("Schlachthof") != 0);
@@ -120,13 +120,16 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
             $scope.startBusiness.push(new Business($scope.tieIds[i].id, idToURIConverter.convertIdToURI($scope.tieIds[i].id)));
         }
 
+        $scope.mapVisible = true;
+
         dataInitialisator.initializeData($scope, function(moveArray) {
             $scope.data = moveArray;
-            $scope.mapVisible = true;
-            //add timeout. otherwise svg have not the right size
+            $scope.originalData = moveArray;
+            console.log($scope.data);
             $timeout(function() {
                 map.initializeMap($scope.startDateMilliseconds, $scope.endDateMilliseconds, $scope);
             },50);
+            //add timeout. otherwise svg have not the right size
         });
     };
 

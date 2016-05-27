@@ -5,10 +5,10 @@
 var helpers;
 helpers = {
     getBounds: function(data) {
-        var bounds = d3.geo.bounds();
+        var bounds = new OpenLayers.Bounds();
         data.forEach(function (d) {
-            bounds.extend(d.fromBusiness.coordinates);
-            bounds.extend(d.toBusiness.coordinates);
+            bounds.extend(d.fromBusiness.openLayersLonLat);
+            bounds.extend(d.toBusiness.openLayersLonLat);
         });
         return bounds;
     }

@@ -106,8 +106,8 @@ d3Vis = {
         //filter Data with start- and enddate in scope
         data = $scope.data;
 
-        var fillMin = d3.min(data, function(d) {return d.Value_From});
-        var fillMax = d3.max(data, function(d) {return d.Value_From});
+        var fillMin = d3.min(data, function(d) {return d.value});
+        var fillMax = d3.max(data, function(d) {return d.value});
 
         var fillScale = function(value) {
             return "red";
@@ -115,8 +115,8 @@ d3Vis = {
             return "rgb("+col+","+col+","+col+")";
         };
 
-        var numberAnimalsMin = d3.min(data, function(d) {return d.Number_Animals});
-        var numberAnimalsMax = d3.max(data, function(d) {return d.Number_Animals});
+        var numberAnimalsMin = d3.min(data, function(d) {return d.numberAnimals});
+        var numberAnimalsMax = d3.max(data, function(d) {return d.numberAnimals});
 
         var lineWidthScale = d3.scale.linear()
             .domain([numberAnimalsMin,numberAnimalsMax])
@@ -147,7 +147,7 @@ d3Vis = {
         d3Vis.circlesToFarm.enter()
             .append("circle")
             .attr("class", "circleToFarm")
-            //.attr("fill", function(d) {return fillScale(d.Value_From)})
+            //.attr("fill", function(d) {return fillScale(d.value)})
             .attr("r", d3Vis.r)
             .on("mouseenter", function (d) {
                 tip.show(d);
@@ -159,7 +159,7 @@ d3Vis = {
         d3Vis.pathsToFarm.enter()
             .append("path")
             .attr("class", "pathToFarm")
-            //.attr("fill", function(d) {return fillScale(d.Value_From)})
+            //.attr("fill", function(d) {return fillScale(d.value)})
             .on("mouseenter", function (d) {
                 tip.show(d);
             })
@@ -180,12 +180,12 @@ d3Vis = {
             .append("circle")
             .attr("r", d3Vis.r)
             .attr("class", "circleFromFarm");
-           // .attr("fill", function(d) {return fillScale(d.Value_From)});
+           // .attr("fill", function(d) {return fillScale(d.value)});
 
         d3Vis.pathsFromFarm.enter()
             .append("path")
             .attr("class", "path");
-          //  .attr("fill", function(d) {return fillScale(d.Value_From)});
+          //  .attr("fill", function(d) {return fillScale(d.value)});
 
         d3Vis.circlesFromFarm.exit().remove();
         d3Vis.pathsFromFarm.exit().remove();
@@ -197,7 +197,7 @@ d3Vis = {
             .append("line")
             .attr("stroke-width", function(d) {
                 if ($scope.individualArrowWidth)
-                    return lineWidthScale(d.Number_Animals);
+                    return lineWidthScale(d.numberAnimals);
                 else
                     return 2;
             })
@@ -214,7 +214,7 @@ d3Vis = {
             .transition()
             .attr("stroke-width", function(d) {
                 if ($scope.individualArrowWidth)
-                    return lineWidthScale(d.Number_Animals);
+                    return lineWidthScale(d.numberAnimals);
                 else
                     return 2;
         });
@@ -242,8 +242,8 @@ d3Vis = {
         var map = d3Vis.map;
         var bounds = d3Vis.bounds;
 
-        var bottomLeft = project(bounds[0], bounds[1]),
-            topRight = project(bounds[2], bounds[3]);
+        var bottomLeft = project(bounds.bottom, bounds.left),
+            topRight = project(bounds.top, bounds.right);
 
         /*
         d3.json("js/mapService/boundaries2.json",function(collection) {
@@ -286,10 +286,10 @@ d3Vis = {
 
 
         d3Vis.circlesToFarm.attr("cx", function (d) {
-                return project(d.B_lon, d.B_lat)[0]
+                return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
             })
             .attr("cy", function (d) {
-                return project(d.B_lon, d.B_lat)[1]
+                return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
             });
 
         d3Vis.circlesToFarm.transition().attr("r", d3Vis.r);
@@ -304,30 +304,30 @@ d3Vis = {
             });
 
         d3Vis.circlesFromFarm.attr("cx", function (d) {
-                return project(d.A_lon, d.A_lat)[0]
+                return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0]
             })
             .attr("cy", function (d) {
-                return project(d.A_lon, d.A_lat)[1]
+                return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[1]
             });
 
         d3Vis.arrows.attr("x1", function (d) {
-                return project(d.A_lon, d.A_lat)[0]
+                return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0]
             })
             .attr("y1", function (d) {
-                return project(d.A_lon, d.A_lat)[1]
+                return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[1]
             })
             .attr("x2", function (d) {
-                return newXPositionAtCircleRadius(project(d.A_lon, d.A_lat)[0],
-                    project(d.A_lon, d.A_lat)[1],
-                    project(d.B_lon, d.B_lat)[0],
-                    project(d.B_lon, d.B_lat)[1],
+                return newXPositionAtCircleRadius(project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0],
+                    project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[1],
+                    project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0],
+                    project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1],
                     (r + markerHeight + markerMargin));
             })
             .attr("y2", function (d) {
-                return newYPositionAtCircleRadius(project(d.A_lon, d.A_lat)[0],
-                    project(d.A_lon, d.A_lat)[1],
-                    project(d.B_lon, d.B_lat)[0],
-                    project(d.B_lon, d.B_lat)[1],
+                return newYPositionAtCircleRadius(project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0],
+                    project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[1],
+                    project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0],
+                    project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1],
                     (r + markerHeight + markerMargin));
             });
 
@@ -343,18 +343,18 @@ d3Vis = {
                 .append("circle")
                 .attr("class", "monitoringZone")
                 .attr("cx", function (d) {
-                    return project(d.B_lon, d.B_lat)[0]
+                    return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
                 })
                 .attr("cy", function (d) {
-                    return project(d.B_lon, d.B_lat)[1]
+                    return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
                 })
                 .attr("r", rMon);
 
             monitoringZones.attr("cx", function (d) {
-                return project(d.B_lon, d.B_lat)[0]
+                return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
             })
                 .attr("cy", function (d) {
-                    return project(d.B_lon, d.B_lat)[1]
+                    return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
                 })
                 .attr("r", rMon);
 
@@ -370,18 +370,18 @@ d3Vis = {
                     .append("circle")
                     .attr("class", "protectionZone")
                     .attr("cx", function (d) {
-                        return project(d.B_lon, d.B_lat)[0]
+                        return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
                     })
                     .attr("cy", function (d) {
-                        return project(d.B_lon, d.B_lat)[1]
+                        return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
                     })
                     .attr("r", rProt);
 
                 protectionZones.attr("cx", function (d) {
-                    return project(d.B_lon, d.B_lat)[0]
+                    return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
                 })
                     .attr("cy", function (d) {
-                        return project(d.B_lon, d.B_lat)[1]
+                        return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
                     })
                     .attr("r", rProt);
 
@@ -423,8 +423,8 @@ d3Vis = {
             //a = length of triangle side
             var a = 30;
             var h = Math.round(Math.sqrt(a*a/2));
-            var x = project(d.B_lon, d.B_lat)[0];
-            var y = project(d.B_lon, d.B_lat)[1];
+            var x = project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0];
+            var y = project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1];
 
             var path = "M"+(x-a/2)+" "+(y+h/2)+" L"+(x+a/2)+" "+(y+h/2)+" L"+x+" "+(y-h/2)+" Z";
             return path;
@@ -432,8 +432,8 @@ d3Vis = {
 
         function calculateRectanglePath(d) {
             var a = 20;
-            var x = project(d.B_lon, d.B_lat)[0];
-            var y = project(d.B_lon, d.B_lat)[1];
+            var x = project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0];
+            var y = project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1];
 
             var path = "M"+(x-a/2)+" "+(y+a/2)+" L"+(x+a/2)+" "+(y+a/2)+" L"+(x+a/2)+" "+(y-a/2)+" L"+(x-a/2)+" "+(y-a/2) +" Z";
             return path;
@@ -441,8 +441,8 @@ d3Vis = {
 
         function calculateRectangleRotatedPath(d) {
             var a = 30;
-            var x = project(d.B_lon, d.B_lat)[0];
-            var y = project(d.B_lon, d.B_lat)[1];
+            var x = project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0];
+            var y = project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1];
 
             var path = "M"+x+" "+(y+a/2)+" L"+(x+a/2)+" "+y+" L"+x+" "+(y-a/2)+" L"+(x-a/2)+" "+y +" Z";
             return path;
@@ -474,7 +474,7 @@ d3Vis = {
         var element = $("#lindasMainContainer");
         var $scope = angular.element(element).scope();
 
-        var a = [parseInt($scope.data[0].A_lon), parseInt($scope.data[0].A_lat)];
+        var a = [parseInt($scope.data[0].fromBusiness.coordinates[0]), parseInt($scope.data[0].fromBusiness.coordinates[1])];
         var b = [a[0] + 10000, a[1]];
 
         var pointA = d3Vis.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(a));
@@ -498,7 +498,6 @@ d3Vis = {
                     $scope.filterStartDateMilliseconds = value[0];
                     $scope.filterEndDateMilliseconds = value[1];
                 });
-                d3Vis.update($scope);
             });
 
         d3.select('#slider').call(d3Vis.slider);

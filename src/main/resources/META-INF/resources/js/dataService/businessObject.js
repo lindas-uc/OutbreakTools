@@ -4,6 +4,7 @@ function  Business(id, URI) {
     this.coordinates = null;
     this.municipality = null;
     this.name = "randomName";
+    this.openLayersLonLat = {};
 
     this.getMunicipality = function(callback) {
         if (this.municipality == null) {
@@ -66,7 +67,8 @@ function  Business(id, URI) {
         var randX = getRandomArbitrary(486278,833852);
         var randY = getRandomArbitrary(77154,293176);
 
-        this.coordinates = new OpenLayers.LonLat(randX, randY);
+        this.coordinates = [randX, randY];
+        this.openLayersLonLat = new OpenLayers.LonLat(randX, randY);
         callback([randX, randY]);
 
     }

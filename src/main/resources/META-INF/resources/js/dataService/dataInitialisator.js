@@ -12,8 +12,6 @@ dataInitialisator = {
     splitData: function(data, callback) {
         console.log(data);
         var data = data.split(" .");
-        console.log(data);
-        
         var moveArray = [];
 
         for (var i = 0 ; i < data.length; i++) {
@@ -65,9 +63,8 @@ dataInitialisator = {
 
         var interval = setInterval(function() {
             if (moveArray[moveArray.length - 1].toBusiness.coordinates != null) {
-                console.log(moveArray);
-                callback(moveArray);
                 clearInterval(interval);
+                callback(moveArray);
             }
         },10)
 
