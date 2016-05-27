@@ -3,4 +3,5 @@ function  Move(id, fromBusiness, toBusiness, date) {
     this.fromBusiness = fromBusiness;
     this.toBusiness = toBusiness;
     this.date = date;
+    this.businessType = "Schlachthof";
 }

@@ -1,15 +1,15 @@
 var dataInitialisator;
 dataInitialisator = {
     
-    initializeData: function($scope) {
+    initializeData: function($scope, callback) {
         console.log($scope.startDate);
         
         javaConnector.startJavaApplication($scope, function(data) {
-            dataInitialisator.splitData(data);
+            dataInitialisator.splitData(data, callback);
         });
     },
 
-    splitData: function(data) {
+    splitData: function(data, callback) {
         console.log(data);
         var data = data.split(" .");
         console.log(data);
@@ -28,7 +28,7 @@ dataInitialisator = {
                 var a = d.indexOf("date");
                 var b = d.indexOf('"', a) + 1;
                 var c = d.indexOf('"', b+1);
-                return d.substring(b, c);
+                return moment(d.substring(b, c), "YYYY-MM-DD").toDate();
             }
 
             function parseFromBusiness (d) {
@@ -66,11 +66,10 @@ dataInitialisator = {
         var interval = setInterval(function() {
             if (moveArray[moveArray.length - 1].toBusiness.coordinates != null) {
                 console.log(moveArray);
+                callback(moveArray);
                 clearInterval(interval);
             }
         },10)
-        
-
 
     }
     

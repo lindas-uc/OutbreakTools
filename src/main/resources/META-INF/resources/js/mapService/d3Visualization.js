@@ -37,14 +37,14 @@ d3Vis = {
         .attr('class', 'd3-tip')
         .offset([-10, 0])
         .html(function (d) {
-            return "Name: " + d.B_Name + "<br>Date: " + moment(d.Date).format('DD.MM.YYYY') + "<br>Betriebsart: "+d.Betriebsart +"<br>weitere Attribute";
+            return "Name: " + d.toBusiness.name + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>Betriebsart: "+d.businessType +"<br>weitere Attribute";
         }),
 
     tip_connections: d3.tip()
         .attr('class', 'd3-tip')
         .offset([-10, 0])
         .html(function (d) {
-            return "From: " + d.A_Name + "<br>To: " + d.B_Name + "<br>Date: " + moment(d.Date).format('DD.MM.YYYY') + "<br>weitere Attribute";
+            return "From: " + d.fromBusiness.name + "<br>To: " + d.toBusiness.name + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>weitere Attribute";
         }),
 
 
@@ -131,7 +131,7 @@ d3Vis = {
         });
 
         function circleFilter(d) {
-            return d.Betriebsart.localeCompare("Viehmarkt") == 0 || $scope.showDifferentForms == false;
+            return d.businessType.localeCompare("Viehmarkt") == 0 || $scope.showDifferentForms == false;
         }
 
         //remove all paths. Change maybe if performance is bad
@@ -276,11 +276,11 @@ d3Vis = {
 
 
         d3Vis.pathsToFarm.attr("d", function (d) {
-            if (d.Betriebsart.localeCompare("Schlachthof") == 0)
+            if (d.businessType.localeCompare("Schlachthof") == 0)
                 return calculateTrianglePath(d);
-            else if (d.Betriebsart.localeCompare("Alpung") == 0)
+            else if (d.businessType.localeCompare("Alpung") == 0)
                 return calculateRectanglePath(d);
-            else if (d.Betriebsart.localeCompare("Tierhaltung") == 0)
+            else if (d.businessType.localeCompare("Tierhaltung") == 0)
                 return calculateRectangleRotatedPath(d);
         });
 
@@ -295,11 +295,11 @@ d3Vis = {
         d3Vis.circlesToFarm.transition().attr("r", d3Vis.r);
 
         d3Vis.pathsFromFarm.attr("d", function (d) {
-            if (d.Betriebsart.localeCompare("Schlachthof") == 0)
+            if (d.businessType.localeCompare("Schlachthof") == 0)
                 return calculateTrianglePath(d);
-            else if (d.Betriebsart.localeCompare("Alpung") == 0)
+            else if (d.businessType.localeCompare("Alpung") == 0)
                 return calculateRectanglePath(d);
-            else if (d.Betriebsart.localeCompare("Tierhaltung") == 0)
+            else if (d.businessType.localeCompare("Tierhaltung") == 0)
                 return calculateRectangleRotatedPath(d);
             });
 

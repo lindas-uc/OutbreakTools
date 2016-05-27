@@ -120,14 +120,14 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
             $scope.startBusiness.push(new Business($scope.tieIds[i].id, idToURIConverter.convertIdToURI($scope.tieIds[i].id)));
         }
 
-        dataInitialisator.initializeData($scope);
-
-        $scope.mapVisible = true;
-        //add timeout. otherwise svg have not the right size
-        $timeout(function() {
-            map.initializeMap($scope.startDateMilliseconds, $scope.endDateMilliseconds, $scope);
-        },50);
-
+        dataInitialisator.initializeData($scope, function(moveArray) {
+            $scope.data = moveArray;
+            $scope.mapVisible = true;
+            //add timeout. otherwise svg have not the right size
+            $timeout(function() {
+                map.initializeMap($scope.startDateMilliseconds, $scope.endDateMilliseconds, $scope);
+            },50);
+        });
     };
 
     $scope.centerMap = function() {

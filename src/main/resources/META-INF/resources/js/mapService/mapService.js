@@ -12,11 +12,11 @@ app.service('map', function() {
         init();
 
         function init() {
-
-
+            
             olMap.preconfigureOpenLayers();
             olMap.createMap();
             olMap.addWMTSLayer("wmts_layer2",WMTSLayers.wmts_layer2.wmts_layer_options);
+            console.log(olMap.layer);
             olMap.zoomInAndSetCenter();
             olMap.initializeAllLayersButtons();
 
@@ -25,9 +25,7 @@ app.service('map', function() {
             dataEditTestData.loadCSVData(function (data) {
                 $scope.originalData = data;
 
-                data = dataEditTestData.convertCSVDataAndCreateBounds(data);
-                $scope.data = data;
-                bounds = dataEditTestData.getBounds();
+                var bounds = helpers.getBounds(data);
 
                 var overlay = new OpenLayers.Layer.Vector("movements");
                 map.addLayer(overlay);

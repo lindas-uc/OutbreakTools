@@ -3,6 +3,7 @@ function  Business(id, URI) {
     this.URI = URI;
     this.coordinates = null;
     this.municipality = null;
+    this.name = "randomName";
 
     this.getMunicipality = function(callback) {
         if (this.municipality == null) {
@@ -65,7 +66,7 @@ function  Business(id, URI) {
         var randX = getRandomArbitrary(486278,833852);
         var randY = getRandomArbitrary(77154,293176);
 
-        this.coordinates = [randX, randY];
+        this.coordinates = new OpenLayers.LonLat(randX, randY);
         callback([randX, randY]);
 
     }
