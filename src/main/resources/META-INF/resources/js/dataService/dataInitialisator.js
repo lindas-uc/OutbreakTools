@@ -3,10 +3,16 @@ dataInitialisator = {
     
     initializeData: function($scope, callback) {
         console.log($scope.startDate);
-        
-        javaConnector.startJavaApplication($scope, function(data) {
-            dataInitialisator.splitData(data, callback);
-        });
+
+        if ($scope.forwardTracing) {
+            javaConnector.startJavaApplicationForward($scope, function (data) {
+                dataInitialisator.splitData(data, callback);
+            });
+        } else {
+            javaConnector.startJavaApplicationBackward($scope, function(data) {
+                dataInitialisator.splitData(data, callback);
+            });
+        }
     },
 
     splitData: function(data, callback) {
@@ -52,8 +58,6 @@ dataInitialisator = {
                 business.getBusinessType(function() {});
                 return business;
             }
-
-
 
             moveArray.push(new Move(
                 parseId(data[i]),

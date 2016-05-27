@@ -367,6 +367,7 @@ d3Vis = {
         /* DRAW PROTECTION ZONE */
 
         if (d3Vis.calculateIfMonitoringZoneNeeded()) {
+
             var rMon = Math.round(d3Vis.calculateTenKmInPixel() / 2);
 
             var monitoringZones = d3Vis.g4.selectAll(".monitoringZone")

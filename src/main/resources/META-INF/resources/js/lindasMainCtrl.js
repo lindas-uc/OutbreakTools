@@ -31,6 +31,8 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.showMonitoringZone = false;
     $scope.showLayerPossibilities = false;
     $scope.startBusiness = [];
+
+    $scope.forwardTracing = true;
     
     $scope.addEmptyTieIds = function() {
         $scope.tieIds.push({id:null,valid:true});
@@ -90,7 +92,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         $scope.endDateMilliseconds = moment($scope.endDate,"DD/MM/YYYY").toDate().getTime();
     });
 
-    $scope.initializeVisualisation = function() {
+    $scope.initializeVisualisation = function(forwardTracing) {
         console.log("start Visualization");
         $scope.appStarted = true;
 
@@ -152,5 +154,9 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.toggleLayersVisibility = function() {
         $scope.showLayerPossibilities ? $scope.showLayerPossibilities = false : $scope.showLayerPossibilities = true;
         console.log($scope.showLayerPossibilities);
-    }
+    };
+
+    $scope.changeForwardTracing = function() {
+        ($scope.forwardTracing) ? $scope.forwardTracing = false : $scope.forwardTracing = true;
+    };
 });

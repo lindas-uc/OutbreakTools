@@ -2,9 +2,37 @@ var test = {
     testInitializeVisualisation: function() {
         var element = $("#lindasMainContainer");
         var app = angular.element(element).scope();
+        (app.forwardTracing) ? test.testInitializeVisualisationForward() : test.testInitializeVisualisationBackward();
+    },
+
+
+    testInitializeVisualisationForward: function() {
+        console.log("forward");
+        var element = $("#lindasMainContainer");
+        var app = angular.element(element).scope();
         app.startDate = "01/01/2012";
         app.endDate = "05/01/2012";
         app.tieIds = [{id:51396,valid:true}];
+        app.forwardTracing = true;
+
+        //start watch cycle manaual
+        app.$apply();
+
+        setTimeout(function() {
+            app.initializeVisualisation();
+            app.$apply();
+        },100);
+
+    },
+
+    testInitializeVisualisationBackward: function() {
+        console.log("backward");
+        var element = $("#lindasMainContainer");
+        var app = angular.element(element).scope();
+        app.startDate = "20/01/2012";
+        app.endDate = "01/02/2012";
+        app.tieIds = [{id:5112,valid:true},{id:51122,valid:true}];
+        app.forwardTracing = false;
 
         //start watch cycle manaual
         app.$apply();
