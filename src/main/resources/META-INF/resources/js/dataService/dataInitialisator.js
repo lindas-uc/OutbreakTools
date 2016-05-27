@@ -37,6 +37,7 @@ dataInitialisator = {
 
                 var business = new Business(idToURIConverter.convertURIToId(uri), uri);
                 business.getCoordinates(function() {});
+                business.getBusinessType(function() {});
                 return business;
             }
 
@@ -48,6 +49,7 @@ dataInitialisator = {
 
                 var business = new Business(idToURIConverter.convertURIToId(uri), uri);
                 business.getCoordinates(function() {});
+                business.getBusinessType(function() {});
                 return business;
             }
 

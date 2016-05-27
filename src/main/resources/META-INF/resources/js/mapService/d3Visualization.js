@@ -33,11 +33,18 @@ d3Vis = {
 
     //initialize tooltips
     //DO THIS FOR CONNECTIONS AND FROMFARM TO
-    tip: d3.tip()
+    tip_to_location: d3.tip()
         .attr('class', 'd3-tip')
         .offset([-10, 0])
         .html(function (d) {
-            return "Name: " + d.toBusiness.name + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>Betriebsart: "+d.businessType +"<br>weitere Attribute";
+            return "Name: " + d.toBusiness.name + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>Betriebsart: "+d.toBusiness.businessType +"<br>weitere Attribute";
+        }),
+
+    tip_from_location: d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function (d) {
+            return "Name: " + d.toBusiness.name + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>Betriebsart: "+d.fromBusiness.businessType +"<br>weitere Attribute";
         }),
 
     tip_connections: d3.tip()
@@ -100,7 +107,8 @@ d3Vis = {
                 .attr("d", "M2,2 L2,11 L10,6 L2,2");
         }
 
-        var tip = d3Vis.tip;
+        var tip_from_location = d3Vis.tip_from_location;
+        var tip_to_location = d3Vis.tip_to_location;
         var tip_connections = d3Vis.tip_connections;
 
         //filter Data with start- and enddate in scope
@@ -120,18 +128,26 @@ d3Vis = {
 
         var lineWidthScale = d3.scale.linear()
             .domain([numberAnimalsMin,numberAnimalsMax])
-            .range([1.5,2]);
+            .range([1.5,5]);
 
-        var circleData = data.filter(function(d) {
-            return circleFilter(d);
+        var circleDataToFarm = data.filter(function(d) {
+            return circleFilter(d.toBusiness);
         });
 
-        var pathData = data.filter(function(d) {
-            return !(circleFilter(d));
+        var pathDataToFarm = data.filter(function(d) {
+            return !(circleFilter(d.toBusiness));
         });
 
-        function circleFilter(d) {
-            return d.businessType.localeCompare("Viehmarkt") == 0 || $scope.showDifferentForms == false;
+        var circleDataFromFarm = data.filter(function(d) {
+            return circleFilter(d.fromBusiness);
+        });
+
+        var pathDataFromFarm = data.filter(function(d) {
+            return !(circleFilter(d.fromBusiness));
+        });
+
+        function circleFilter(business) {
+            return business.businessType.localeCompare("Viehmarkt") == 0 || $scope.showDifferentForms == false;
         }
 
         //remove all paths. Change maybe if performance is bad
@@ -139,10 +155,10 @@ d3Vis = {
         d3Vis.g2.selectAll("path").remove();
 
         d3Vis.circlesToFarm = d3Vis.g.selectAll(".circleToFarm")
-            .data(circleData);
+            .data(circleDataToFarm);
 
         d3Vis.pathsToFarm = d3Vis.g.selectAll(".pathToFarm")
-            .data(pathData);
+            .data(pathDataToFarm);
 
         d3Vis.circlesToFarm.enter()
             .append("circle")
@@ -150,10 +166,10 @@ d3Vis = {
             //.attr("fill", function(d) {return fillScale(d.value)})
             .attr("r", d3Vis.r)
             .on("mouseenter", function (d) {
-                tip.show(d);
+                tip_to_location.show(d);
             })
             .on("mouseleave", function (d) {
-                tip.hide(d);
+                tip_to_location.hide(d);
             });
 
         d3Vis.pathsToFarm.enter()
@@ -161,25 +177,31 @@ d3Vis = {
             .attr("class", "pathToFarm")
             //.attr("fill", function(d) {return fillScale(d.value)})
             .on("mouseenter", function (d) {
-                tip.show(d);
+                tip_connections.show(d);
             })
             .on("mouseleave", function (d) {
-                tip.hide(d);
+                tip_connections.hide(d);
             });
 
         d3Vis.circlesToFarm.exit().remove();
         d3Vis.pathsToFarm.exit().remove();
 
         d3Vis.circlesFromFarm = d3Vis.g2.selectAll(".circleFromFarm")
-            .data(circleData);
+            .data(circleDataFromFarm);
 
         d3Vis.pathsFromFarm = d3Vis.g2.selectAll(".pathToFarm")
-            .data(pathData);
+            .data(pathDataFromFarm);
 
         d3Vis.circlesFromFarm.enter()
             .append("circle")
             .attr("r", d3Vis.r)
-            .attr("class", "circleFromFarm");
+            .attr("class", "circleFromFarm")
+            .on("mouseenter", function (d) {
+                tip_from_location.show(d);
+            })
+            .on("mouseleave", function (d) {
+                tip_from_location.hide(d);
+            });
            // .attr("fill", function(d) {return fillScale(d.value)});
 
         d3Vis.pathsFromFarm.enter()
@@ -224,10 +246,21 @@ d3Vis = {
         /* Invoke the tip in the context of your visualization */
 
         try {
-            d3Vis.arrows.call(d3Vis.tip);
+            d3Vis.arrows.call(d3Vis.tip_to_location);
         } catch (err) {
             //do nothing. nothing bad went wrong
         }
+        try {
+            d3Vis.arrows.call(d3Vis.tip_from_location);
+        } catch (err) {
+            //do nothing. nothing bad went wrong
+        }
+        try {
+            //d3Vis.arrows.call(d3Vis.tip_connections);
+        } catch (err) {
+            //do nothing. nothing bad went wrong
+        }
+
        // d3Vis.arrows.call(d3Vis.tip_connections);
 
         d3Vis.reset();
@@ -276,12 +309,12 @@ d3Vis = {
 
 
         d3Vis.pathsToFarm.attr("d", function (d) {
-            if (d.businessType.localeCompare("Schlachthof") == 0)
-                return calculateTrianglePath(d);
-            else if (d.businessType.localeCompare("Alpung") == 0)
-                return calculateRectanglePath(d);
-            else if (d.businessType.localeCompare("Tierhaltung") == 0)
-                return calculateRectangleRotatedPath(d);
+            if (d.toBusiness.businessType.localeCompare("Schlachthof") == 0)
+                return calculateTrianglePath(d.toBusiness);
+            else if (d.toBusiness.businessType.localeCompare("Alpung") == 0)
+                return calculateRectanglePath(d.toBusiness);
+            else if (d.toBusiness.businessType.localeCompare("Tierhaltung") == 0)
+                return calculateRectangleRotatedPath(d.toBusiness);
         });
 
 
@@ -295,12 +328,12 @@ d3Vis = {
         d3Vis.circlesToFarm.transition().attr("r", d3Vis.r);
 
         d3Vis.pathsFromFarm.attr("d", function (d) {
-            if (d.businessType.localeCompare("Schlachthof") == 0)
-                return calculateTrianglePath(d);
-            else if (d.businessType.localeCompare("Alpung") == 0)
-                return calculateRectanglePath(d);
-            else if (d.businessType.localeCompare("Tierhaltung") == 0)
-                return calculateRectangleRotatedPath(d);
+            if (d.fromBusiness.businessType.localeCompare("Schlachthof") == 0)
+                return calculateTrianglePath(d.fromBusiness);
+            else if (d.fromBusiness.businessType.localeCompare("Alpung") == 0)
+                return calculateRectanglePath(d.fromBusiness);
+            else if (d.fromBusiness.businessType.localeCompare("Tierhaltung") == 0)
+                return calculateRectangleRotatedPath(d.fromBusiness);
             });
 
         d3Vis.circlesFromFarm.attr("cx", function (d) {
@@ -423,8 +456,8 @@ d3Vis = {
             //a = length of triangle side
             var a = 30;
             var h = Math.round(Math.sqrt(a*a/2));
-            var x = project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0];
-            var y = project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1];
+            var x = project(d.coordinates[0], d.coordinates[1])[0];
+            var y = project(d.coordinates[0], d.coordinates[1])[1];
 
             var path = "M"+(x-a/2)+" "+(y+h/2)+" L"+(x+a/2)+" "+(y+h/2)+" L"+x+" "+(y-h/2)+" Z";
             return path;
@@ -432,8 +465,8 @@ d3Vis = {
 
         function calculateRectanglePath(d) {
             var a = 20;
-            var x = project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0];
-            var y = project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1];
+            var x = project(d.coordinates[0], d.coordinates[1])[0];
+            var y = project(d.coordinates[0], d.coordinates[1])[1];
 
             var path = "M"+(x-a/2)+" "+(y+a/2)+" L"+(x+a/2)+" "+(y+a/2)+" L"+(x+a/2)+" "+(y-a/2)+" L"+(x-a/2)+" "+(y-a/2) +" Z";
             return path;
@@ -441,8 +474,8 @@ d3Vis = {
 
         function calculateRectangleRotatedPath(d) {
             var a = 30;
-            var x = project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0];
-            var y = project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1];
+            var x = project(d.coordinates[0], d.coordinates[1])[0];
+            var y = project(d.coordinates[0], d.coordinates[1])[1];
 
             var path = "M"+x+" "+(y+a/2)+" L"+(x+a/2)+" "+y+" L"+x+" "+(y-a/2)+" L"+(x-a/2)+" "+y +" Z";
             return path;

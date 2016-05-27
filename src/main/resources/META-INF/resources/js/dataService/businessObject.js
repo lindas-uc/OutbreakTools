@@ -5,6 +5,7 @@ function  Business(id, URI) {
     this.municipality = null;
     this.name = "randomName";
     this.openLayersLonLat = {};
+    this.businessType = null;
 
     this.getMunicipality = function(callback) {
         if (this.municipality == null) {
@@ -28,7 +29,7 @@ function  Business(id, URI) {
         } else {
             callback(this.municipality);
         }
-    },
+    };
 
     this.getCoordinates = function(callback) {
         /*var coordinates = this.coordinates;
@@ -71,5 +72,45 @@ function  Business(id, URI) {
         this.openLayersLonLat = new OpenLayers.LonLat(randX, randY);
         callback([randX, randY]);
 
-    }
+    };
+
+    this.getBusinessType = function(callback) {
+        //delete the following line
+        this.businessType = translateBusinessType("loeschen");
+
+        if (this.businessType == null) {
+            var obj = this;
+
+            $.ajax({
+                url: "http://test.lindas-data.ch/sparql",
+                dataType: "json",
+                data: {
+                    query: "SELECT DISTINCT * FROM <http://test.lindas-data.ch/resource/animaltransports> WHERE "
+                    +"{"+obj.URI+" <http://blv.ch/cat> ?o}"
+                }
+            }).then(function(data) {
+
+                data = translateBusinessType(data["results"]["bindings"][0]["o"]["value"]);
+                console.log(data);
+                obj.businessType = data;
+                callback(obj.businessType);
+            });
+
+        } else {
+            callback(this.businessType);
+        }
+
+
+        function translateBusinessType(uri) {
+            var rand = Math.random();
+            if (rand <= 0.25)
+                return "Schlachthof";
+            else if (rand > 0.25 && rand <= 0.5)
+                return "Viehmarkt";
+            else if (rand > 0.25 && rand <= 0.75)
+                return "Tierhaltung";
+            else
+                return "Alpung";
+        }
+    };
 }

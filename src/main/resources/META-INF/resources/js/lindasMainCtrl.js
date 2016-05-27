@@ -67,15 +67,17 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
             var date = d.date.getTime();
             if ($scope.hideSlaughterhouse)
                 return (date > $scope.filterStartDateMilliseconds && date < $scope.filterEndDateMilliseconds
-                && d.Betriebsart.localeCompare("Schlachthof") != 0);
+                && d.toBusiness.businessType.localeCompare("Schlachthof") != 0);
             else
                 return (date > $scope.filterStartDateMilliseconds && date < $scope.filterEndDateMilliseconds);
         });
-        try {
+/*        try {
             d3Vis.update($scope);
         } catch (err) {
             console.log(err);
-        }
+        }*/
+        d3Vis.update($scope);
+
     });
 
     //convert startDate to Milliseconds since 01.01.1970

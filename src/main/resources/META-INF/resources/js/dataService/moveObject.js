@@ -3,7 +3,6 @@ function  Move(id, fromBusiness, toBusiness, date) {
     this.fromBusiness = fromBusiness;
     this.toBusiness = toBusiness;
     this.date = date;
-    this.businessType = "Schlachthof";
-    this.numberAnimals = Math.random() * 500 + 50;
+    this.numberAnimals = Math.round(Math.random() * 500 + 50);
     this.value = 1;
 }

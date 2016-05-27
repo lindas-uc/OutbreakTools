@@ -4,7 +4,7 @@ var test = {
         var app = angular.element(element).scope();
         app.startDate = "01/01/2012";
         app.endDate = "05/01/2012";
-        app.tieIds = [{id:51122,valid:true}];
+        app.tieIds = [{id:51396,valid:true}];
 
         //start watch cycle manaual
         app.$apply();
@@ -76,6 +76,18 @@ var test = {
         console.log(business2.getCoordinates(function (coordinates) {
             console.log(coordinates)
         }));
+    },
+
+    testAddBusinessType: function () {
+        var business1 = new Business(51122, idToURIConverter.convertIdToURI(51122));
+        var business2 = new Business(51396, idToURIConverter.convertIdToURI(51396));
+
+        business1.getBusinessType(function (bType) {
+            console.log(bType)
+        });
+        business2.getBusinessType(function (bType) {
+            console.log(bType)
+        });
     },
 
     testPerformanceAddCoordinates: function () {

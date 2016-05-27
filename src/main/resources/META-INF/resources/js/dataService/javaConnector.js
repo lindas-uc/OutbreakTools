@@ -11,7 +11,8 @@ javaConnector = {
         console.log($scope.startBusiness[0].URI);
         var businessString = "";
         for (var i = 0; i < $scope.startBusiness.length; i++) {
-            businessString += "startingSite="+$scope.startBusiness[i].URI+"&";
+            var uri = $scope.startBusiness[i].URI;
+            businessString += "startingSite="+uri.substring(1,uri.length - 1)+"&";
         }
         console.log(businessString);
         console.log("/trace?"+businessString+"startDate="+startDate+"&endDate="+endDate);
