@@ -29,7 +29,7 @@
 	<link rel="stylesheet" type="text/css" href="external/bootstrap-3.3.6-dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/business-casual.css">
     <link rel="stylesheet" href="external/bootstrap-datetimepicker-master/build/css/bootstrap-datetimepicker.min.css"/>
-    
+
     <!-- include bootstrap, jquery, openLayers and d3.js-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script type="text/javascript" src="external/jquery/jquery.js"></script>
@@ -39,7 +39,7 @@
     <!--Include javascripts and CSS for Datetimepicker-->
     <script type="text/javascript" src="external/moment/moment.js"></script>
     <script type="text/javascript" src="external/bootstrap-datetimepicker-master/build/js/bootstrap-datetimepicker.min.js"></script>
-    
+
     <!--Include javascripts and CSS for d3.slider-->
     <script type="text/javascript" src="external/d3-slider-master/d3.slider.js"></script>
     <link rel="stylesheet" type="text/css" href="external/d3-slider-master/d3.slider.css">
@@ -49,7 +49,7 @@
 
     <!--Include Angular.js-->
     <script type="text/javascript" src="external/angular_v1_4_8.js"></script>
-    
+
 	<link rel="shortcut icon" href="img/favicon.ico">
 
     <!--Include d3-tip-->
@@ -196,54 +196,62 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li ng-click="changeDataTable('dataTable1')" ng-hide="dataTable.dataTable1"><span>Data1</span></li>
-                        <li ng-click="changeDataTable('dataTable1')" ng-show="dataTable.dataTable1" class="activeDataTable"><span>Data1</span></li>
-                        <li ng-click="changeDataTable('dataTable2')" ng-hide="dataTable.dataTable2"><span>Data2</span></li>
-                        <li ng-click="changeDataTable('dataTable2')" ng-show="dataTable.dataTable2" class="activeDataTable"><span>Data2</span></li>
+                        <li ng-click="changeDataTable('dataTable1')" ng-hide="dataTable.dataTable1"><span>Bewegungen</span></li>
+                        <li ng-click="changeDataTable('dataTable1')" ng-show="dataTable.dataTable1" class="activeDataTable"><span>Bewegungen</span></li>
+                        <li ng-click="changeDataTable('dataTable2')" ng-hide="dataTable.dataTable2"><span>Betriebe</span></li>
+                        <li ng-click="changeDataTable('dataTable2')" ng-show="dataTable.dataTable2" class="activeDataTable"><span>Zielbetriebe</span></li>
                     </ul>
                 </div>
             </div>
         </nav>
 
             <div class="col-xs-12" ng-show="dataTable.dataTable1">
-                <h2>Data</h2>
-                <p>The .table-striped class adds zebra-stripes to a table:</p>
+                <h2>Moves</h2>
+                <br>
                 <button class="btn" export-to-csv>Download as CSV</button>
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>Data</th>
-                        <th>Lastname</th>
-                        <th>Email</th>
+                        <th>Move_id</th>
+                        <th>fromBusiness_id</th>
+                        <th>toBusiness_id</th>
+                        <th>NumberOfAnimals</th>
+                        <th>Date</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="d in data">
-                        <td>{{d.A_Business}}</td>
-                        <td>Doe</td>
-                        <td>john@example.com</td>
+                        <td>{{d.id}}</td>
+                        <td>{{d.fromBusiness.id}}</td>
+                        <td>{{d.toBusiness.id}}</td>
+                        <td>{{d.numberAnimals}}</td>
+                        <td>{{d.date}}</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="col-xs-12" ng-show="dataTable.dataTable2">
-                <h2>Data2</h2>
-                <p>The .table-striped class adds zebra-stripes to a table:</p>
+                <h2>Zielbetriebe</h2>
+                <br>
                 <button class="btn" export-to-csv>Download as CSV</button>
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>Data</th>
-                        <th>Lastname</th>
-                        <th>Email</th>
+                        <th>ID</th>
+                        <th>URI</th>
+                        <th>coordinates</th>
+                        <th>businessType</th>
+                        <th>date</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="d in data">
-                        <td>{{d.B_Business}}</td>
-                        <td>Jon</td>
-                        <td>john@example.com</td>
+                        <td>{{d.toBusiness.id}}</td>
+                        <td>{{d.toBusiness.URI}}</td>
+                        <td>{{d.toBusiness.coordinates}}</td>
+                        <td>{{d.toBusiness.businessType}}</td>
+                        <td>{{d.date}}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -447,7 +455,7 @@
     ].
 
 </script>
-    
+
 <!-- Scripts for Tester Object -->
 <script type="text/javascript" src="js/testerObject.js"></script>
 

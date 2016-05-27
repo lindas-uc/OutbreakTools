@@ -1,8 +1,11 @@
 var dataInitialisator;
 dataInitialisator = {
+
+    $scope: null,
     
     initializeData: function($scope, callback) {
         console.log($scope.startDate);
+        dataInitialisator.$scope = $scope;
 
         if ($scope.forwardTracing) {
             javaConnector.startJavaApplicationForward($scope, function (data) {
@@ -70,10 +73,29 @@ dataInitialisator = {
         var interval = setInterval(function() {
             if (moveArray[moveArray.length - 1].toBusiness.coordinates != null) {
                 clearInterval(interval);
-                callback(moveArray);
+                dataInitialisator.markStartingSites(moveArray,function(moveArray) {
+                    callback(moveArray);
+                });
             }
         },10)
 
+    },
+
+    markStartingSites: function(moveArray, callback) {
+        var startBusiness = dataInitialisator.$scope.startBusiness;
+
+        for (var j = 0; j < startBusiness.length; j++) {
+            for (var i = 0; i < moveArray.length; i++) {
+                if (moveArray[i].fromBusiness.URI.localeCompare(startBusiness[j].URI) == 0) {
+                    moveArray[i].fromBusiness.startingSite = true;
+                }
+                if (moveArray[i].toBusiness.URI.localeCompare(startBusiness[j].URI) == 0) {
+                    moveArray[i].toBusiness.startingSite = true;
+                }
+            }
+            callback(moveArray);
+            console.log(dataInitialisator.$scope.startBusiness);
+        }
     }
     
 };

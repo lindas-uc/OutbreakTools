@@ -6,6 +6,7 @@ function  Business(id, URI) {
     this.name = "randomName";
     this.openLayersLonLat = {};
     this.businessType = null;
+    this.startingSite = false;
 
     this.getMunicipality = function(callback) {
         if (this.municipality == null) {

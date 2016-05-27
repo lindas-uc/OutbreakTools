@@ -162,7 +162,12 @@ d3Vis = {
 
         d3Vis.circlesToFarm.enter()
             .append("circle")
-            .attr("class", "circleToFarm")
+            .attr("class", function(d) {
+                if (d.toBusiness.startingSite)
+                    return "circleToFarm startingSite";
+                else
+                    return "circleToFarm";
+            })
             //.attr("fill", function(d) {return fillScale(d.value)})
             .attr("r", d3Vis.r)
             .on("mouseenter", function (d) {
@@ -195,7 +200,12 @@ d3Vis = {
         d3Vis.circlesFromFarm.enter()
             .append("circle")
             .attr("r", d3Vis.r)
-            .attr("class", "circleFromFarm")
+            .attr("class", function(d) {
+                if (d.fromBusiness.startingSite)
+                    return "circleFromFarm startingSite";
+                else
+                    return "circleFromFarm";
+            })
             .on("mouseenter", function (d) {
                 tip_from_location.show(d);
             })
@@ -587,6 +597,5 @@ d3Vis = {
                 }
             },300);
         });
-
     }
 };
