@@ -66,8 +66,8 @@ function  Business(id, URI) {
         var y = 77154 + (this.id % 10) * 216022/10;
 
         this.coordinates = [x, y];
-        this.openLayersLonLat = new OpenLayers.LonLat(randX, randY);
-        callback([randX, randY]);
+        this.openLayersLonLat = new OpenLayers.LonLat(x, y);
+        callback([x, y]);
 
     };
 
