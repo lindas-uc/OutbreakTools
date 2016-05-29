@@ -2,9 +2,9 @@ var app = angular.module('lindasMain', []);
 
 app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeout) {
     //tie => tested infected entities
-    $scope.tieIds = new Array({id:null,valid:true});
-    $scope.startDate = "";
-    $scope.endDate = "";
+    $scope.tieIds = new Array({id:5112,valid:true});
+    $scope.startDate = "01/01/2012";
+    $scope.endDate = "31/01/2012";
     $scope.startDateMilliseconds = 0;
     $scope.endDateMilliseconds = 0;
     $scope.value = "initialize";
@@ -13,6 +13,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.dateInvalid = false;
     //set this to false at end
     $scope.mapVisible = false;
+    $scope.settingsVisible = false;
     $scope.filterStartDateMilliseconds = 0;
     $scope.filterEndDateMilliseconds = 0;
     $scope.leafletMap = {};
