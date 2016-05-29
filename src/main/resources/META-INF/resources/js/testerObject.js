@@ -1,4 +1,18 @@
 var test = {
+
+    assertEquals: function (a,b) {
+        if (JSON.stringify(a).localeCompare(JSON.stringify(b)) == 0) {
+            console.log("test successful");
+        } else {
+            console.log("test failed");
+        }
+
+        console.log(JSON.stringify(a));
+        console.log(JSON.stringify(b));
+
+    },
+
+
     testInitializeVisualisation: function() {
         var element = $("#lindasMainContainer");
         var app = angular.element(element).scope();
