@@ -62,14 +62,10 @@ function  Business(id, URI) {
             callback(coordinates);
         }*/
 
-        function getRandomArbitrary(min, max) {
-            return Math.random() * (max - min) + min;
-        }
+        var x = this.id / 60000 * 347574 + 486278;
+        var y = 77154 + (this.id % 10) * 216022/10;
 
-        var randX = getRandomArbitrary(486278,833852);
-        var randY = getRandomArbitrary(77154,293176);
-
-        this.coordinates = [randX, randY];
+        this.coordinates = [x, y];
         this.openLayersLonLat = new OpenLayers.LonLat(randX, randY);
         callback([randX, randY]);
 
