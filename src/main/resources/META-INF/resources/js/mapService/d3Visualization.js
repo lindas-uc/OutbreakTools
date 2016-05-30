@@ -37,25 +37,31 @@ d3Vis = {
         .attr('class', 'd3-tip')
         .offset([-10, 0])
         .html(function (d) {
-            return "Name: " + d.toBusiness.name + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>Betriebsart: "+d.toBusiness.businessType +"<br>weitere Attribute";
+            return "ID: " + d.toBusiness.id + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>Betriebsart: "+d.toBusiness.businessType +"<br>weitere Attribute";
         }),
 
     tip_from_location: d3.tip()
         .attr('class', 'd3-tip')
         .offset([-10, 0])
         .html(function (d) {
-            return "Name: " + d.toBusiness.name + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>Betriebsart: "+d.fromBusiness.businessType +"<br>weitere Attribute";
+            return "ID: " + d.toBusiness.id + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>Betriebsart: "+d.fromBusiness.businessType +"<br>weitere Attribute";
         }),
 
     tip_connections: d3.tip()
         .attr('class', 'd3-tip')
         .offset([-10, 0])
         .html(function (d) {
-            return "From: " + d.fromBusiness.name + "<br>To: " + d.toBusiness.name + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>weitere Attribute";
+            return "From: " + d.fromBusiness.id + "<br>To: " + d.toBusiness.id + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>weitere Attribute";
         }),
 
 
     drawVisualization: function (overlay, bounds, $scope, map) {
+
+        //remove svg, slider, marker if exists
+        d3.selectAll("svg").remove();
+        d3.selectAll("defs").remove();
+
+
         this.$scope = $scope;
         d3Vis.data = $scope.data;
         d3Vis.bounds = bounds;
@@ -182,10 +188,10 @@ d3Vis = {
             .attr("class", "pathToFarm")
             //.attr("fill", function(d) {return fillScale(d.value)})
             .on("mouseenter", function (d) {
-                tip_connections.show(d);
+                tip_to_location.show(d);
             })
             .on("mouseleave", function (d) {
-                tip_connections.hide(d);
+                tip_to_location.hide(d);
             });
 
         d3Vis.circlesToFarm.exit().remove();
@@ -495,28 +501,34 @@ d3Vis = {
     },
 
     calculateIfProtectionZoneNeeded: function() {
+        var element = $("#lindasMainContainer");
+        var $scope = angular.element(element).scope();
+        if ($scope.data.length == 0)
+            return false;
 
         var tenKmInPixelThreshold = 102;
 
-        if (tenKmInPixelThreshold < d3Vis.calculateTenKmInPixel() && this.$scope.showProtectionZone)
+        if (tenKmInPixelThreshold < d3Vis.calculateTenKmInPixel($scope) && this.$scope.showProtectionZone)
             return true;
         else
             return false;
     },
 
     calculateIfMonitoringZoneNeeded: function() {
+        var element = $("#lindasMainContainer");
+        var $scope = angular.element(element).scope();
+        if ($scope.data.length == 0)
+            return false;
 
         var tenKmInPixelThreshold = 30;
 
-        if (tenKmInPixelThreshold < d3Vis.calculateTenKmInPixel() && this.$scope.showMonitoringZone)
+        if (tenKmInPixelThreshold < d3Vis.calculateTenKmInPixel($scope) && this.$scope.showMonitoringZone)
             return true;
         else
             return false;
     },
 
-    calculateTenKmInPixel: function() {
-        var element = $("#lindasMainContainer");
-        var $scope = angular.element(element).scope();
+    calculateTenKmInPixel: function($scope) {
 
         var a = [parseInt($scope.data[0].fromBusiness.coordinates[0]), parseInt($scope.data[0].fromBusiness.coordinates[1])];
         var b = [a[0] + 10000, a[1]];
@@ -531,6 +543,8 @@ d3Vis = {
 
 
     drawSlider: function(values, $scope) {
+
+        $("#slider").empty();
 
         //draw slider
         d3Vis.slider = d3.slider()

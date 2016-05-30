@@ -1,4 +1,4 @@
-var app = angular.module('lindasMain', []);
+var app = angular.module('lindasMain', ["ngAnimate"]);
 
 app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeout) {
     //tie => tested infected entities
@@ -34,6 +34,8 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.startBusiness = [];
 
     $scope.forwardTracing = true;
+
+    $scope.dataInitialisator = dataInitialisator;
     
     $scope.addEmptyTieIds = function() {
         $scope.tieIds.push({id:null,valid:true});
@@ -127,7 +129,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
 
         $scope.mapVisible = true;
 
-        dataInitialisator.initializeData($scope, function(moveArray) {
+        $scope.dataInitialisator.initializeData($scope, function(moveArray) {
             $scope.data = moveArray;
             $scope.originalData = moveArray;
             console.log($scope.data);

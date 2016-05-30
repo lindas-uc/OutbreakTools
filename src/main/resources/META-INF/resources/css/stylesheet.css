@@ -61,7 +61,15 @@ polygon {fill:none; stroke:black; stroke-width:1px;}
     position: absolute;
     z-index: 3000;
     bottom: 20%;
-    right: 7%;
+    right: 7.5%;
+    width: auto;
+    transition:0.3s linear all;
+    opacity:1;
+}
+
+#allLayersBox.ng-hide{
+    transition:0.3s linear all;
+    opacity:0;
 }
 
 #allLayersBox button {
@@ -213,6 +221,10 @@ svg {
 .activeDataTable {
     background-color: #EBEBEB;
 }
+
+
+
+
 
 
 

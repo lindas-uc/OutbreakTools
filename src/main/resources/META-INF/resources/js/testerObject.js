@@ -57,6 +57,27 @@ var test = {
         },100);
 
     },
+    
+    testJsonData: function() {
+        var element = $("#lindasMainContainer");
+        var app = angular.element(element).scope();
+        app.dataInitialisator = dataInitialisatorTestData;
+
+        app.startDate = "01/01/2012";
+        app.endDate = "31/01/2012";
+        app.tieIds = [{id:5112,valid:true},{id:51122,valid:true}];
+        app.forwardTracing = false;
+
+        //start watch cycle manaual
+        app.$apply();
+
+        setTimeout(function() {
+            app.initializeVisualisation();
+            app.$apply();
+        },100);
+
+        
+    },
 
     testDate: function() {
         var element = $("#lindasMainContainer");

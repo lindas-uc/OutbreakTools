@@ -24,6 +24,11 @@ dataInitialisator = {
         var moveArray = [];
 
         for (var i = 0 ; i < data.length; i++) {
+            if (data[i].indexOf("move") == -1)
+                data.splice(i, 1);
+        }
+
+        for (var i = 0 ; i < data.length; i++) {
 
             function parseId (d) {
                 var a = d.indexOf("move/")+5;

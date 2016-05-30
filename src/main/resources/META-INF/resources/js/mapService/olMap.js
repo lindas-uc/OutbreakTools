@@ -4,6 +4,7 @@ olMap = {
     layerName: "",
     layer: null,
     loadLayerRunning: false,
+    map: null,
 
     preconfigureOpenLayers: function () {
         // Add the LV03 projection as it is not defined in OL

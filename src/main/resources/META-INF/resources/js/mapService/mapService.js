@@ -12,12 +12,15 @@ app.service('map', function() {
         init();
 
         function init() {
-            
-            olMap.preconfigureOpenLayers();
-            olMap.createMap();
-            olMap.addWMTSLayer("wmts_layer2",WMTSLayers.wmts_layer2.wmts_layer_options);
-            olMap.zoomInAndSetCenter();
-            olMap.initializeAllLayersButtons();
+
+            //Do this if loading map the first time
+            if (olMap.getMap() == null) {
+                olMap.preconfigureOpenLayers();
+                olMap.createMap();
+                olMap.addWMTSLayer("wmts_layer2", WMTSLayers.wmts_layer2.wmts_layer_options);
+                olMap.zoomInAndSetCenter();
+                olMap.initializeAllLayersButtons();
+            }
 
             var map = olMap.getMap();
 

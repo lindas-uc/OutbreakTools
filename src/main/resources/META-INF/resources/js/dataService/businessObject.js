@@ -72,12 +72,12 @@ function  Business(id, URI) {
     };
 
     this.getBusinessType = function(callback) {
+        var obj = this;
+
         //delete the following line
         this.businessType = translateBusinessType("loeschen");
 
         if (this.businessType == null) {
-            var obj = this;
-
             $.ajax({
                 url: "http://test.lindas-data.ch/sparql",
                 dataType: "json",
@@ -99,12 +99,12 @@ function  Business(id, URI) {
 
 
         function translateBusinessType(uri) {
-            var rand = Math.random();
-            if (rand <= 0.25)
+            var value = parseInt(obj.id) % 4;
+            if (value == 0)
                 return "Schlachthof";
-            else if (rand > 0.25 && rand <= 0.5)
+            else if (value == 1)
                 return "Viehmarkt";
-            else if (rand > 0.25 && rand <= 0.75)
+            else if (value == 2)
                 return "Tierhaltung";
             else
                 return "Alpung";
