@@ -124,7 +124,13 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         }
 
         for (var i = 0; i < $scope.tieIds.length; i++) {
-            $scope.startBusiness.push(new Business($scope.tieIds[i].id, idToURIConverter.convertIdToURI($scope.tieIds[i].id)));
+            var business = new Business($scope.tieIds[i].id, idToURIConverter.convertIdToURI($scope.tieIds[i].id));
+            business.getMunicipality(function() {
+                business.getCoordinates(function() {});
+            });
+            business.getBusinessType(function() {});
+
+            $scope.startBusiness.push(business);
         }
 
         $scope.mapVisible = true;

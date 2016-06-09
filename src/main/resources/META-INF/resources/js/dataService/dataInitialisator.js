@@ -50,7 +50,9 @@ dataInitialisator = {
                 var uri = d.substring(b, c);
 
                 var business = new Business(idToURIConverter.convertURIToId(uri), uri);
-                business.getCoordinates(function() {});
+                business.getMunicipality(function() {
+                    business.getCoordinates(function() {});
+                });
                 business.getBusinessType(function() {});
                 return business;
             }
@@ -62,7 +64,9 @@ dataInitialisator = {
                 var uri = d.substring(b, c);
 
                 var business = new Business(idToURIConverter.convertURIToId(uri), uri);
-                business.getCoordinates(function() {});
+                business.getMunicipality(function() {
+                    business.getCoordinates(function() {});
+                });
                 business.getBusinessType(function() {});
                 return business;
             }
@@ -76,7 +80,13 @@ dataInitialisator = {
         }
 
         var interval = setInterval(function() {
-            if (moveArray[moveArray.length - 1].toBusiness.coordinates != null) {
+            var found = true;
+            for (var i = 0; i < moveArray.length && found; i++) {
+                if (moveArray[i].toBusiness.coordinates == null) {
+                    found = false;
+                }
+            }
+            if (found) {
                 clearInterval(interval);
                 dataInitialisator.markStartingSites(moveArray,function(moveArray) {
                     callback(moveArray);

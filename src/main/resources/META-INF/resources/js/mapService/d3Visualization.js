@@ -61,8 +61,10 @@ d3Vis = {
         d3.selectAll("svg").remove();
         d3.selectAll("defs").remove();
 
+        //order $scope.data
+        $scope.data = d3Vis.putStartBusinessLast($scope.data);
 
-        this.$scope = $scope;
+        d3Vis.$scope = $scope;
         d3Vis.data = $scope.data;
         d3Vis.bounds = bounds;
         d3Vis.$scope = $scope;
@@ -76,10 +78,16 @@ d3Vis = {
         div.selectAll("svg").remove();
         d3Vis.svg = div.append("svg");
         //Add a G (group) element
-        d3Vis.g4 = d3Vis.svg.append("g"),
-            d3Vis.g3 = d3Vis.svg.append("g"),
-            d3Vis.g2 = d3Vis.svg.append("g"),
+        d3Vis.g4 = d3Vis.svg.append("g");
+        d3Vis.g3 = d3Vis.svg.append("g");
+        //if forwardtracing, startingsites are fromBusiness, so they have to lie on top
+        if ($scope.forwardTracing) {
             d3Vis.g = d3Vis.svg.append("g");
+            d3Vis.g2 = d3Vis.svg.append("g");
+        } else {
+            d3Vis.g2 = d3Vis.svg.append("g");
+            d3Vis.g = d3Vis.svg.append("g");
+        }
 
         //add defs for marker-end to svg element
         d3Vis.marker = d3Vis.svg.append("defs").append("marker");
@@ -528,9 +536,9 @@ d3Vis = {
             return false;
     },
 
-    calculateTenKmInPixel: function($scope) {
+    calculateTenKmInPixel: function() {
 
-        var a = [parseInt($scope.data[0].fromBusiness.coordinates[0]), parseInt($scope.data[0].fromBusiness.coordinates[1])];
+        var a = [parseInt(d3Vis.$scope.data[0].fromBusiness.coordinates[0]), parseInt(d3Vis.$scope.data[0].fromBusiness.coordinates[1])];
         var b = [a[0] + 10000, a[1]];
 
         var pointA = d3Vis.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(a));
@@ -539,6 +547,24 @@ d3Vis = {
         var difference = pointB.x - pointA.x;
 
         return difference;
+    },
+
+    putStartBusinessLast: function(data) {
+        console.log(data);
+
+        for (var i = 0; i < data.length; i++) {
+            var d = data[i];
+            if (d.fromBusiness.startingSite || d.fromBusiness.startingSite) {
+                data.splice(i,1);
+                data.push(d);
+            } else if (d.toBusiness.startingSite || d.toBusiness.startingSite) {
+                data.splice(i,1);
+                data.push(d);
+            }
+        }
+
+        console.log(data);
+        return data;
     },
 
 

@@ -17,14 +17,20 @@ function  Business(id, URI) {
                 dataType: "json",
                 data: {
                     query: "SELECT DISTINCT * FROM <http://test.lindas-data.ch/resource/animaltransports> WHERE "
-                            +"{"+obj.URI+" <https://gont.ch/municipality> ?o}"
+                    + "{" + obj.URI + " <https://gont.ch/municipality> ?o}"
                 }
-            }).then(function(data) {
+            }).then(function (data) {
                 console.log(data);
-                data = data["results"]["bindings"][0]["o"]["value"];
-                data = "<" + data + ">";
-                obj.municipality = data;
-                callback(obj.municipality);
+                try {
+                    data = data["results"]["bindings"][0]["o"]["value"];
+                    data = "<" + data + ">";
+                    obj.municipality = data;
+                    callback(obj.municipality);
+                } catch (err) {
+                    console.log("Cannot find municipality of of object "+obj.URI);
+                    obj.municipality = "no value";
+                    callback(obj.municipality);
+                }
             });
 
         } else {
@@ -33,42 +39,56 @@ function  Business(id, URI) {
     };
 
     this.getCoordinates = function(callback) {
-        /*var coordinates = this.coordinates;
+        //create new coordinates if doesn't exist
         if (this.coordinates == null) {
-            var obj = this;
+            //didnt found municipality. return random coordinates
+            if (this.municipality.localeCompare("no value") == 0) {
+                console.log("Object " + this.URI + " has no municipality, so return random coordinates");
+                this.returnNullCoordinates(callback);
+            } else {
+                var coordinates = this.coordinates;
+                var obj = this;
 
-            this.getMunicipality(function(municipality) {
-                console.log(municipality);
-                $.ajax({
-                    url: "http://lindas.zazuko.com/blazegraph/namespace/swisstopo/sparql",
-                    dataType: "json",
-                    data: {
-                        query: "SELECT ?wtk WHERE { " +
-                        "?G <https://gont.ch/municipality> "+municipality+" ." +
-                        "?G    <http://linkeddata.interlis.ch/IlisMeta07.MetaElemOID/swissBOUNDARIES3D_ili2_LV03_V1_3_ceis.TLM_GRENZEN.TLM_HOHEITSGEBIET.RefPoint> ?S." +
-                        "?S <http://www.opengis.net/ont/geosparql#asWKT> ?wtk}"
-
-                    }
-                }).then(function(data) {
-                    data = data["results"]["bindings"][0]["wtk"]["value"];
-                    data =  data.substring(data.search("POINT") + 8, data.length-2);
-                    data = data.split(" ");
-                    obj.coordinates = data;
-                    callback(obj.coordinates);
+                this.getMunicipality(function (municipality) {
+                    $.ajax({
+                        url: "http://lindas.zazuko.com/blazegraph/namespace/swisstopo/sparql",
+                        dataType: "json",
+                        data: {
+                            query: "SELECT ?wtk WHERE { " +
+                            "?G <https://gont.ch/municipality> " + municipality + " ." +
+                            "?G    <http://linkeddata.interlis.ch/IlisMeta07.MetaElemOID/swissBOUNDARIES3D_ili2_LV03_V1_3_ceis.TLM_GRENZEN.TLM_HOHEITSGEBIET.RefPoint> ?S." +
+                            "?S <http://www.opengis.net/ont/geosparql#asWKT> ?wtk}"
+                        }
+                    }).then(function (data) {
+                       try {
+                            data = data["results"]["bindings"][0]["wtk"]["value"];
+                            data = data.substring(data.search("POINT") + 8, data.length - 2);
+                            data = data.split(" ");
+                            obj.coordinates = data;
+                            callback(obj.coordinates);
+                            //didn't found coordinates. return random coordinates
+                        } catch (err) {
+                            console.log("Object " + obj.URI + " has no coordinates, so return random coordinates");
+                            obj.returnNullCoordinates(callback);
+                        }
+                    });
                 });
-            });
-
+            }
         } else {
-            callback(coordinates);
-        }*/
+            callback(this.coordinates);
+        }
+    };
 
+    this.returnNullCoordinates = function (callback) {
         var x = this.id / 60000 * 347574 + 486278;
-        var y = 77154 + (this.id % 10) * 216022/10;
+        var y = 77154 + (this.id % 10) * 216022 / 10;
+
+/*        var x = 0;
+        var y = 0;*/
 
         this.coordinates = [x, y];
         this.openLayersLonLat = new OpenLayers.LonLat(x, y);
         callback([x, y]);
-
     };
 
     this.getBusinessType = function(callback) {
@@ -86,9 +106,7 @@ function  Business(id, URI) {
                     +"{"+obj.URI+" <http://blv.ch/cat> ?o}"
                 }
             }).then(function(data) {
-
                 data = translateBusinessType(data["results"]["bindings"][0]["o"]["value"]);
-                console.log(data);
                 obj.businessType = data;
                 callback(obj.businessType);
             });
@@ -109,5 +127,5 @@ function  Business(id, URI) {
             else
                 return "Alpung";
         }
-    };
+    }
 }

@@ -121,7 +121,7 @@ var test = {
     },
 
     testAddMunicipalitiy: function() {
-        var business1 = new Business(51122, idToURIConverter.convertIdToURI(51122));
+        var business1 = new Business(2251, idToURIConverter.convertIdToURI(2251));
         var business2 = new Business(51396, idToURIConverter.convertIdToURI(51396));
 
         business1.getMunicipality(function (muni) {
@@ -132,6 +132,8 @@ var test = {
     testAddCoordinates: function () {
         var business1 = new Business(51122, idToURIConverter.convertIdToURI(51122));
         var business2 = new Business(51396, idToURIConverter.convertIdToURI(51396));
+        business2.municipality = "no value";
+        business1.municipality = "<http://classifications.data.admin.ch/municipality/2198>";
 
         business1.getCoordinates(function (coordinates) {
             console.log(coordinates)
