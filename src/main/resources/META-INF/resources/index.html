@@ -77,401 +77,414 @@
 </head>
 
 <body>
+    <div id="wrapper">
 
-<div class="brand">LINDAS</div>
-<div class="address-bar">Showcase Linked Data: Ausbruchsabklärung von Tierseuchen</div>
-
-<!-- Navigation -->
-<nav class="navbar navbar-default" role="navigation">
-    <div class="container">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <!-- navbar-brand is hidden on larger screens, but visible when the menu is collapsed -->
-            <a class="navbar-brand" href="index.html">LINDAS</a>
+    <div class="row">
+        <div class="col-md-3" id="logo_suisse">
+            <img src="img/logo_suisse.png">
         </div>
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <div class="col-md-9">
+            <div class="brand">LINDAS</div>
+            <div class="address-bar">Showcase Linked Data: Ausbruchsabklärung von Tierseuchen</div>
+        </div>
+    </div>
+        
+    <div class="container" ng-app="lindasMain" ng-controller="lindasMainCtrl" id="lindasMainContainer">
+        
+        <nav class="nav-main yamm navbar">
             <ul class="nav navbar-nav">
-                <li>
-                    <a href="index.html">Home</a>
-                </li>
-                <li>
-                    <a href="about.html">About</a>
-                </li>
-                <li>
-                    <a href="contact.html">Contact</a>
-                </li>
+                <li class="dropdown yamm-fw active" ng-show="nav.eingabemaske" ng-click="navigate('eingabemaske')"><a>Eingabemaske</a></li>
+                <li class="dropdown yamm-fw" ng-hide="nav.eingabemaske" ng-click="navigate('eingabemaske')"><a>Eingabemaske</a></li>
+                <li class="dropdown yamm-fw active" ng-show="nav.resultat" ng-click="navigate('resultat')"><a>Resultat</a></li>
+                <li class="dropdown yamm-fw" ng-hide="nav.resultat" ng-click="navigate('resultat')"><a>Resultat</a></li>
+                <li class="dropdown yamm-fw" ><a>Kontakt</a></li>
             </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-    <!-- /.container -->
-</nav>
+        </nav>
 
-<div class="container" ng-app="lindasMain" ng-controller="lindasMainCtrl" id="lindasMainContainer">
-
-    <div class="row" ng-show="mapVisible">
-        <div class="box">
-            <div class="col-lg-9 text-center">
-                <div id="slider"></div>
-            </div>
-            <div class="col-lg-2">
-                <button id="startAnimation" class="btn" aria-label="Left Align">
-                    <span class="glyphicon glyphicon-play" aria-hidden="true" ng-hide="animationRunning"></span>
-                    <span class="glyphicon glyphicon-stop" aria-hidden="true" ng-show="animationRunning"></span>
-                    Animation starten
-                </button>
-            </div>
-            <div class="col-lg-1">
-                <button id="startAnimation" ng-click="settingsVisible = !settingsVisible" class="btn" aria-label="Left Align">
-                    Settings
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div class="row settings" ng-show="settingsVisible">
-        <div class="box">
-            <div class="col-lg-1">
-                <input type="checkbox" id="ToggleForms" ng-model="showDifferentForms" ng-checked="showDifferentForms"/>
-                <label for="ToggleForms"></label>
-            </div>
-            <div class="col-lg-2">
-                <p>Verschiedene Formen einblenden</p>
-            </div>
-            <div class="col-lg-1">
-                <input type="checkbox" id="toggleSchlachthoefe" ng-model="hideSlaughterhouse" ng-checked="hideSlaughterhouse" />
-                <label for="toggleSchlachthoefe"></label>
-            </div>
-            <div class="col-lg-2">
-                <p>Schlachthöfe ausblenden</p>
-            </div>
-            <div class="col-lg-1">
-                <input type="checkbox" id="individualArrowWidth" ng-model="individualArrowWidth" ng-checked="individualArrowWidth" />
-                <label for="individualArrowWidth"></label>
-            </div>
-            <div class="col-lg-2">
-                <p>Pfeilstärke anhand Anzahl Tiere definieren</p>
-            </div>
-            <div class="col-lg-1">
-                <input type="checkbox" id="protectionAndMonitoringZones" ng-model="showProtectionZone" ng-checked="showProtectionZone" ng-change="showMonitoringZone=showProtectionZone"/>
-                <label for="protectionAndMonitoringZones"></label>
-            </div>
-            <div class="col-lg-2">
-                <p>Schutz- und Überwachungszonen zeigen</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="row" ng-show="mapVisible">
-        <div class="box">
-            <div class="col-lg-12 text-center">
-                <div id="map">
-                    <button id="centerMap" onclick="olMap.zoomInAndSetCenter()" type="button" class="btn btn-default btn-circle btn-lg"><i class="glyphicon glyphicon-screenshot"></i></button>
-                    <button id="changeOlMap" ng-click="toggleLayersVisibility()" type="button" class="btn btn-default btn-circle btn-lg"><i class="glyphicon glyphicon-globe"></i></button>
-                    <div id="allLayersBox" ng-show="showLayerPossibilities">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row dataResults" ng-show="mapVisible">
-
-        <div class="box">
-
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <!-- Brand and toggle get grouped for better mobile display -->
+        <!-- Navigation -->
+        <!--<nav class="navbar navbar-default navbar-main" role="navigation">
+            <div class="container"> 
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Brand</a>
+                    <a class="navbar-brand" href="index.html">LINDAS</a>
                 </div>
-
-                <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li ng-click="changeDataTable('dataTable1')" ng-hide="dataTable.dataTable1"><span>Bewegungen</span></li>
-                        <li ng-click="changeDataTable('dataTable1')" ng-show="dataTable.dataTable1" class="activeDataTable"><span>Bewegungen</span></li>
-                        <li ng-click="changeDataTable('dataTable2')" ng-hide="dataTable.dataTable2"><span>Betriebe</span></li>
-                        <li ng-click="changeDataTable('dataTable2')" ng-show="dataTable.dataTable2" class="activeDataTable"><span>Zielbetriebe</span></li>
+                        <li>
+                            <a href="index.html">Home</a>
+                        </li>
+                        <li>
+                            <a href="about.html">About</a>
+                        </li>
+                        <li>
+                            <a href="contact.html">Contact</a>
+                        </li>
                     </ul>
                 </div>
             </div>
-        </nav>
+        </nav>-->
 
-            <div class="col-xs-12" ng-show="dataTable.dataTable1">
-                <h2>Moves</h2>
-                <br>
-                <button class="btn" export-to-csv>Download as CSV</button>
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Move_id</th>
-                        <th>fromBusiness_id</th>
-                        <th>toBusiness_id</th>
-                        <th>NumberOfAnimals</th>
-                        <th>Date</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="d in data">
-                        <td>{{d.id}}</td>
-                        <td>{{d.fromBusiness.id}}</td>
-                        <td>{{d.toBusiness.id}}</td>
-                        <td>{{d.numberAnimals}}</td>
-                        <td>{{d.date}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="col-xs-12" ng-show="dataTable.dataTable2">
-                <h2>Zielbetriebe</h2>
-                <br>
-                <button class="btn" export-to-csv>Download as CSV</button>
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>URI</th>
-                        <th>coordinates</th>
-                        <th>businessType</th>
-                        <th>date</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="d in data">
-                        <td>{{d.toBusiness.id}}</td>
-                        <td>{{d.toBusiness.URI}}</td>
-                        <td>{{d.toBusiness.coordinates}}</td>
-                        <td>{{d.toBusiness.businessType}}</td>
-                        <td>{{d.date}}</td>
-                    </tr>
-                    </tbody>
-                </table>
+        <div class="row" ng-show="nav.resultat">
+            <div class="box">
+                <div class="col-lg-9 text-center">
+                    <div id="slider"></div>
+                </div>
+                <div class="col-lg-2">
+                    <button id="startAnimation" class="btn" aria-label="Left Align">
+                        <span class="glyphicon glyphicon-play" aria-hidden="true" ng-hide="animationRunning"></span>
+                        <span class="glyphicon glyphicon-stop" aria-hidden="true" ng-show="animationRunning"></span>
+                        Animation starten
+                    </button>
+                </div>
+                <div class="col-lg-1">
+                    <button id="startAnimation" ng-click="settingsVisible = !settingsVisible" class="btn" aria-label="Left Align">
+                        Settings
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="box">
-            <div class="col-lg-12">
-                <hr>
-                <h2 class="intro-text text-center">Eingabemaske</h2>
-                <hr>
-                <hr class="visible-xs">
-                <form>
-                    <fieldset>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <label>ID Betrieb:</label>
-                            </div>
+        <div class="row settings" ng-show="(settingsVisible && nav.resultat)">
+            <div class="box">
+                <div class="col-lg-1">
+                    <input type="checkbox" id="ToggleForms" ng-model="showDifferentForms" ng-checked="showDifferentForms"/>
+                    <label for="ToggleForms"></label>
+                </div>
+                <div class="col-lg-2">
+                    <p>Verschiedene Formen einblenden</p>
+                </div>
+                <div class="col-lg-1">
+                    <input type="checkbox" id="toggleSchlachthoefe" ng-model="hideSlaughterhouse" ng-checked="hideSlaughterhouse" />
+                    <label for="toggleSchlachthoefe"></label>
+                </div>
+                <div class="col-lg-2">
+                    <p>Schlachthöfe ausblenden</p>
+                </div>
+                <div class="col-lg-1">
+                    <input type="checkbox" id="individualArrowWidth" ng-model="individualArrowWidth" ng-checked="individualArrowWidth" />
+                    <label for="individualArrowWidth"></label>
+                </div>
+                <div class="col-lg-2">
+                    <p>Pfeilstärke anhand Anzahl Tiere definieren</p>
+                </div>
+                <div class="col-lg-1">
+                    <input type="checkbox" id="protectionAndMonitoringZones" ng-model="showProtectionZone" ng-checked="showProtectionZone" ng-change="showMonitoringZone=showProtectionZone"/>
+                    <label for="protectionAndMonitoringZones"></label>
+                </div>
+                <div class="col-lg-2">
+                    <p>Schutz- und Überwachungszonen zeigen</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" ng-show="nav.resultat" >
+            <div class="box">
+                <div class="col-lg-12 text-center">
+                    <div id="map">
+                        <button id="centerMap" onclick="olMap.zoomInAndSetCenter()" type="button" class="btn btn-default btn-circle btn-lg"><i class="glyphicon glyphicon-screenshot"></i></button>
+                        <button id="changeOlMap" ng-click="toggleLayersVisibility()" type="button" class="btn btn-default btn-circle btn-lg"><i class="glyphicon glyphicon-globe"></i></button>
+                        <div id="allLayersBox" ng-show="showLayerPossibilities">
                         </div>
-                        <div id="inputFieldID">
-                            <div class="row" ng-repeat="x in tieIds track by $index">
-                                    <div class="col-md-8">
-                                        <div class="form-group">
-                                            <input class="form-control" type="text" placeholder="&lt;&lt;ID Eingeben&gt;&gt;" ng-model="tieIds[$index].id">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row dataResults" ng-show="nav.resultat">
+
+            <div class="box">
+
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Brand</a>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li ng-click="changeDataTable('dataTable1')" ng-hide="dataTable.dataTable1"><span>Bewegungen</span></li>
+                            <li ng-click="changeDataTable('dataTable1')" ng-show="dataTable.dataTable1" class="activeDataTable"><span>Bewegungen</span></li>
+                            <li ng-click="changeDataTable('dataTable2')" ng-hide="dataTable.dataTable2"><span>Betriebe</span></li>
+                            <li ng-click="changeDataTable('dataTable2')" ng-show="dataTable.dataTable2" class="activeDataTable"><span>Zielbetriebe</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+                <div class="col-xs-12" ng-show="dataTable.dataTable1">
+                    <h2>Moves</h2>
+                    <br>
+                    <button class="btn" export-to-csv>Download as CSV</button>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Move_id</th>
+                            <th>fromBusiness_id</th>
+                            <th>toBusiness_id</th>
+                            <th>NumberOfAnimals</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="d in data">
+                            <td>{{d.id}}</td>
+                            <td>{{d.fromBusiness.id}}</td>
+                            <td>{{d.toBusiness.id}}</td>
+                            <td>{{d.numberAnimals}}</td>
+                            <td>{{d.date}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-xs-12" ng-show="dataTable.dataTable2">
+                    <h2>Zielbetriebe</h2>
+                    <br>
+                    <button class="btn" export-to-csv>Download as CSV</button>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>URI</th>
+                            <th>coordinates</th>
+                            <th>businessType</th>
+                            <th>date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="d in data">
+                            <td>{{d.toBusiness.id}}</td>
+                            <td>{{d.toBusiness.URI}}</td>
+                            <td>{{d.toBusiness.coordinates}}</td>
+                            <td>{{d.toBusiness.businessType}}</td>
+                            <td>{{d.date}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" ng-show="nav.eingabemaske" ng-click="navigate(eingabemaske)">
+            <div class="box">
+                <div class="col-lg-12">
+                    <hr>
+                    <h2 class="intro-text text-center">Eingabemaske</h2>
+                    <hr>
+                    <hr class="visible-xs">
+                    <form>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>ID Betrieb:</label>
+                                </div>
+                            </div>
+                            <div id="inputFieldID">
+                                <div class="row" ng-repeat="x in tieIds track by $index">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <input class="form-control" type="text" placeholder="&lt;&lt;ID Eingeben&gt;&gt;" ng-model="tieIds[$index].id">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <button type="button" class="btn" aria-label="Left Align" ng-click="removeTieIds($index)">
-                                            <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-                                        </button>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="alert alert-danger" role="alert" ng-hide="tieIds[$index].valid">Id ungültig</div>
+                                        <div class="col-md-1">
+                                            <button type="button" class="btn" aria-label="Left Align" ng-click="removeTieIds($index)">
+                                                <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="alert alert-danger" role="alert" ng-hide="tieIds[$index].valid">Id ungültig</div>
+                                        </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-primary" aria-label="Left Align" ng-click="addEmptyTieIds()">
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                        Weitere ID eingeben
+                                    </button>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-primary" aria-label="Left Align">
+                                        <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                                        CSV hochladen
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row" id="inputPeriod">
+                                <div class="col-md-12 paddingNull">
+                                    <label>Zeitraum:</label>
+                                        <div class="row">
+                                            <div class='col-sm-4'>
+                                                <div class="form-group">
+                                                    <div class='input-group date' id='datetimepicker1'>
+                                                        <input type='text' class="form-control" placeholder="&lt;&lt;Datum von&gt;&gt;" ng-model="startDate" required valid-date/>
+                                                        <span class="input-group-addon">
+                                                            <span class="glyphicon glyphicon-calendar"></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <script type="text/javascript">
+                                                $(function () {
+                                                    $('#datetimepicker1').datetimepicker({
+                                                    viewMode: 'days',
+                                                    format: 'DD/MM/YYYY'
+                                                }).on("dp.change", function(e) {
+                                                        var element = $("#lindasMainContainer");
+                                                        angular.element(element).scope().setStartDate(e.date.format('DD/MM/YYYY'));
+                                                    });
+                                            });
+                                            </script>
+                                            <div class='col-sm-4'>
+                                                <div class="form-group">
+                                                    <div class='input-group date' id='datetimepicker2'>
+                                                        <input type='text' class="form-control" placeholder="&lt;&lt;Datum bis&gt;&gt;" ng-model="endDate" required valid-date/>
+                                                        <span class="input-group-addon">
+                                                            <span class="glyphicon glyphicon-calendar"></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <script type="text/javascript">
+                                                $(function () {
+                                                    $('#datetimepicker2').datetimepicker({
+                                                    viewMode: 'days',
+                                                    format: 'DD/MM/YYYY'
+                                                }).on("dp.change", function(e) {
+                                                        var element = $("#lindasMainContainer");
+                                                        angular.element(element).scope().setEndDate(e.date.format('DD/MM/YYYY'));
+                                                    });
+                                            });
+                                            </script>
+                                            <div class='col-sm-4'>
+                                                <div class="form-group">
+                                                    <div class='input-group' id="difference">
+                                                        <input type='text' class="form-control" placeholder="&lt;&lt;Anzahl Tage (fakulatativ)&gt;&gt;" ng-model="difference"/>
+                                                        <span class="input-group-addon" ng-click="calculateDifference()">
+                                                            <span class="glyphicon glyphicon-refresh"></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <div class="alert alert-danger" role="alert" ng-show="dateInvalid">Datum ungültig. Muss in Vergangenheit liegen</div>
                                     </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <button type="button" class="btn btn-primary" aria-label="Left Align" ng-click="addEmptyTieIds()">
-                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                    Weitere ID eingeben
-                                </button>
-                            </div>
-                            <div class="col-md-4">
-                                <button type="submit" class="btn btn-primary" aria-label="Left Align">
-                                    <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-                                    CSV hochladen
-                                </button>
-                            </div>
-                        </div>
-                        <div class="row" id="inputPeriod">
-                            <div class="col-md-12 paddingNull">
-                                <label>Zeitraum:</label>
+                            <div class="row margin-top-plus">
+                                <div class="col-md-12">
                                     <div class="row">
-                                        <div class='col-sm-4'>
-                                            <div class="form-group">
-                                                <div class='input-group date' id='datetimepicker1'>
-                                                    <input type='text' class="form-control" placeholder="&lt;&lt;Datum von&gt;&gt;" ng-model="startDate" required valid-date/>
-                                                    <span class="input-group-addon">
-                                                        <span class="glyphicon glyphicon-calendar"></span>
-                                                    </span>
-                                                </div>
-                                            </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-primary bull" aria-label="Left Align" ng-click="initializeVisualisation()">
+                                                Absenden
+                                            </button>
                                         </div>
-                                        <script type="text/javascript">
-                                            $(function () {
-                                                $('#datetimepicker1').datetimepicker({
-                                                viewMode: 'days',
-                                                format: 'DD/MM/YYYY'
-                                            }).on("dp.change", function(e) {
-                                                    var element = $("#lindasMainContainer");
-                                                    angular.element(element).scope().setStartDate(e.date.format('DD/MM/YYYY'));
-                                                });
-                                        });
-                                        </script>
-                                        <div class='col-sm-4'>
-                                            <div class="form-group">
-                                                <div class='input-group date' id='datetimepicker2'>
-                                                    <input type='text' class="form-control" placeholder="&lt;&lt;Datum bis&gt;&gt;" ng-model="endDate" required valid-date/>
-                                                    <span class="input-group-addon">
-                                                        <span class="glyphicon glyphicon-calendar"></span>
-                                                    </span>
-                                                </div>
-                                            </div>
+                                        <div class="col-md-2 pull-right">
+                                            <button type="button" class="btn btn-primary bull" aria-label="Left Align" onclick="test.testJsonData()">
+                                                TestData
+                                            </button>
                                         </div>
-                                        <script type="text/javascript">
-                                            $(function () {
-                                                $('#datetimepicker2').datetimepicker({
-                                                viewMode: 'days',
-                                                format: 'DD/MM/YYYY'
-                                            }).on("dp.change", function(e) {
-                                                    var element = $("#lindasMainContainer");
-                                                    angular.element(element).scope().setEndDate(e.date.format('DD/MM/YYYY'));
-                                                });
-                                        });
-                                        </script>
-                                        <div class='col-sm-4'>
-                                            <div class="form-group">
-                                                <div class='input-group' id="difference">
-                                                    <input type='text' class="form-control" placeholder="&lt;&lt;Anzahl Tage (fakulatativ)&gt;&gt;" ng-model="difference"/>
-                                                    <span class="input-group-addon" ng-click="calculateDifference()">
-                                                        <span class="glyphicon glyphicon-refresh"></span>
-                                                    </span>
-                                                </div>
-                                            </div>
+                                        <div class="col-md-1 pull-right">
+                                            <button type="button" class="btn btn-primary bull" aria-label="Left Align" onclick="test.testInitializeVisualisation()">
+                                                Test
+                                            </button>
                                         </div>
-                                    </div>
-                                <div class="alert alert-danger" role="alert" ng-show="dateInvalid">Datum ungültig. Muss in Vergangenheit liegen</div>
-                                </div>
-                        </div>
-                        <div class="row margin-top-plus">
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <button type="button" class="btn btn-primary bull" aria-label="Left Align" ng-click="initializeVisualisation()">
-                                            Absenden
-                                        </button>
-                                    </div>
-                                    <div class="col-md-2 pull-right">
-                                        <button type="button" class="btn btn-primary bull" aria-label="Left Align" onclick="test.testJsonData()">
-                                            TestData
-                                        </button>
-                                    </div>
-                                    <div class="col-md-1 pull-right">
-                                        <button type="button" class="btn btn-primary bull" aria-label="Left Align" onclick="test.testInitializeVisualisation()">
-                                            Test
-                                        </button>
-                                    </div>
-                                    <div class="col-lg-2 pull-right">
-                                        <input id="toggeForwardTracing" type="checkbox" ng-model="forwardTracing" ng-checked="forwardTracing"/>
-                                        <label for="toggeForwardTracing">Forward tracing</label>
+                                        <div class="col-lg-2 pull-right">
+                                            <input id="toggeForwardTracing" type="checkbox" ng-model="forwardTracing" ng-checked="forwardTracing"/>
+                                            <label for="toggeForwardTracing">Forward tracing</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </fieldset>
-                </form>
+                        </fieldset>
+                    </form>
+                </div>
             </div>
         </div>
+
     </div>
+    <!-- /.container -->
 
-</div>
-<!-- /.container -->
-
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 text-center">
-                <p>Copyright &copy; Your Website 2014</p>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <p>Copyright &copy; Your Website 2014</p>
+                </div>
             </div>
         </div>
+    </footer>
+
+
+
+    <!--Scripts for Controller and Model-->
+    <script type="text/javascript" src="js/lindasMainCtrl.js"></script>
+
+    <!--Scripts for Services-->
+    <script type="text/javascript" src="js/mapService/mapService.js"></script>
+    <script type="text/javascript" src="js/mapService/olMap.js"></script>
+    <script type="text/javascript" src="js/mapService/dataEditTestData.js"></script>
+    <script type="text/javascript" src="js/mapService/d3Visualization.js"></script>
+    <script type="text/javascript" src="js/mapService/WMTSLayers.js"></script>
+    <script type="text/javascript" src="js/otherServicesAndDirectives/sparqlService.js"></script>
+    <script type="text/javascript" src="js/validatorService/validatorService.js"></script>
+    <script type="text/javascript" src="js/otherServicesAndDirectives/exportToCSVDirective.js"></script>
+    <script type="text/javascript" src="js/dataService/javaConnector.js"></script>
+    <script type="text/javascript" src="js/dataService/idToURIConverter.js"></script>
+    <script type="text/javascript" src="js/dataService/businessObject.js"></script>
+    <script type="text/javascript" src="js/dataService/moveObject.js"></script>
+    <script type="text/javascript" src="js/dataService/dataInitialisator.js"></script>
+    <script type="text/javascript" src="js/dataService/helperMethods.js"></script>
+    <script type="text/javascript" src="js/dataService/dataInitialisatorTestData.js"></script>
+
+
+
+    <!--Scripts for rdf-ext.js-->
+    <script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf-ext.js"></script>
+    <script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf2h.js"></script>
+    <script src="//cdn.rawgit.com/retog/rdf-parser-n3-browser/v0.3.0b/dist/n3-parser.js"></script>
+    <script src="//cdn.rawgit.com/retog/rdf-store-ldp-browser/v0.3.0-rc2f/dist/rdf-store-ldp.js"></script>
+    <!--<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>-->
+    <script id="matchers" type="text/turtle">
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
+        @prefix blv: <http://blv.admin.ch/>.
+        [ a r2h:Matcher ;
+          r2h:triplePattern [
+            r2h:subject r2h:this;
+            r2h:predicate blv:hasPathTo;
+            r2h:subject r2h:this;
+          ];
+          r2h:template [
+            r2h:context r2h:Default;
+            r2h:mustache """
+            <ul>
+                {{#blv:hasPathTo}}
+                    <li>Has path to: {{.}}</li>
+                {{/blv:hasPathTo}}
+            </ul>
+            """
+          ]
+        ].
+
+    </script>
+
+    <!-- Scripts for Tester Object -->
+    <script type="text/javascript" src="js/testerObject.js"></script>
+
     </div>
-</footer>
-
-
-
-<!--Scripts for Controller and Model-->
-<script type="text/javascript" src="js/lindasMainCtrl.js"></script>
-
-<!--Scripts for Services-->
-<script type="text/javascript" src="js/mapService/mapService.js"></script>
-<script type="text/javascript" src="js/mapService/olMap.js"></script>
-<script type="text/javascript" src="js/mapService/dataEditTestData.js"></script>
-<script type="text/javascript" src="js/mapService/d3Visualization.js"></script>
-<script type="text/javascript" src="js/mapService/WMTSLayers.js"></script>
-<script type="text/javascript" src="js/otherServicesAndDirectives/sparqlService.js"></script>
-<script type="text/javascript" src="js/validatorService/validatorService.js"></script>
-<script type="text/javascript" src="js/otherServicesAndDirectives/exportToCSVDirective.js"></script>
-<script type="text/javascript" src="js/dataService/javaConnector.js"></script>
-<script type="text/javascript" src="js/dataService/idToURIConverter.js"></script>
-<script type="text/javascript" src="js/dataService/businessObject.js"></script>
-<script type="text/javascript" src="js/dataService/moveObject.js"></script>
-<script type="text/javascript" src="js/dataService/dataInitialisator.js"></script>
-<script type="text/javascript" src="js/dataService/helperMethods.js"></script>
-<script type="text/javascript" src="js/dataService/dataInitialisatorTestData.js"></script>
-
-
-
-<!--Scripts for rdf-ext.js-->
-<script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf-ext.js"></script>
-<script src="//cdn.rawgit.com/rdf2h/rdf2h/v0.3.0/dist/rdf2h.js"></script>
-<script src="//cdn.rawgit.com/retog/rdf-parser-n3-browser/v0.3.0b/dist/n3-parser.js"></script>
-<script src="//cdn.rawgit.com/retog/rdf-store-ldp-browser/v0.3.0-rc2f/dist/rdf-store-ldp.js"></script>
-<!--<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>-->
-<script id="matchers" type="text/turtle">
-    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-    @prefix r2h: <http://rdf2h.github.io/2015/rdf2h#> .
-    @prefix blv: <http://blv.admin.ch/>.
-    [ a r2h:Matcher ;
-      r2h:triplePattern [
-        r2h:subject r2h:this;
-        r2h:predicate blv:hasPathTo;
-        r2h:subject r2h:this;
-      ];
-      r2h:template [
-        r2h:context r2h:Default;
-        r2h:mustache """
-        <ul>
-            {{#blv:hasPathTo}}
-                <li>Has path to: {{.}}</li>
-            {{/blv:hasPathTo}}
-        </ul>
-        """
-      ]
-    ].
-
-</script>
-
-<!-- Scripts for Tester Object -->
-<script type="text/javascript" src="js/testerObject.js"></script>
-
-
 </body>
 
 </html>

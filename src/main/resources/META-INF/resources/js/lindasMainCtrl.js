@@ -1,6 +1,12 @@
 var app = angular.module('lindasMain', ["ngAnimate"]);
 
 app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeout) {
+    //navigation
+    $scope.nav = {
+        eingabemaske: true,
+        resultat: false
+    }
+    
     //tie => tested infected entities
     $scope.tieIds = new Array({id:5112,valid:true});
     $scope.startDate = "01/01/2012";
@@ -36,6 +42,12 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.forwardTracing = true;
 
     $scope.dataInitialisator = dataInitialisator;
+    
+    $scope.navigate = function(page) {
+        $scope.nav.eingabemaske = false;
+        $scope.nav.resultat = false;
+        $scope.nav[page] = true;
+    };
     
     $scope.addEmptyTieIds = function() {
         $scope.tieIds.push({id:null,valid:true});
@@ -134,6 +146,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         }
 
         $scope.mapVisible = true;
+        $scope.navigate('resultat');
 
         $scope.dataInitialisator.initializeData($scope, function(moveArray) {
             $scope.data = moveArray;
