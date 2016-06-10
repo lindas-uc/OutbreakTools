@@ -2,6 +2,8 @@ app.service('map', function() {
 
 
     this.initializeMap = function (start, end, $scope) {
+        $scope.appFinishedLoading = true;
+        $scope.$apply();
 
         //initial value for filter
         $scope.filterStartDateMilliseconds = start;

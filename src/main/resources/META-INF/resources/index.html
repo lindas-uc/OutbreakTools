@@ -97,7 +97,8 @@
                 <li class="dropdown yamm-fw" ng-hide="nav.eingabemaske" ng-click="navigate('eingabemaske')"><a>Eingabemaske</a></li>
                 <li class="dropdown yamm-fw active" ng-show="nav.resultat" ng-click="navigate('resultat')"><a>Resultat</a></li>
                 <li class="dropdown yamm-fw" ng-hide="nav.resultat" ng-click="navigate('resultat')"><a>Resultat</a></li>
-                <li class="dropdown yamm-fw" ><a>Kontakt</a></li>
+                <li class="dropdown yamm-fw active" ng-show="nav.kontakt" ng-click="navigate('kontakt')"><a>Kontakt</a></li>
+                <li class="dropdown yamm-fw" ng-hide="nav.kontakt" ng-click="navigate('kontakt')"><a>Kontakt</a></li>
             </ul>
         </nav>
 
@@ -129,7 +130,7 @@
             </div>
         </nav>-->
 
-        <div class="row" ng-show="nav.resultat">
+        <div class="row" ng-show="(nav.resultat && appFinishedLoading)">
             <div class="box">
                 <div class="col-lg-9 text-center">
                     <div id="slider"></div>
@@ -182,7 +183,7 @@
             </div>
         </div>
 
-        <div class="row" ng-show="nav.resultat" >
+        <div class="row" ng-show="(nav.resultat && appFinishedLoading)" >
             <div class="box">
                 <div class="col-lg-12 text-center">
                     <div id="map">
@@ -195,7 +196,7 @@
             </div>
         </div>
 
-        <div class="row dataResults" ng-show="nav.resultat">
+        <div class="row dataResults" ng-show="(nav.resultat && appFinishedLoading)">
 
             <div class="box">
 
@@ -277,8 +278,26 @@
                 </div>
             </div>
         </div>
+        
+        <div class="row" ng-show="(!appStarted && nav.resultat)">
+            <div class="box">
+                <div class="col-md-12">
+                    <p>Bitte starten Sie zuerst eine Abfrage mit der Eingabemaske</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row loading" ng-show="(appStarted && !appFinishedLoading)">
+            <div class="box">
+                <div class="col-md-12">
+                    <center> 
+                        <img src="img/rolling.gif">
+                    </center>
+                </div>
+            </div>
+        </div>
 
-        <div class="row" ng-show="nav.eingabemaske" ng-click="navigate(eingabemaske)">
+        <div class="row" ng-show="nav.eingabemaske">
             <div class="box">
                 <div class="col-lg-12">
                     <hr>
@@ -311,13 +330,13 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="button" class="btn btn-primary" aria-label="Left Align" ng-click="addEmptyTieIds()">
+                                    <button type="button" class="btn btn-border" aria-label="Left Align" ng-click="addEmptyTieIds()">
                                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                         Weitere ID eingeben
                                     </button>
                                 </div>
                                 <div class="col-md-4">
-                                    <button type="submit" class="btn btn-primary" aria-label="Left Align">
+                                    <button type="submit" class="btn btn-border" aria-label="Left Align">
                                         <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
                                         CSV hochladen
                                     </button>
@@ -387,17 +406,17 @@
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <button type="button" class="btn btn-primary bull" aria-label="Left Align" ng-click="initializeVisualisation()">
+                                            <button type="button" class="btn btn-border bull" aria-label="Left Align" ng-click="initializeVisualisation()">
                                                 Absenden
                                             </button>
                                         </div>
                                         <div class="col-md-2 pull-right">
-                                            <button type="button" class="btn btn-primary bull" aria-label="Left Align" onclick="test.testJsonData()">
+                                            <button type="button" class="btn btn-border bull" aria-label="Left Align" onclick="test.testJsonData()">
                                                 TestData
                                             </button>
                                         </div>
                                         <div class="col-md-1 pull-right">
-                                            <button type="button" class="btn btn-primary bull" aria-label="Left Align" onclick="test.testInitializeVisualisation()">
+                                            <button type="button" class="btn btn-border bull" aria-label="Left Align" onclick="test.testInitializeVisualisation()">
                                                 Test
                                             </button>
                                         </div>
@@ -413,19 +432,54 @@
                 </div>
             </div>
         </div>
-
-    </div>
-    <!-- /.container -->
-
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <p>Copyright &copy; Your Website 2014</p>
+        
+        <div class="row" ng-show="nav.kontakt">
+            <div class="box">
+                <div class="col-md-12">
+                    
+                    <h1>Impressum</h1>
+                    <br>
+                    <h3>Visualisierung</h3>
+                    <p>
+                        Universität Bern<br>
+                        Institut für Wirtschaftsinformatik<br>
+                        Forschungsstelle Digitale Nachhaltigkeit<br>
+                        Engehaldenstrasse 8<br>
+                        3012 Bern<br>
+                        +41 31 631 47 71<br>
+                        <a href="http://digitale-nachhaltigkeit.unibe.ch" target="_blank">www.digitale-nachhaltigkeit.unibe.ch</a>
+                        <br>
+                        <br>
+                        <p>Dr. Matthias Stürmer <br>
+                        Oberassistent, Leiter Forschungsstelle Digitale Nachhaltigkeit <br>
+                        Office: +41 31 631 38 09<br>
+                        Sekretariat: +41 31 631 47 71<br>
+                        Mobile: +41 76 368 81 65<br>
+                        <a href="mailto:matthias.stuermer@iwi.unibe.ch">matthias.stuermer@iwi.unibe.ch</a>
+                    </p>
+                    <br>
+                    <h3>Back End</h3>
+                    <p>
+                        zazuko<br>
+                        <a href="http://www.zazuko.com/">http://www.zazuko.com</a><br>
+                        ..weitere Angaben..
+                    </p>
+                
                 </div>
             </div>
         </div>
-    </footer>
+
+        <footer>
+            <div class="container" id="impressum">
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <p ng-click="navigate('kontakt')"><a>Impressum</a></p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        
+    </div>
 
 
 

@@ -4,7 +4,8 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     //navigation
     $scope.nav = {
         eingabemaske: true,
-        resultat: false
+        resultat: false,
+        kontakt: false
     }
     
     //tie => tested infected entities
@@ -34,6 +35,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.hideSlaughterhouse = false;
     $scope.individualArrowWidth = false;
     $scope.appStarted = false;
+    $scope.appFinishedLoading = false;
     $scope.showProtectionZone = false;
     $scope.showMonitoringZone = false;
     $scope.showLayerPossibilities = false;
@@ -46,6 +48,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.navigate = function(page) {
         $scope.nav.eingabemaske = false;
         $scope.nav.resultat = false;
+        $scope.nav.kontakt = false;
         $scope.nav[page] = true;
     };
     

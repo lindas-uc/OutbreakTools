@@ -262,6 +262,14 @@ svg {
     padding-right: 20px;
 }
 
+#impressum p{
+    cursor: pointer;
+}
+
+.btn.btn-border {
+    border: 1px solid #8e8e8e;
+}
+
 
 
 
