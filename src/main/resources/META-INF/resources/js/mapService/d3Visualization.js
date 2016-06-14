@@ -161,7 +161,7 @@ d3Vis = {
         });
 
         function circleFilter(business) {
-            return business.businessType.localeCompare("Viehmarkt") == 0 || $scope.showDifferentForms == false;
+            return business.businessType.localeCompare("Viehmarkt") == 0 || business.businessType.localeCompare("missing_businesstype") == 0 || $scope.showDifferentForms == false;
         }
 
         //remove all paths. Change maybe if performance is bad
@@ -320,8 +320,9 @@ d3Vis = {
 
 
         //place svg element
-        d3Vis.svg.attr("width", topRight[0] - bottomLeft[0])
-            .attr("height", bottomLeft[1] - topRight[1])
+
+        d3Vis.svg.attr("width", topRight[0] - bottomLeft[0] + 300)
+            .attr("height", bottomLeft[1] - topRight[1] + 300)
             .style("margin-left", bottomLeft[0] + "px")
             .style("margin-top", topRight[1] + "px");
 
@@ -568,8 +569,9 @@ d3Vis = {
     },
 
 
-    drawSlider: function(values, $scope) {
+    drawSlider: function(values) {
 
+        var $scope = d3Vis.$scope;
         $("#slider").empty();
 
         //draw slider
@@ -595,12 +597,15 @@ d3Vis = {
         }
     },
 
-    setAnimation: function($scope) {
+    setAnimation: function() {
+
+        var $scope = d3Vis.$scope;
 
         //set animation
         //WORKING. Change override of slider. Make WEEK_IN_MILLISECONDS generic!
         var interval;
         var WEEK_IN_MILLISECONDS = 86400000 * 7;
+        var THREE_DAYS_IN_MILLISECONDS = 86400000 * 3;
         d3.select("#startAnimation").on("click", function() {
 
             //stop animation if it's already running
@@ -616,12 +621,12 @@ d3Vis = {
                 $scope.filterStartDateMilliseconds = $scope.startDateMilliseconds;
                 //start a new animation if already selected whole date range
                 if ($scope.filterEndDateMilliseconds == $scope.endDateMilliseconds)
-                    $scope.filterEndDateMilliseconds = $scope.startDateMilliseconds + WEEK_IN_MILLISECONDS;
+                    $scope.filterEndDateMilliseconds = $scope.startDateMilliseconds + THREE_DAYS_IN_MILLISECONDS;
             });
             interval = setInterval(function() {
                 //animation week by week
                 //angular calls the update() after changing milliseconds
-                if ($scope.endDateMilliseconds - WEEK_IN_MILLISECONDS < $scope.filterEndDateMilliseconds) {
+                if ($scope.endDateMilliseconds - THREE_DAYS_IN_MILLISECONDS < $scope.filterEndDateMilliseconds) {
                     $scope.filterEndDateMilliseconds = $scope.endDateMilliseconds;
                     d3Vis.drawSlider([$scope.filterStartDateMilliseconds, $scope.filterEndDateMilliseconds]);
                     //break interval
@@ -630,10 +635,10 @@ d3Vis = {
                     $scope.$apply();
                 } else {
                     $scope.$apply(function() {
-                        $scope.filterEndDateMilliseconds = $scope.filterEndDateMilliseconds + WEEK_IN_MILLISECONDS;
+                        $scope.filterEndDateMilliseconds = $scope.filterEndDateMilliseconds + THREE_DAYS_IN_MILLISECONDS;
                     });
                     $("#slider").empty();
-                    d3Vis.drawSlider([$scope.filterStartDateMilliseconds, $scope.filterEndDateMilliseconds],$scope);
+                    d3Vis.drawSlider([$scope.filterStartDateMilliseconds, $scope.filterEndDateMilliseconds]);
                 }
             },300);
         });

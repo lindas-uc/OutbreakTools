@@ -3,8 +3,8 @@ olMap = {
 
     layerName: "",
     layer: null,
-    loadLayerRunning: false,
     map: null,
+    noChange: false,
 
     preconfigureOpenLayers: function () {
         // Add the LV03 projection as it is not defined in OL
@@ -80,12 +80,14 @@ olMap = {
         olMap.layerName = "";
         olMap.addWMTSLayer(layerName, WMTSLayers[layerName].wmts_layer_options);
         olMap.map.setOptions({restrictedExtent: WMTSLayers[layerName].restrictedExtent});
+        olMap.noChange = true;
         olMap.map.zoomTo(zoom);
-        olMap.loadLayerRunning = false;
+        setTimeout(function() {
+            olMap.noChange = false;
+        },300);
     },
 
     changeWMTSLayerAfterCheck: function (layerName, obj) {
-        olMap.loadLayerRunning = true;
         $(".activeCircle").removeClass('activeCircle');
         $(obj).addClass('activeCircle');
 
@@ -100,8 +102,7 @@ olMap = {
     },
 
     startEventOnZoom: function() {
-        if (!olMap.loadLayerRunning) {
-            olMap.loadLayerRunning = true;
+        if (!olMap.noChange) {
             var zoom = olMap.map.getZoom();
             var map = $("#map");
             if (zoom != 0) {

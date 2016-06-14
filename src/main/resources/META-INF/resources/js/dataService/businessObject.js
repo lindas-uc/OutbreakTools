@@ -98,7 +98,7 @@ function  Business(id, URI) {
         var obj = this;
 
         //delete the following line
-        this.businessType = translateBusinessType("loeschen");
+       // this.businessType = translateBusinessType("loeschen");
 
         if (this.businessType == null) {
             $.ajax({
@@ -109,15 +109,21 @@ function  Business(id, URI) {
                     +"{"+obj.URI+" <http://blv.ch/cat> ?o}"
                 }
             }).then(function(data) {
-                data = translateBusinessType(data["results"]["bindings"][0]["o"]["value"]);
-                obj.businessType = data;
-                callback(obj.businessType);
+                try {
+                    data = translateBusinessType(data["results"]["bindings"][0]["o"]["value"]);
+                    obj.businessType = data;
+                } catch (err) {
+                    console.log("no businesstype found");
+                    obj.businessType = "missing_businesstype";
+                } finally {
+                    callback(obj.businessType);
+                }
+
             });
 
         } else {
             callback(this.businessType);
         }
-
 
         function translateBusinessType(uri) {
             var value = parseInt(obj.id) % 4;
