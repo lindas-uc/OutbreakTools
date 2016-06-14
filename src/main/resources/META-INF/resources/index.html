@@ -130,7 +130,7 @@
             </div>
         </nav>-->
 
-        <div class="row" ng-show="(nav.resultat && appFinishedLoading)">
+        <div class="row" ng-show="(nav.resultat && appFinishedLoading && !noResults)">
             <div class="box">
                 <div class="col-lg-9 text-center">
                     <div id="slider"></div>
@@ -183,7 +183,7 @@
             </div>
         </div>
 
-        <div class="row" ng-show="(nav.resultat && appFinishedLoading)" >
+        <div class="row" ng-show="(nav.resultat && appFinishedLoading && !noResults)" >
             <div class="box">
                 <div class="col-lg-12 text-center">
                     <div id="map">
@@ -196,11 +196,11 @@
             </div>
         </div>
 
-        <div class="row dataResults" ng-show="(nav.resultat && appFinishedLoading)">
+        <div class="row dataResults" ng-show="(nav.resultat && appFinishedLoading && !noResults)">
 
             <div class="box">
 
-            <nav class="navbar navbar-default">
+            <nav class="navbar navbar-default navbar-data">
                 <div class="container-fluid">
                     <!-- Brand and toggle get grouped for better mobile display -->
                     <div class="navbar-header">
@@ -210,15 +210,15 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="#">Brand</a>
                     </div>
+                    <a class="navbar-brand">Daten</a>
 
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
                             <li ng-click="changeDataTable('dataTable1')" ng-hide="dataTable.dataTable1"><span>Bewegungen</span></li>
                             <li ng-click="changeDataTable('dataTable1')" ng-show="dataTable.dataTable1" class="activeDataTable"><span>Bewegungen</span></li>
-                            <li ng-click="changeDataTable('dataTable2')" ng-hide="dataTable.dataTable2"><span>Betriebe</span></li>
+                            <li ng-click="changeDataTable('dataTable2')" ng-hide="dataTable.dataTable2"><span>Zielbetriebe</span></li>
                             <li ng-click="changeDataTable('dataTable2')" ng-show="dataTable.dataTable2" class="activeDataTable"><span>Zielbetriebe</span></li>
                         </ul>
                     </div>
@@ -226,9 +226,9 @@
             </nav>
 
                 <div class="col-xs-12" ng-show="dataTable.dataTable1">
-                    <h2>Moves</h2>
+                    <h2>Bewegungen</h2>
                     <br>
-                    <button class="btn" export-to-csv>Download as CSV</button>
+                    <button class="btn btn-absolute" export-to-csv>Download as CSV</button>
                     <table class="table table-striped">
                         <thead>
                         <tr>
@@ -286,8 +286,16 @@
                 </div>
             </div>
         </div>
+
+        <div class="row" ng-show="(noResults && nav.resultat)">
+            <div class="box">
+                <div class="col-md-12">
+                    <p>Zu dieser Abfrage konnten keine Bewegungen gefunden werden. Bitte ändern Sie die Abfrage</p>
+                </div>
+            </div>
+        </div>
         
-        <div class="row loading" ng-show="(appStarted && !appFinishedLoading)">
+        <div class="row loading" ng-show="(appStarted && !appFinishedLoading && !noResults)">
             <div class="box">
                 <div class="col-md-12">
                     <center> 
@@ -403,6 +411,16 @@
                                     </div>
                             </div>
                             <div class="row margin-top-plus">
+                                <div class="col-lg-2">
+                                    <input id="toggleForwardTracing" type="checkbox" ng-model="forwardTracing" ng-checked="forwardTracing"/>
+                                    <label for="toggleForwardTracing">Forward tracing</label>
+                                </div>
+                                <div class="col-lg-2">
+                                    <input id="toggleBackwardTracing" type="checkbox" ng-model="forwardTracing" ng-checked="!forwardTracing" ng-true-value="false" ng-false-value="true"/>
+                                    <label for="toggleBackwardTracing">Backward tracing</label>
+                                </div>
+                            </div>
+                            <div class="row margin-top-plus">
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-2">
@@ -419,10 +437,6 @@
                                             <button type="button" class="btn btn-border bull" aria-label="Left Align" onclick="test.testInitializeVisualisation()">
                                                 Test
                                             </button>
-                                        </div>
-                                        <div class="col-lg-2 pull-right">
-                                            <input id="toggeForwardTracing" type="checkbox" ng-model="forwardTracing" ng-checked="forwardTracing"/>
-                                            <label for="toggeForwardTracing">Forward tracing</label>
                                         </div>
                                     </div>
                                 </div>

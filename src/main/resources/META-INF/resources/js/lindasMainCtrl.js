@@ -9,9 +9,9 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     }
     
     //tie => tested infected entities
-    $scope.tieIds = new Array({id:5112,valid:true});
+    $scope.tieIds = new Array({id:34155,valid:true});
     $scope.startDate = "01/01/2012";
-    $scope.endDate = "31/01/2012";
+    $scope.endDate = "10/02/2012";
     $scope.startDateMilliseconds = 0;
     $scope.endDateMilliseconds = 0;
     $scope.value = "initialize";
@@ -44,6 +44,8 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.forwardTracing = true;
 
     $scope.dataInitialisator = dataInitialisator;
+
+    $scope.noResults = false;
     
     $scope.navigate = function(page) {
         $scope.nav.eingabemaske = false;
@@ -102,17 +104,27 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
 
     //convert startDate to Milliseconds since 01.01.1970
     $scope.$watch('startDate',function() {
-        $scope.startDateMilliseconds = moment($scope.startDate,"DD/MM/YYYY").toDate().getTime();
+        $scope.getMillisecondsStartDate();
     });
 
     //convert endDate to Milliseconds since 01.01.1970
     $scope.$watch('startDate',function() {
-        $scope.endDateMilliseconds = moment($scope.endDate,"DD/MM/YYYY").toDate().getTime();
+        $scope.getMillisecondsEndDate();
     });
+
+    $scope.getMillisecondsEndDate = function() {
+        $scope.endDateMilliseconds = moment($scope.endDate, "DD/MM/YYYY").toDate().getTime();
+    };
+
+    $scope.getMillisecondsStartDate = function() {
+        $scope.startDateMilliseconds = moment($scope.startDate,"DD/MM/YYYY").toDate().getTime();
+    };
 
     $scope.initializeVisualisation = function(forwardTracing) {
         console.log("start Visualization");
         $scope.appStarted = true;
+        $scope.getMillisecondsEndDate();
+        $scope.getMillisecondsStartDate();
 
         //validate date
         if ((validator.validateDate($scope.startDate)) || (validator.validateDate($scope.endDate))) {
@@ -155,10 +167,18 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
             $scope.data = moveArray;
             $scope.originalData = moveArray;
             console.log($scope.data);
-            $timeout(function() {
-                map.initializeMap($scope.startDateMilliseconds, $scope.endDateMilliseconds, $scope);
-            },50);
-            //add timeout. otherwise svg have not the right size
+
+            if ($scope.data.length == 0) {
+                $scope.noResults = true;
+                $scope.appFinishedLoading = true;
+                $scope.$apply();
+            } else {
+                $scope.noResults = false;
+                //add timeout. otherwise svg have not the right size
+                $timeout(function() {
+                    map.initializeMap($scope.startDateMilliseconds, $scope.endDateMilliseconds, $scope);
+                },50);
+            }
         });
     };
 
@@ -183,5 +203,9 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
 
     $scope.changeForwardTracing = function() {
         ($scope.forwardTracing) ? $scope.forwardTracing = false : $scope.forwardTracing = true;
+    };
+    
+    $scope.toggleForwardTracing = function(forward) {
+        $scope.forwardTracing = forward;
     };
 });

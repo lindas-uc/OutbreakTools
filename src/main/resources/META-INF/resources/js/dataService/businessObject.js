@@ -64,7 +64,10 @@ function  Business(id, URI) {
                             data = data["results"]["bindings"][0]["wtk"]["value"];
                             data = data.substring(data.search("POINT") + 8, data.length - 2);
                             data = data.split(" ");
+                            data[0] = parseInt(data[0]);
+                            data[1] = parseInt(data[1]);
                             obj.coordinates = data;
+                            obj.openLayersLonLat = new OpenLayers.LonLat(data);
                             callback(obj.coordinates);
                             //didn't found coordinates. return random coordinates
                         } catch (err) {

@@ -81,13 +81,13 @@ d3Vis = {
         d3Vis.g4 = d3Vis.svg.append("g");
         d3Vis.g3 = d3Vis.svg.append("g");
         //if forwardtracing, startingsites are fromBusiness, so they have to lie on top
-        if ($scope.forwardTracing) {
+/*        if ($scope.forwardTracing) {
             d3Vis.g = d3Vis.svg.append("g");
             d3Vis.g2 = d3Vis.svg.append("g");
-        } else {
+        } else {*/
             d3Vis.g2 = d3Vis.svg.append("g");
             d3Vis.g = d3Vis.svg.append("g");
-        }
+        // }
 
         //add defs for marker-end to svg element
         d3Vis.marker = d3Vis.svg.append("defs").append("marker");

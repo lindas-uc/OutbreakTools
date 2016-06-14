@@ -108,61 +108,57 @@ polygon {fill:none; stroke:black; stroke-width:1px;}
 
 .circleToFarm {
     stroke: #3a3296;
-    opacity: 0.6;
-    fill: #000000;
+    fill: #333333;
     cursor: pointer !important;
 }
 
-.startingSite {
+.circleFromFarm.startingSite {
     stroke: #3a3296;
-    opacity: 0.6;
+    fill: #d1b925;
+    cursor: pointer !important;
+}
+
+.circleToFarm.startingSite {
+    stroke: #3a3296;
     fill: #d1b925;
     cursor: pointer !important;
 }
 
 .circleToFarm:hover {
     stroke: black;
-    opacity: 0.6;
     fill: red;
     cursor: pointer !important;
 }
 
 .circleFromFarm {
     stroke: black;
-    opacity: 0.6;
+    fill: #333333;
     cursor: pointer !important;
 }
 
 .circleFromFarm:hover {
     stroke: black;
-    opacity: 0.6;
     fill: red;
     cursor: pointer !important;
 }
 
 .pathToFarm {
-    stroke: black;
-    opacity: 0.6;
-    fill: black;
+    fill: #333333;
     cursor: pointer !important;
 }
 
 .pathToFarm:hover {
-    stroke: black;
-    opacity: 0.6;
     fill: red;
     cursor: pointer !important;
 }
 
 .pathFromFarm {
-    stroke: black;
-    opacity: 0.6;
+    fill: #333333;
     cursor: pointer !important;
 }
 
 .pathFromFarm:hover {
     stroke: black;
-    opacity: 0.6;
     fill: red;
     cursor: pointer !important;
 }
@@ -250,6 +246,11 @@ svg {
     border-bottom: none;
 }
 
+.navbar-data li {
+    padding-top: 15px !important;
+    height: 48px;
+}
+
 #logo_suisse {
     
 }
@@ -268,6 +269,16 @@ svg {
 
 .btn.btn-border {
     border: 1px solid #8e8e8e;
+}
+
+.btn-absolute {
+    position: absolute;
+    top: 20px;
+    right: 0px;
+}
+
+.btn:hover {
+    border: 1px solid #5c5c5c;
 }
 
 
