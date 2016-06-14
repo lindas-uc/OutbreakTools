@@ -44,15 +44,15 @@ d3Vis = {
         .attr('class', 'd3-tip')
         .offset([-10, 0])
         .html(function (d) {
-            return "ID: " + d.toBusiness.id + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>Betriebsart: "+d.fromBusiness.businessType +"<br>weitere Attribute";
+            return "ID: " + d.fromBusiness.id + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>Betriebsart: "+d.fromBusiness.businessType +"<br>weitere Attribute";
         }),
 
-    tip_connections: d3.tip()
-        .attr('class', 'd3-tip')
-        .offset([-10, 0])
-        .html(function (d) {
-            return "From: " + d.fromBusiness.id + "<br>To: " + d.toBusiness.id + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>weitere Attribute";
-        }),
+//    tip_connections: d3.tip()
+//        .attr('class', 'd3-tip')
+//        .offset([-10, 0])
+//        .html(function (d) {
+//            return "From: " + d.fromBusiness.id + "<br>To: " + d.toBusiness.id + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>weitere Attribute";
+//        }),
 
 
     drawVisualization: function (overlay, bounds, $scope, map) {
@@ -196,6 +196,7 @@ d3Vis = {
             .attr("class", "pathToFarm")
             //.attr("fill", function(d) {return fillScale(d.value)})
             .on("mouseenter", function (d) {
+                hideArrowTips();
                 tip_to_location.show(d);
             })
             .on("mouseleave", function (d) {
@@ -221,6 +222,7 @@ d3Vis = {
                     return "circleFromFarm";
             })
             .on("mouseenter", function (d) {
+                hideArrowTips();
                 tip_from_location.show(d);
             })
             .on("mouseleave", function (d) {
@@ -239,6 +241,11 @@ d3Vis = {
         d3Vis.arrows = d3Vis.g3.selectAll(".connection")
             .data(data);
 
+        //do this on the right place
+        var tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
         d3Vis.arrows.enter()
             .append("line")
             .attr("stroke-width", function(d) {
@@ -249,12 +256,22 @@ d3Vis = {
             })
             .attr("class", "connection")
             .attr("marker-end", "url(#markerArrow)")
-            .on("mouseenter", function (d) {
-                //tip_connections.show(d);
+            .on("click", function (d) {
+                tooltip.transition().duration(200).style("opacity", .9);
+                tooltip.html(function() {
+                    var str = "Von ID: " + d.fromBusiness.id + "<br>Zu ID: " + d.toBusiness.id + "<br>Anzahl Tiere: "+d.numberAnimals;
+                    return str;
+                })
+                    .style("left", (d3.event.pageX + 20) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
             })
-            .on("mouseleave", function (d) {
-               // tip_connections.hide(d);
+            .on("mouseout", function (d) {
+                hideArrowTips();
             });
+        
+        function hideArrowTips() {
+            d3.selectAll(".tooltip").style("opacity",0);
+        }
 
         d3Vis.arrows
             .transition()
@@ -343,115 +360,119 @@ d3Vis = {
         });
 
 
-        d3Vis.circlesToFarm.attr("cx", function (d) {
-                return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
-            })
-            .attr("cy", function (d) {
-                return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
-            });
-
-        d3Vis.circlesToFarm.transition().attr("r", d3Vis.r);
-
-        d3Vis.pathsFromFarm.attr("d", function (d) {
-            if (d.fromBusiness.businessType.localeCompare("Schlachthof") == 0)
-                return calculateTrianglePath(d.fromBusiness);
-            else if (d.fromBusiness.businessType.localeCompare("Alpung") == 0)
-                return calculateRectanglePath(d.fromBusiness);
-            else if (d.fromBusiness.businessType.localeCompare("Tierhaltung") == 0)
-                return calculateRectangleRotatedPath(d.fromBusiness);
-            });
-
-        d3Vis.circlesFromFarm.attr("cx", function (d) {
-                return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0]
-            })
-            .attr("cy", function (d) {
-                return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[1]
-            });
-
-        d3Vis.arrows.attr("x1", function (d) {
-                return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0]
-            })
-            .attr("y1", function (d) {
-                return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[1]
-            })
-            .attr("x2", function (d) {
-                return newXPositionAtCircleRadius(project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0],
-                    project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[1],
-                    project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0],
-                    project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1],
-                    (r + markerHeight + markerMargin));
-            })
-            .attr("y2", function (d) {
-                return newYPositionAtCircleRadius(project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0],
-                    project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[1],
-                    project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0],
-                    project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1],
-                    (r + markerHeight + markerMargin));
-            });
-
-        /* DRAW PROTECTION ZONE */
-
-        if (d3Vis.calculateIfMonitoringZoneNeeded()) {
-
-            var rMon = Math.round(d3Vis.calculateTenKmInPixel() / 2);
-
-            var monitoringZones = d3Vis.g4.selectAll(".monitoringZone")
-                .data(data);
-
-            monitoringZones.enter()
-                .append("circle")
-                .attr("class", "monitoringZone")
-                .attr("cx", function (d) {
+        try {
+            d3Vis.circlesToFarm.attr("cx", function (d) {
                     return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
                 })
                 .attr("cy", function (d) {
                     return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
-                })
-                .attr("r", rMon);
+                });
 
-            monitoringZones.attr("cx", function (d) {
-                return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
-            })
+            d3Vis.circlesToFarm.transition().attr("r", d3Vis.r);
+
+            d3Vis.pathsFromFarm.attr("d", function (d) {
+                if (d.fromBusiness.businessType.localeCompare("Schlachthof") == 0)
+                    return calculateTrianglePath(d.fromBusiness);
+                else if (d.fromBusiness.businessType.localeCompare("Alpung") == 0)
+                    return calculateRectanglePath(d.fromBusiness);
+                else if (d.fromBusiness.businessType.localeCompare("Tierhaltung") == 0)
+                    return calculateRectangleRotatedPath(d.fromBusiness);
+                });
+
+            d3Vis.circlesFromFarm.attr("cx", function (d) {
+                    return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0]
+                })
                 .attr("cy", function (d) {
-                    return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
+                    return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[1]
+                });
+
+            d3Vis.arrows.attr("x1", function (d) {
+                    return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0]
                 })
-                .attr("r", rMon);
+                .attr("y1", function (d) {
+                    return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[1]
+                })
+                .attr("x2", function (d) {
+                    return newXPositionAtCircleRadius(project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0],
+                        project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[1],
+                        project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0],
+                        project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1],
+                        (r + markerHeight + markerMargin));
+                })
+                .attr("y2", function (d) {
+                    return newYPositionAtCircleRadius(project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0],
+                        project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[1],
+                        project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0],
+                        project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1],
+                        (r + markerHeight + markerMargin));
+                });
 
-            monitoringZones.exit().remove();
+            /* DRAW PROTECTION ZONE */
 
-            if (d3Vis.calculateIfProtectionZoneNeeded()) {
-                var rProt = Math.round((rMon * 3 / 10) / 2);
+            if (d3Vis.calculateIfMonitoringZoneNeeded()) {
 
-                var protectionZones = d3Vis.g4.selectAll(".protectionZone")
+                var rMon = Math.round(d3Vis.calculateTenKmInPixel() / 2);
+
+                var monitoringZones = d3Vis.g4.selectAll(".monitoringZone")
                     .data(data);
 
-                protectionZones.enter()
+                monitoringZones.enter()
                     .append("circle")
-                    .attr("class", "protectionZone")
+                    .attr("class", "monitoringZone")
                     .attr("cx", function (d) {
                         return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
                     })
                     .attr("cy", function (d) {
                         return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
                     })
-                    .attr("r", rProt);
+                    .attr("r", rMon);
 
-                protectionZones.attr("cx", function (d) {
+                monitoringZones.attr("cx", function (d) {
                     return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
                 })
                     .attr("cy", function (d) {
                         return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
                     })
-                    .attr("r", rProt);
+                    .attr("r", rMon);
 
-                protectionZones.exit().remove();
+                monitoringZones.exit().remove();
 
+                if (d3Vis.calculateIfProtectionZoneNeeded()) {
+                    var rProt = Math.round((rMon * 3 / 10) / 2);
+
+                    var protectionZones = d3Vis.g4.selectAll(".protectionZone")
+                        .data(data);
+
+                    protectionZones.enter()
+                        .append("circle")
+                        .attr("class", "protectionZone")
+                        .attr("cx", function (d) {
+                            return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
+                        })
+                        .attr("cy", function (d) {
+                            return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
+                        })
+                        .attr("r", rProt);
+
+                    protectionZones.attr("cx", function (d) {
+                        return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
+                    })
+                        .attr("cy", function (d) {
+                            return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
+                        })
+                        .attr("r", rProt);
+
+                    protectionZones.exit().remove();
+
+                } else {
+                    d3.selectAll(".protectionZone").remove();
+                }
             } else {
+                d3.selectAll(".monitoringZone").remove();
                 d3.selectAll(".protectionZone").remove();
             }
-        } else {
-            d3.selectAll(".monitoringZone").remove();
-            d3.selectAll(".protectionZone").remove();
+        } catch (err) {
+            console.log(err);
         }
 
         /*HELPER METHODS*/

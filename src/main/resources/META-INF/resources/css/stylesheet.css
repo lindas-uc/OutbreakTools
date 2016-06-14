@@ -106,8 +106,16 @@ polygon {fill:none; stroke:black; stroke-width:1px;}
     stroke: #484848;
 }
 
+.tooltip {
+    padding: 5px 15px 5px 15px;
+    background-color: #5f5f5f;
+    color: white;
+    font-size: bold;
+    pointer-events: none;
+}
+
 .circleToFarm {
-    stroke: #3a3296;
+    stroke: #e3e3e3;
     fill: #333333;
     cursor: pointer !important;
 }
@@ -131,7 +139,7 @@ polygon {fill:none; stroke:black; stroke-width:1px;}
 }
 
 .circleFromFarm {
-    stroke: black;
+    stroke: #e3e3e3;
     fill: #333333;
     cursor: pointer !important;
 }

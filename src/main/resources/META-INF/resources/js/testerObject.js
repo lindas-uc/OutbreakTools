@@ -19,6 +19,15 @@ var test = {
         (app.forwardTracing) ? test.testInitializeVisualisationForward() : test.testInitializeVisualisationBackward();
     },
 
+    loadBackwardSettings: function () {
+        var element = $("#lindasMainContainer");
+        var $scope = angular.element(element).scope();
+        $scope.startDate = "01/01/2012";
+        $scope.endDate = "10/01/2012";
+        $scope.forwardTracing = false;
+        $scope.tieIds = [{id:33360,valid:true}];
+        $scope.$apply();
+    },
 
     testInitializeVisualisationForward: function() {
         console.log("forward");

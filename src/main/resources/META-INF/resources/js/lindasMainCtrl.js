@@ -11,7 +11,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     //tie => tested infected entities
     $scope.tieIds = new Array({id:34155,valid:true});
     $scope.startDate = "01/01/2012";
-    $scope.endDate = "10/02/2012";
+    $scope.endDate = "20/02/2012";
     $scope.startDateMilliseconds = 0;
     $scope.endDateMilliseconds = 0;
     $scope.value = "initialize";
