@@ -12,6 +12,7 @@ d3Vis = {
     g2: null,
     g3: null,
     g4: null,
+    g5: null,
 
     //set markers
     marker: null,
@@ -47,12 +48,12 @@ d3Vis = {
             return "ID: " + d.fromBusiness.id + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>Betriebsart: "+d.fromBusiness.businessType +"<br>weitere Attribute";
         }),
 
-//    tip_connections: d3.tip()
-//        .attr('class', 'd3-tip')
-//        .offset([-10, 0])
-//        .html(function (d) {
-//            return "From: " + d.fromBusiness.id + "<br>To: " + d.toBusiness.id + "<br>Date: " + moment(d.date).format('DD.MM.YYYY') + "<br>weitere Attribute";
-//        }),
+    tip_startBusiness: d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function (d) {
+            return "STARTBETRIEB:<br>ID: " + d.id + "<br>Betriebsart: "+d.businessType +"<br>weitere Attribute";
+        }),
 
 
     drawVisualization: function (overlay, bounds, $scope, map) {
@@ -62,7 +63,7 @@ d3Vis = {
         d3.selectAll("defs").remove();
 
         //order $scope.data
-        $scope.data = d3Vis.putStartBusinessLast($scope.data);
+        //$scope.data = d3Vis.putStartBusinessLast($scope.data);
 
         d3Vis.$scope = $scope;
         d3Vis.data = $scope.data;
@@ -80,14 +81,9 @@ d3Vis = {
         //Add a G (group) element
         d3Vis.g4 = d3Vis.svg.append("g");
         d3Vis.g3 = d3Vis.svg.append("g");
-        //if forwardtracing, startingsites are fromBusiness, so they have to lie on top
-/*        if ($scope.forwardTracing) {
-            d3Vis.g = d3Vis.svg.append("g");
-            d3Vis.g2 = d3Vis.svg.append("g");
-        } else {*/
-            d3Vis.g2 = d3Vis.svg.append("g");
-            d3Vis.g = d3Vis.svg.append("g");
-        // }
+        d3Vis.g2 = d3Vis.svg.append("g");
+        d3Vis.g = d3Vis.svg.append("g");
+        d3Vis.g5 = d3Vis.svg.append("g");
 
         //add defs for marker-end to svg element
         d3Vis.marker = d3Vis.svg.append("defs").append("marker");
@@ -123,7 +119,7 @@ d3Vis = {
 
         var tip_from_location = d3Vis.tip_from_location;
         var tip_to_location = d3Vis.tip_to_location;
-        var tip_connections = d3Vis.tip_connections;
+        var tip_startBusiness = d3Vis.tip_startBusiness;
 
         //filter Data with start- and enddate in scope
         data = $scope.data;
@@ -168,20 +164,26 @@ d3Vis = {
         d3Vis.g.selectAll("path").remove();
         d3Vis.g2.selectAll("path").remove();
 
+        //CIRCLES AND PATHS TO AND FROM BUSINESS
+
         d3Vis.circlesToFarm = d3Vis.g.selectAll(".circleToFarm")
             .data(circleDataToFarm);
 
         d3Vis.pathsToFarm = d3Vis.g.selectAll(".pathToFarm")
             .data(pathDataToFarm);
 
+        d3Vis.circlesFromFarm = d3Vis.g2.selectAll(".circleFromFarm")
+            .data(circleDataFromFarm);
+
+        d3Vis.pathsFromFarm = d3Vis.g2.selectAll(".pathToFarm")
+            .data(pathDataFromFarm);
+
         d3Vis.circlesToFarm.enter()
             .append("circle")
-            .attr("class", function(d) {
-                if (d.toBusiness.startingSite)
-                    return "circleToFarm startingSite";
-                else
-                    return "circleToFarm";
+            .classed("noCentrality", function(d) {
+                return (d.toBusiness.centrality != 1 && $scope.showCentrality)
             })
+            .classed("circleToFarm", true)
             //.attr("fill", function(d) {return fillScale(d.value)})
             .attr("r", d3Vis.r)
             .on("mouseenter", function (d) {
@@ -203,24 +205,13 @@ d3Vis = {
                 tip_to_location.hide(d);
             });
 
-        d3Vis.circlesToFarm.exit().remove();
-        d3Vis.pathsToFarm.exit().remove();
-
-        d3Vis.circlesFromFarm = d3Vis.g2.selectAll(".circleFromFarm")
-            .data(circleDataFromFarm);
-
-        d3Vis.pathsFromFarm = d3Vis.g2.selectAll(".pathToFarm")
-            .data(pathDataFromFarm);
-
         d3Vis.circlesFromFarm.enter()
             .append("circle")
             .attr("r", d3Vis.r)
-            .attr("class", function(d) {
-                if (d.fromBusiness.startingSite)
-                    return "circleFromFarm startingSite";
-                else
-                    return "circleFromFarm";
+            .classed("noCentrality", function(d) {
+                return (d.fromBusiness.centrality != 1 && $scope.showCentrality)
             })
+            .classed("circleFromFarm", true)
             .on("mouseenter", function (d) {
                 hideArrowTips();
                 tip_from_location.show(d);
@@ -232,9 +223,18 @@ d3Vis = {
 
         d3Vis.pathsFromFarm.enter()
             .append("path")
-            .attr("class", "path");
+            .attr("class", "pathFromFarm")
           //  .attr("fill", function(d) {return fillScale(d.value)});
+            .on("mouseenter", function (d) {
+                hideArrowTips();
+                tip_to_location.show(d);
+            })
+            .on("mouseleave", function (d) {
+                tip_to_location.hide(d);
+            });
 
+        d3Vis.circlesToFarm.exit().remove();
+        d3Vis.pathsToFarm.exit().remove();
         d3Vis.circlesFromFarm.exit().remove();
         d3Vis.pathsFromFarm.exit().remove();
 
@@ -245,6 +245,8 @@ d3Vis = {
         var tooltip = d3.select("body").append("div")
             .attr("class", "tooltip")
             .style("opacity", 0);
+
+        //ARROWS
 
         d3Vis.arrows.enter()
             .append("line")
@@ -284,6 +286,49 @@ d3Vis = {
 
         d3Vis.arrows.exit().remove();
 
+
+        //STARTBUSINESSES
+        var startDataCircle = $scope.startBusiness.filter(function(d) {
+            return circleFilter(d);
+        });
+
+        var startDataPath = $scope.startBusiness.filter(function(d) {
+            return !(circleFilter(d));
+        });
+
+        d3Vis.startCircles = d3Vis.g5.selectAll(".startCircle")
+            .data(startDataCircle);
+
+        d3Vis.startPaths = d3Vis.g5.selectAll(".startPath")
+            .data(startDataPath);
+
+        d3Vis.startCircles.enter()
+            .append("circle")
+            .attr("class", "startingSite startCircle")
+            .attr("r", d3Vis.r)
+            .on("mouseenter", function (d) {
+                 tip_startBusiness.show(d);
+            })
+            .on("mouseleave", function (d) {
+                 tip_startBusiness.hide(d);
+            });
+
+        d3Vis.startPaths.enter()
+            .append("path")
+            .attr("class", "startingSite startPath")
+            .on("mouseenter", function (d) {
+                tip_startBusiness.show(d);
+            })
+            .on("mouseleave", function (d) {
+                tip_startBusiness.hide(d);
+            });
+
+        d3Vis.startCircles.exit().remove();
+        d3Vis.startPaths.exit().remove();
+
+
+        //CALL TOOLTIPS
+
         /* Invoke the tip in the context of your visualization */
 
         try {
@@ -297,7 +342,7 @@ d3Vis = {
             //do nothing. nothing bad went wrong
         }
         try {
-            //d3Vis.arrows.call(d3Vis.tip_connections);
+            d3Vis.arrows.call(d3Vis.tip_startBusiness);
         } catch (err) {
             //do nothing. nothing bad went wrong
         }
@@ -348,25 +393,28 @@ d3Vis = {
         d3Vis.g2.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
         d3Vis.g3.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
         d3Vis.g4.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
-
-
-        d3Vis.pathsToFarm.attr("d", function (d) {
-            if (d.toBusiness.businessType.localeCompare("Schlachthof") == 0)
-                return calculateTrianglePath(d.toBusiness);
-            else if (d.toBusiness.businessType.localeCompare("Alpung") == 0)
-                return calculateRectanglePath(d.toBusiness);
-            else if (d.toBusiness.businessType.localeCompare("Tierhaltung") == 0)
-                return calculateRectangleRotatedPath(d.toBusiness);
-        });
-
+        d3Vis.g5.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
 
         try {
+
+            d3Vis.pathsToFarm.attr("d", function (d) {
+                if (d.toBusiness.businessType.localeCompare("Schlachthof") == 0)
+                    return calculateTrianglePath(d.toBusiness);
+                else if (d.toBusiness.businessType.localeCompare("Alpung") == 0)
+                    return calculateRectanglePath(d.toBusiness);
+                else if (d.toBusiness.businessType.localeCompare("Tierhaltung") == 0)
+                    return calculateRectangleRotatedPath(d.toBusiness);
+            });
+
             d3Vis.circlesToFarm.attr("cx", function (d) {
                     return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
                 })
                 .attr("cy", function (d) {
                     return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
-                });
+                })
+                .classed("noCentrality", function(d) {
+                    return (d.toBusiness.centrality != 1 && d3Vis.$scope.showCentrality)
+            });
 
             d3Vis.circlesToFarm.transition().attr("r", d3Vis.r);
 
@@ -384,6 +432,25 @@ d3Vis = {
                 })
                 .attr("cy", function (d) {
                     return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[1]
+                })
+                .classed("noCentrality", function(d) {
+                    return (d.toBusiness.centrality != 1 && d3Vis.$scope.showCentrality)
+            });
+
+            d3Vis.startPaths.attr("d", function (d) {
+                if (d.businessType.localeCompare("Schlachthof") == 0)
+                    return calculateTrianglePath(d);
+                else if (d.businessType.localeCompare("Alpung") == 0)
+                    return calculateRectanglePath(d);
+                else if (d.businessType.localeCompare("Tierhaltung") == 0)
+                    return calculateRectangleRotatedPath(d);
+            });
+
+            d3Vis.startCircles.attr("cx", function (d) {
+                return project(d.coordinates[0], d.coordinates[1])[0]
+            })
+                .attr("cy", function (d) {
+                    return project(d.coordinates[0], d.coordinates[1])[1]
                 });
 
             d3Vis.arrows.attr("x1", function (d) {
@@ -571,7 +638,7 @@ d3Vis = {
         return difference;
     },
 
-    putStartBusinessLast: function(data) {
+    /*putStartBusinessLast: function(data) {
         console.log(data);
 
         for (var i = 0; i < data.length; i++) {
@@ -587,7 +654,7 @@ d3Vis = {
 
         console.log(data);
         return data;
-    },
+    },*/
 
 
     drawSlider: function(values) {
@@ -626,7 +693,7 @@ d3Vis = {
         //WORKING. Change override of slider. Make WEEK_IN_MILLISECONDS generic!
         var interval;
         var WEEK_IN_MILLISECONDS = 86400000 * 7;
-        var THREE_DAYS_IN_MILLISECONDS = 86400000 * 3;
+        var THREE_DAYS_IN_MILLISECONDS = 86400000;
         d3.select("#startAnimation").on("click", function() {
 
             //stop animation if it's already running
@@ -661,7 +728,7 @@ d3Vis = {
                     $("#slider").empty();
                     d3Vis.drawSlider([$scope.filterStartDateMilliseconds, $scope.filterEndDateMilliseconds]);
                 }
-            },300);
+            },600);
         });
     }
 };

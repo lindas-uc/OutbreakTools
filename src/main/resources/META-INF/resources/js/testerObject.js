@@ -25,7 +25,7 @@ var test = {
         $scope.startDate = "01/01/2012";
         $scope.endDate = "10/01/2012";
         $scope.forwardTracing = false;
-        $scope.tieIds = [{id:33360,valid:true}];
+        $scope.tieIds = [{id:33360,valid:true},{id:3782,valid:true},{id:28938,valid:true}];
         $scope.$apply();
     },
 
@@ -73,9 +73,10 @@ var test = {
         app.dataInitialisator = dataInitialisatorTestData;
 
         app.startDate = "01/01/2012";
-        app.endDate = "31/01/2012";
-        app.tieIds = [{id:5112,valid:true},{id:51122,valid:true}];
+        app.endDate = "10/01/2012";
+        app.tieIds = [{id:33360,valid:true},{id:3782,valid:true},{id:28938,valid:true}];
         app.forwardTracing = false;
+        app.showCentralityButton = true;
 
         //start watch cycle manaual
         app.$apply();

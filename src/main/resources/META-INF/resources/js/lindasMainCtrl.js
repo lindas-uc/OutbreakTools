@@ -34,12 +34,15 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.showDifferentForms = false;
     $scope.hideSlaughterhouse = false;
     $scope.individualArrowWidth = false;
+    $scope.showCentrality = false;
+
     $scope.appStarted = false;
     $scope.appFinishedLoading = false;
     $scope.showProtectionZone = false;
     $scope.showMonitoringZone = false;
     $scope.showLayerPossibilities = false;
     $scope.startBusiness = [];
+    $scope.showCentralityButton = false;
 
     $scope.forwardTracing = true;
 
@@ -81,17 +84,19 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     };
 
     //draw Visualization again if something in Settings change
-    $scope.$watchGroup(['filterStartDateMilliseconds','filterEndDateMilliseconds', 'hideSlaughterhouse', 'individualArrowWidth', 'showDifferentForms', 'showProtectionZone'], function(){
+    $scope.$watchGroup(['filterStartDateMilliseconds','filterEndDateMilliseconds', 'hideSlaughterhouse',
+        'individualArrowWidth', 'showDifferentForms', 'showProtectionZone', 'showCentrality'], function(){
+        
         if (!$scope.appStarted)
             return null;
 
         $scope.data = $scope.originalData.filter(function (d) {
             var date = d.date.getTime();
             if ($scope.hideSlaughterhouse)
-                return (date > $scope.filterStartDateMilliseconds && date < $scope.filterEndDateMilliseconds
+                return (date >= $scope.filterStartDateMilliseconds && date <= $scope.filterEndDateMilliseconds
                 && d.toBusiness.businessType.localeCompare("Schlachthof") != 0);
             else
-                return (date > $scope.filterStartDateMilliseconds && date < $scope.filterEndDateMilliseconds);
+                return (date >= $scope.filterStartDateMilliseconds && date <= $scope.filterEndDateMilliseconds);
         });
 /*        try {
             d3Vis.update($scope);
@@ -150,15 +155,20 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
             return null;
         }
 
+        //add business for every tieId
         for (var i = 0; i < $scope.tieIds.length; i++) {
             var business = new Business($scope.tieIds[i].id, idToURIConverter.convertIdToURI($scope.tieIds[i].id));
-            business.getMunicipality(function() {
-                business.getCoordinates(function() {});
-            });
-            business.getBusinessType(function() {});
-
             $scope.startBusiness.push(business);
+            console.log(business);
         }
+
+        //collect data for startbusinesses
+        $scope.startBusiness.forEach(function(b) {
+            b.getMunicipality(function() {
+                b.getCoordinates(function() {});
+            });
+            b.getBusinessType(function() {});
+        }) ;
 
         $scope.mapVisible = true;
         $scope.navigate('resultat');

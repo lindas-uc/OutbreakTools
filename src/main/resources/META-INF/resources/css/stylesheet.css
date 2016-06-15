@@ -95,6 +95,30 @@ polygon {fill:none; stroke:black; stroke-width:1px;}
     margin-top: 5.5%;
 }
 
+.headerrow {
+    height: 130px;
+    font-weight: bold;
+    font-size: 0.75em; 
+    font-family: "Frutiger Neue Bold", sans-serif;
+}
+
+.headerrow p:first-child {
+    margin-top: 33px;
+}
+
+#logo_suisse {
+    
+}
+
+#logo_suisse img {
+    border-right: 1px solid black;
+    width: 93%;
+    margin-top: 35px;
+    margin-left: 20px;
+    padding-right: 20px;
+}
+
+
 /*=================================================*/
 
 .connection {
@@ -120,18 +144,6 @@ polygon {fill:none; stroke:black; stroke-width:1px;}
     cursor: pointer !important;
 }
 
-.circleFromFarm.startingSite {
-    stroke: #3a3296;
-    fill: #d1b925;
-    cursor: pointer !important;
-}
-
-.circleToFarm.startingSite {
-    stroke: #3a3296;
-    fill: #d1b925;
-    cursor: pointer !important;
-}
-
 .circleToFarm:hover {
     stroke: black;
     fill: red;
@@ -150,7 +162,12 @@ polygon {fill:none; stroke:black; stroke-width:1px;}
     cursor: pointer !important;
 }
 
+.noCentrality {
+    fill: #9f9f9f;
+}
+
 .pathToFarm {
+    stroke: #e3e3e3;
     fill: #333333;
     cursor: pointer !important;
 }
@@ -161,11 +178,24 @@ polygon {fill:none; stroke:black; stroke-width:1px;}
 }
 
 .pathFromFarm {
+    stroke: #e3e3e3;
     fill: #333333;
     cursor: pointer !important;
 }
 
 .pathFromFarm:hover {
+    stroke: black;
+    fill: red;
+    cursor: pointer !important;
+}
+
+.startingSite {
+    stroke: #3a3296;
+    fill: #d1b925;
+    cursor: pointer !important;
+}
+
+.startingSite:hover {
     stroke: black;
     fill: red;
     cursor: pointer !important;
@@ -257,18 +287,6 @@ svg {
 .navbar-data li {
     padding-top: 15px !important;
     height: 48px;
-}
-
-#logo_suisse {
-    
-}
-
-#logo_suisse img {
-    border-right: 1px solid black;
-    width: 93%;
-    margin-top: 35px;
-    margin-left: 20px;
-    padding-right: 20px;
 }
 
 #impressum p{

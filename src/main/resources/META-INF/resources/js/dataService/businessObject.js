@@ -7,11 +7,12 @@ function  Business(id, URI) {
     this.openLayersLonLat = {};
     this.businessType = null;
     this.startingSite = false;
+    this.centrality = 0;
 
     this.getMunicipality = function(callback) {
         if (this.municipality == null) {
             var obj = this;
-
+            
             $.ajax({
                 url: "http://test.lindas-data.ch/sparql",
                 dataType: "json",
@@ -20,7 +21,6 @@ function  Business(id, URI) {
                     + "{" + obj.URI + " <https://gont.ch/municipality> ?o}"
                 }
             }).then(function (data) {
-                console.log(data);
                 try {
                     data = data["results"]["bindings"][0]["o"]["value"];
                     data = "<" + data + ">";

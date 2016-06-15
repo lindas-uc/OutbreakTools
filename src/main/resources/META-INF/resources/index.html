@@ -79,13 +79,13 @@
 <body>
     <div id="wrapper">
 
-    <div class="row">
+    <div class="row headerrow">
         <div class="col-md-3" id="logo_suisse">
             <img src="img/logo_suisse.png">
         </div>
         <div class="col-md-9">
-            <div class="brand">LINDAS</div>
-            <div class="address-bar">Showcase Linked Data: Ausbruchsabklärung von Tierseuchen</div>
+            <p>LINDAS<br>
+            Showcase Linked Data: Ausbruchsabklärung von Tierseuchen</p>
         </div>
     </div>
         
@@ -179,6 +179,15 @@
                 </div>
                 <div class="col-lg-2">
                     <p>Schutz- und Überwachungszonen zeigen</p>
+                </div>
+                <div ng-show="showCentralityButton">
+                    <div class="col-lg-1">
+                        <input type="checkbox" id="showCentrality" ng-model="showCentrality" ng-checked="showCentrality"/>
+                        <label for="showCentrality"></label>
+                    </div>
+                    <div class="col-lg-2">
+                        <p>Centrality zeigen</p>
+                    </div>
                 </div>
             </div>
         </div>
