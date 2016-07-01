@@ -14,7 +14,7 @@ function  Business(id, URI) {
             var obj = this;
             
             $.ajax({
-                url: "http://test.lindas-data.ch/sparql",
+                url: "https://test.lindas-data.ch/sparql",
                 dataType: "json",
                 data: {
                     query: "SELECT DISTINCT * FROM <http://test.lindas-data.ch/resource/animaltransports> WHERE "
@@ -51,7 +51,7 @@ function  Business(id, URI) {
 
                 this.getMunicipality(function (municipality) {
                     $.ajax({
-                        url: "http://lindas.zazuko.com/blazegraph/namespace/swisstopo/sparql",
+                        url: "https://lindas.zazuko.com/blazegraph/namespace/swisstopo/sparql",
                         dataType: "json",
                         data: {
                             query: "SELECT ?wtk WHERE { " +
@@ -102,7 +102,7 @@ function  Business(id, URI) {
 
         if (this.businessType == null) {
             $.ajax({
-                url: "http://test.lindas-data.ch/sparql",
+                url: "https://test.lindas-data.ch/sparql",
                 dataType: "json",
                 data: {
                     query: "SELECT DISTINCT * FROM <http://test.lindas-data.ch/resource/animaltransports> WHERE "
