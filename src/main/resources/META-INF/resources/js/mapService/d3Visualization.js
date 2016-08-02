@@ -23,7 +23,7 @@ d3Vis = {
     refY: 6,
 
     //set circle radius
-    r: 15,
+    r: 11,
 
     //elements
     circlesToFarm: null,
@@ -31,6 +31,8 @@ d3Vis = {
     pathsToFarm: null,
     arrows: null,
     $scope: null,
+
+    monitoringZoneData: [],
 
     //initialize tooltips
     //DO THIS FOR CONNECTIONS AND FROMFARM TO
@@ -191,6 +193,9 @@ d3Vis = {
             })
             .on("mouseleave", function (d) {
                 tip_to_location.hide(d);
+            })
+            .on("click", function(d) {
+                addOrRemoveMonitoringZone(d.toBusiness.coordinates);
             });
 
         d3Vis.pathsToFarm.enter()
@@ -203,6 +208,9 @@ d3Vis = {
             })
             .on("mouseleave", function (d) {
                 tip_to_location.hide(d);
+            })
+            .on("click", function(d) {
+                addOrRemoveMonitoringZone(d.toBusiness.coordinates);
             });
 
         d3Vis.circlesFromFarm.enter()
@@ -218,6 +226,9 @@ d3Vis = {
             })
             .on("mouseleave", function (d) {
                 tip_from_location.hide(d);
+            })
+            .on("click", function(d) {
+                addOrRemoveMonitoringZone(d.toBusiness.coordinates);
             });
            // .attr("fill", function(d) {return fillScale(d.value)});
 
@@ -231,12 +242,26 @@ d3Vis = {
             })
             .on("mouseleave", function (d) {
                 tip_to_location.hide(d);
+            })
+            .on("click", function(d) {
+                addOrRemoveMonitoringZone(d.toBusiness.coordinates);
             });
 
         d3Vis.circlesToFarm.exit().remove();
         d3Vis.pathsToFarm.exit().remove();
         d3Vis.circlesFromFarm.exit().remove();
         d3Vis.pathsFromFarm.exit().remove();
+
+        function addOrRemoveMonitoringZone(coordinates) {
+            var mData = d3Vis.monitoringZoneData;
+            if ($.inArray(coordinates, mData) >= 0) {
+                mData.splice($.inArray(coordinates, mData),1);
+            } else {
+                mData.push(coordinates);
+            }
+            olMap.zoomIntoMapIfNeeded(coordinates);
+            d3Vis.update(d3Vis.$scope);
+        }
 
         d3Vis.arrows = d3Vis.g3.selectAll(".connection")
             .data(data);
@@ -296,7 +321,7 @@ d3Vis = {
             return !(circleFilter(d));
         });
 
-        d3Vis.startCircles = d3Vis.g5.selectAll(".startCircle")
+/*        d3Vis.startCircles = d3Vis.g5.selectAll(".startCircle")
             .data(startDataCircle);
 
         d3Vis.startPaths = d3Vis.g5.selectAll(".startPath")
@@ -311,7 +336,10 @@ d3Vis = {
             })
             .on("mouseleave", function (d) {
                  tip_startBusiness.hide(d);
-            });
+            })
+             .on("click", function(d) {
+                addOrRemoveMonitoringZone(d.toBusiness.coordinates);
+             });
 
         d3Vis.startPaths.enter()
             .append("path")
@@ -321,10 +349,13 @@ d3Vis = {
             })
             .on("mouseleave", function (d) {
                 tip_startBusiness.hide(d);
-            });
+            })
+             .on("click", function(d) {
+                addOrRemoveMonitoringZone(d.toBusiness.coordinates);
+             });
 
         d3Vis.startCircles.exit().remove();
-        d3Vis.startPaths.exit().remove();
+        d3Vis.startPaths.exit().remove();*/
 
 
         //CALL TOOLTIPS
@@ -395,7 +426,7 @@ d3Vis = {
         d3Vis.g4.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
         d3Vis.g5.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
 
-        try {
+        //try {
 
             d3Vis.pathsToFarm.attr("d", function (d) {
                 if (d.toBusiness.businessType.localeCompare("Schlachthof") == 0)
@@ -437,7 +468,7 @@ d3Vis = {
                     return (d.toBusiness.centrality != 1 && d3Vis.$scope.showCentrality)
             });
 
-            d3Vis.startPaths.attr("d", function (d) {
+/*            d3Vis.startPaths.attr("d", function (d) {
                 if (d.businessType.localeCompare("Schlachthof") == 0)
                     return calculateTrianglePath(d);
                 else if (d.businessType.localeCompare("Alpung") == 0)
@@ -451,7 +482,7 @@ d3Vis = {
             })
                 .attr("cy", function (d) {
                     return project(d.coordinates[0], d.coordinates[1])[1]
-                });
+                });*/
 
             d3Vis.arrows.attr("x1", function (d) {
                     return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0]
@@ -481,24 +512,24 @@ d3Vis = {
                 var rMon = Math.round(d3Vis.calculateTenKmInPixel() / 2);
 
                 var monitoringZones = d3Vis.g4.selectAll(".monitoringZone")
-                    .data(data);
+                    .data(d3Vis.monitoringZoneData);
 
                 monitoringZones.enter()
                     .append("circle")
                     .attr("class", "monitoringZone")
                     .attr("cx", function (d) {
-                        return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
+                        return project(d[0], d[1])[0]
                     })
                     .attr("cy", function (d) {
-                        return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
+                        return project(d[0], d[1])[1]
                     })
                     .attr("r", rMon);
 
                 monitoringZones.attr("cx", function (d) {
-                    return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
+                    return project(d[0], d[1])[0]
                 })
                     .attr("cy", function (d) {
-                        return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
+                        return project(d[0], d[1])[1]
                     })
                     .attr("r", rMon);
 
@@ -508,24 +539,24 @@ d3Vis = {
                     var rProt = Math.round((rMon * 3 / 10) / 2);
 
                     var protectionZones = d3Vis.g4.selectAll(".protectionZone")
-                        .data(data);
+                        .data(d3Vis.monitoringZoneData);
 
                     protectionZones.enter()
                         .append("circle")
                         .attr("class", "protectionZone")
                         .attr("cx", function (d) {
-                            return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
+                            return project(d[0], d[1])[0]
                         })
                         .attr("cy", function (d) {
-                            return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
+                            return project(d[0], d[1])[1]
                         })
                         .attr("r", rProt);
 
                     protectionZones.attr("cx", function (d) {
-                        return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0]
+                        return project(d[0], d[1])[0]
                     })
                         .attr("cy", function (d) {
-                            return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
+                            return project(d[0], d[1])[1]
                         })
                         .attr("r", rProt);
 
@@ -538,9 +569,9 @@ d3Vis = {
                 d3.selectAll(".monitoringZone").remove();
                 d3.selectAll(".protectionZone").remove();
             }
-        } catch (err) {
+/*        } catch (err) {
             console.log(err);
-        }
+        }*/
 
         /*HELPER METHODS*/
 
@@ -568,7 +599,7 @@ d3Vis = {
 
         function calculateTrianglePath(d) {
             //a = length of triangle side
-            var a = 30;
+            var a = 24;
             var h = Math.round(Math.sqrt(a*a/2));
             var x = project(d.coordinates[0], d.coordinates[1])[0];
             var y = project(d.coordinates[0], d.coordinates[1])[1];
@@ -578,7 +609,7 @@ d3Vis = {
         }
 
         function calculateRectanglePath(d) {
-            var a = 20;
+            var a = 15.5;
             var x = project(d.coordinates[0], d.coordinates[1])[0];
             var y = project(d.coordinates[0], d.coordinates[1])[1];
 
@@ -587,7 +618,7 @@ d3Vis = {
         }
 
         function calculateRectangleRotatedPath(d) {
-            var a = 30;
+            var a = 22;
             var x = project(d.coordinates[0], d.coordinates[1])[0];
             var y = project(d.coordinates[0], d.coordinates[1])[1];
 
@@ -605,7 +636,7 @@ d3Vis = {
 
         var tenKmInPixelThreshold = 102;
 
-        if (tenKmInPixelThreshold < d3Vis.calculateTenKmInPixel($scope) && this.$scope.showProtectionZone)
+        if (tenKmInPixelThreshold < d3Vis.calculateTenKmInPixel($scope))
             return true;
         else
             return false;
@@ -619,7 +650,7 @@ d3Vis = {
 
         var tenKmInPixelThreshold = 30;
 
-        if (tenKmInPixelThreshold < d3Vis.calculateTenKmInPixel($scope) && this.$scope.showMonitoringZone)
+        if (tenKmInPixelThreshold < d3Vis.calculateTenKmInPixel($scope))
             return true;
         else
             return false;

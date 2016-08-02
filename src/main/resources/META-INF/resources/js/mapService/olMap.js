@@ -124,6 +124,13 @@ olMap = {
             }
             olMap.map.zoomTo(zoom);
         }
+    },
+
+    zoomIntoMapIfNeeded: function (coordinates) {
+        if (olMap.getMap().getZoom() < 2) {
+            olMap.map.setCenter(new OpenLayers.LonLat(coordinates[0],coordinates[1]), 14);
+            olMap.map.zoomTo(3);
+        }
     }
     
     

@@ -38,8 +38,6 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
 
     $scope.appStarted = false;
     $scope.appFinishedLoading = false;
-    $scope.showProtectionZone = false;
-    $scope.showMonitoringZone = false;
     $scope.showLayerPossibilities = false;
     $scope.startBusiness = [];
     $scope.showCentralityButton = false;
@@ -49,6 +47,9 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.dataInitialisator = dataInitialisator;
 
     $scope.noResults = false;
+
+    $scope.selectedExample = "Beispiel auswählen";
+    $scope.timeoutSelectExample = false;
     
     $scope.navigate = function(page) {
         $scope.nav.eingabemaske = false;
@@ -85,7 +86,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
 
     //draw Visualization again if something in Settings change
     $scope.$watchGroup(['filterStartDateMilliseconds','filterEndDateMilliseconds', 'hideSlaughterhouse',
-        'individualArrowWidth', 'showDifferentForms', 'showProtectionZone', 'showCentrality'], function(){
+        'individualArrowWidth', 'showDifferentForms', 'showCentrality'], function(){
         
         if (!$scope.appStarted)
             return null;
@@ -218,4 +219,52 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.toggleForwardTracing = function(forward) {
         $scope.forwardTracing = forward;
     };
+    
+    $scope.selectExample = function(example) {
+        $scope.selectedExample = example;
+    };
+
+    //change button to 'Beispiel auswählen' if user changes the settings
+    $scope.$watchGroup(['startDate','endDate', 'forwardTracing'], function(){
+        if ($scope.selectedExample.localeCompare('Beispiel auswählen') != 0 && !$scope.timeoutSelectExample) {
+            $scope.selectedExample = 'Beispiel auswählen'
+        }
+    });
+
+    $scope.$watch('tieIds', function () {
+        if ($scope.selectedExample.localeCompare('Beispiel auswählen') != 0 && !$scope.timeoutSelectExample) {
+            $scope.selectedExample = 'Beispiel auswählen'
+        }
+    }, true);
+
+    $scope.$watch('selectedExample', function () {
+
+        //do this to stop automatic button text change
+        $scope.timeoutSelectExample = true;
+        setTimeout(function() {
+            $scope.timeoutSelectExample = false;
+        }, 100);
+
+        switch ($scope.selectedExample) {
+            case 'Forward#1':
+                $scope.startDate = "01/01/2012";
+                $scope.endDate = "05/01/2012";
+                $scope.tieIds = [{id:51396,valid:true}];
+                $scope.forwardTracing = true;
+                break;
+            case 'Backward#1':
+                $scope.startDate = "20/01/2012";
+                $scope.endDate = "01/02/2012";
+                $scope.tieIds = [{id:5112,valid:true},{id:51122,valid:true}];
+                $scope.forwardTracing = false;
+                break;
+            case 'Backward#2':
+                $scope.startDate = "01/01/2012";
+                $scope.endDate = "10/01/2012";
+                $scope.forwardTracing = false;
+                $scope.tieIds = [{id:33360,valid:true},{id:3782,valid:true},{id:28938,valid:true}];
+                break;
+        }
+    })
+
 });
