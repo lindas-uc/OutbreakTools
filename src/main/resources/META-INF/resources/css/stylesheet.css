@@ -48,7 +48,7 @@ body {
     right: 2%;
 }
 
-.btn-circle {
+#wrapper .btn-circle {
     width: 30px;
     height: 30px;
     text-align: center;
@@ -58,15 +58,15 @@ body {
     border-radius: 15px;
     border: 2px #5c5b5b solid !important;
 }
-.btn-circle.btn-lg {
+#wrapper .btn-circle.btn-lg {
     width: 50px;
     height: 50px;
-    padding: 10px 16px 10px 14px;
-    font-size: 18px;
+    padding: 10px 16px 10px 15.2px;
+    font-size: 16px;
     line-height: 1.33;
     border-radius: 25px;
 }
-.btn-circle.btn-xl {
+#wrapper .btn-circle.btn-xl {
     width: 70px;
     height: 70px;
     padding: 10px 16px;
@@ -311,6 +311,7 @@ svg {
 
 #impressum p{
     cursor: pointer;
+    font-size: 17px;
 }
 
 .btn.btn-border {

@@ -85,7 +85,6 @@ var test = {
             app.initializeVisualisation();
             app.$apply();
         },100);
-
         
     },
 

@@ -18,7 +18,7 @@ d3Vis = {
     marker: null,
     markerHeight: 13,
     markerWidth: 13,
-    markerMargin: 5,
+    markerMargin: 3,
     refX: 2,
     refY: 6,
 
@@ -116,7 +116,7 @@ d3Vis = {
                 .attr("d", "M2,2 L2,8 L6,6 L2,4");
         } else {
             d3Vis.marker.append("path")
-                .attr("d", "M2,2 L2,11 L10,6 L2,2");
+                .attr("d", "M2,2 L2,9 L9,6 L2,3");
         }
 
         var tip_from_location = d3Vis.tip_from_location;
