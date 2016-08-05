@@ -309,7 +309,7 @@
                         <fieldset>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <label>ID Betrieb:</label>
+                                    <label><strong>ID Betrieb:</strong></label>
                                 </div>
                             </div>
                             <div id="inputFieldID">
@@ -348,9 +348,10 @@
                             </div>
                             <div class="row" id="inputPeriod">
                                 <div class="col-md-12 paddingNull">
-                                    <label>Zeitraum:</label>
+                                    <label><strong>Zeitraum</strong>:</label>
                                         <div class="row">
                                             <div class='col-sm-4'>
+                                                <label>Von:</label>
                                                 <div class="form-group">
                                                     <div class='input-group date' id='datetimepicker1'>
                                                         <input type='text' class="form-control" placeholder="&lt;&lt;Datum von&gt;&gt;" ng-model="startDate" required valid-date/>
@@ -372,6 +373,7 @@
                                             });
                                             </script>
                                             <div class='col-sm-4'>
+                                                <label>Bis:</label>
                                                 <div class="form-group">
                                                     <div class='input-group date' id='datetimepicker2'>
                                                         <input type='text' class="form-control" placeholder="&lt;&lt;Datum bis&gt;&gt;" ng-model="endDate" required valid-date/>
@@ -393,6 +395,7 @@
                                             });
                                             </script>
                                             <div class='col-sm-4'>
+                                                <label>Anzahl Tage von Enddatum subtrahieren:</label>
                                                 <div class="form-group">
                                                     <div class='input-group' id="difference">
                                                         <input type='text' class="form-control" placeholder="&lt;&lt;Anzahl Tage (fakulatativ)&gt;&gt;" ng-model="difference"/>
