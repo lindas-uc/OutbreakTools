@@ -313,7 +313,7 @@ d3Vis = {
 
 
         //STARTBUSINESSES
-        var startDataCircle = $scope.startBusiness.filter(function(d) {
+        /*        var startDataCircle = $scope.startBusiness.filter(function(d) {
             return circleFilter(d);
         });
 
@@ -321,7 +321,7 @@ d3Vis = {
             return !(circleFilter(d));
         });
 
-/*        d3Vis.startCircles = d3Vis.g5.selectAll(".startCircle")
+        d3Vis.startCircles = d3Vis.g5.selectAll(".startCircle")
             .data(startDataCircle);
 
         d3Vis.startPaths = d3Vis.g5.selectAll(".startPath")
@@ -426,7 +426,7 @@ d3Vis = {
         d3Vis.g4.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
         d3Vis.g5.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
 
-        //try {
+        try {
 
             d3Vis.pathsToFarm.attr("d", function (d) {
                 if (d.toBusiness.businessType.localeCompare("Schlachthof") == 0)
@@ -569,9 +569,9 @@ d3Vis = {
                 d3.selectAll(".monitoringZone").remove();
                 d3.selectAll(".protectionZone").remove();
             }
-/*        } catch (err) {
+        } catch (err) {
             console.log(err);
-        }*/
+        }
 
         /*HELPER METHODS*/
 

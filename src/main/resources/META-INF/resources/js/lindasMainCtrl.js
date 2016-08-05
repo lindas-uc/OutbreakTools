@@ -18,6 +18,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     //difference in days between start- and enddate
     $scope.difference = null;
     $scope.dateInvalid = false;
+    $scope.showMultipleIdMessage = false;
     //set this to false at end
     $scope.mapVisible = false;
     $scope.settingsVisible = false;
@@ -34,6 +35,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.showDifferentForms = false;
     $scope.hideSlaughterhouse = false;
     $scope.individualArrowWidth = false;
+    $scope.showAllBusinesses = false;
     $scope.showCentrality = false;
 
     $scope.appStarted = false;
@@ -138,6 +140,13 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         } else {
             $scope.dateInvalid = true;
             console.log("Date invalid");
+            $scope.appStarted = false;
+            return null;
+        }
+
+        //check if more than one id in forward tracing
+        if ($scope.tieIds.length != 1 && $scope.forwardTracing) {
+            $scope.appStarted = false;
             return null;
         }
 
@@ -147,12 +156,14 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
                 $scope.tieIds[i].valid = true;
             } else {
                 console.debug("invalid Id");
+                $scope.appStarted = false;
                 $scope.tieIds[i].valid = false;
                 var invalid = true;
             }
         }
         if (invalid) {
             console.debug("Id invalid");
+            $scope.appStarted = false;
             return null;
         }
 

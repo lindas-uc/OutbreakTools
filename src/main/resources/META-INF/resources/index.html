@@ -154,32 +154,24 @@
             <div class="box">
                 <div class="col-lg-1">
                     <input type="checkbox" id="ToggleForms" ng-model="showDifferentForms" ng-checked="showDifferentForms"/>
-                    <label for="ToggleForms"></label>
-                </div>
-                <div class="col-lg-2">
-                    <p>Verschiedene Formen einblenden</p>
+                    <label for="ToggleForms"><p>Verschiedene Formen einblenden</p></label>
                 </div>
                 <div class="col-lg-1">
                     <input type="checkbox" id="toggleSchlachthoefe" ng-model="hideSlaughterhouse" ng-checked="hideSlaughterhouse" />
-                    <label for="toggleSchlachthoefe"></label>
-                </div>
-                <div class="col-lg-2">
-                    <p>Schlachthöfe ausblenden</p>
+                    <label for="toggleSchlachthoefe"><p>Schlachthöfe ausblenden</p></label>
                 </div>
                 <div class="col-lg-1">
                     <input type="checkbox" id="individualArrowWidth" ng-model="individualArrowWidth" ng-checked="individualArrowWidth" />
-                    <label for="individualArrowWidth"></label>
+                    <label for="individualArrowWidth">Pfeilstärke anhand Anzahl Tiere definieren</label>
                 </div>
-                <div class="col-lg-2">
-                    <p>Pfeilstärke anhand Anzahl Tiere definieren</p>
+                <div class="col-lg-1">
+                    <input type="checkbox" id="showAllBusinesses" ng-model="showAllBusinesses" ng-checked="showAllBusinesses"/>
+                    <label for="showAllBusinesses">Alle Betriebe anzeigen</label>
                 </div>
                 <div ng-show="showCentralityButton">
                     <div class="col-lg-1">
                         <input type="checkbox" id="showCentrality" ng-model="showCentrality" ng-checked="showCentrality"/>
-                        <label for="showCentrality"></label>
-                    </div>
-                    <div class="col-lg-2">
-                        <p>Centrality zeigen</p>
+                        <label for="showCentrality">Centrality zeigen</label>
                     </div>
                 </div>
             </div>
@@ -339,11 +331,11 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-2">
+                                <div class="col-md-6" ng-mouseenter="showMultipleIdMessage = true" ng-mouseleave="showMultipleIdMessage = false">
                                     <button type="button" class="btn btn-border" aria-label="Left Align" ng-click="addEmptyTieIds()">
                                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                         Weitere ID eingeben
-                                    </button>
+                                    </button>  <span ng-show="showMultipleIdMessage">(Momentan nur bei Backward tracing möglich)</span>
                                 </div>
                                 <!--<div class="col-md-4">
                                     <button type="submit" class="btn btn-border" aria-label="Left Align">
@@ -351,6 +343,9 @@
                                         CSV hochladen
                                     </button>
                                 </div>-->
+                            </div>
+                            <div class="row" style="margin-top:20px;">
+                                <div class="alert alert-danger" role="alert" ng-show="(tieIds.length != 1 && forwardTracing)">Momentan kann beim Forward tracing nur eine ID angegeben werden</div>
                             </div>
                             <div class="row" id="inputPeriod">
                                 <div class="col-md-12 paddingNull">
@@ -444,7 +439,7 @@
                                                 </ul>
                                             </div>
                                         </div>
-<!--                                        <div class="col-md-2 pull-right">
+                                        <div class="col-md-2 pull-right">
                                             <button type="button" class="btn btn-border bull" aria-label="Left Align" onclick="test.testJsonData()">
                                                 TestData
                                             </button>
@@ -453,7 +448,7 @@
                                             <button type="button" class="btn btn-border bull" aria-label="Left Align" onclick="test.loadBackwardSettings()">
                                                 Test Backward
                                             </button>
-                                        </div>-->
+                                        </div>
                                     </div>
                                 </div>
                             </div>
