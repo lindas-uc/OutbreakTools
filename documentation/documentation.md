@@ -48,4 +48,7 @@ Alles was mit der Visualisierung der Daten und Anzeigen der Karten zu tun hat, w
 -	***Vlt. Boundaries.json, boundaris2.json, dataEditTestData.js*** 
 
 ## Code-Ablauf
-
+Die User Eingaben im Inputfeld werden alle im lindasMainCtrl.js verarbeitet. Wenn auf den Button „absenden“ geklickt wird, wird die Funktion $scope.initializeVisualization() aufgerufen. Diese überprüft mithilfe des ValidatorServices die Eingaben. Falls alles korrekt ist, wird die Anfrage an den dataInitialisator weitergeleitet. Mithilfe des javaConnectors stellt dieser die Daten zusammen und parst sie in einen Array von moveObjects. Die businessObjects des moveArray erhalten über deren eigene Funktionen via SPARQL-Endpoint ihre Koordinaten, BusinessType und GemeindeURI. 
+Sobald alle Daten komplett sind, wird der Array an den lindasMainCtrl.js zurückgegeben und in $scope als Variable „data“ gespeichert. Eine Kopie davon wird mit Hilfe der Variable „originalData“ erstellt. 
+![The process of getting data](gettingData.PNG)
+Sobald diese Aktionen abgeschlossen sind, ruft $scope.initializeVisualization() die Funktion map.initializeMap() in mapService.js auf. 

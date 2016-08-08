@@ -60,6 +60,7 @@ function  Business(id, URI) {
                             "?S <http://www.opengis.net/ont/geosparql#asWKT> ?wtk}"
                         }
                     }).then(function (data) {
+                        console.log(data);
                        try {
                             data = data["results"]["bindings"][0]["wtk"]["value"];
                             data = data.substring(data.search("POINT") + 8, data.length - 2);
