@@ -28,6 +28,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.originalData = [];
     $scope.animationRunning = false;
     $scope.data = [];
+    $scope.allBusinessPoints = [];
     $scope.dataTable = {
         dataTable1: true,
         dataTable2: false,
@@ -277,5 +278,11 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
                 break;
         }
     })
+
+    angular.element(document).ready(function () {
+        loadAllBusinessPoints($scope);
+    })
+
+
 
 });
