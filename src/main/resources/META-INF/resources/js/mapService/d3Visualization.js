@@ -65,7 +65,7 @@ d3Vis = {
         d3.selectAll("defs").remove();
 
         //order $scope.data
-        //$scope.data = d3Vis.putStartBusinessLast($scope.data);
+        $scope.data = d3Vis.putStartBusinessLast($scope.data);
 
         d3Vis.$scope = $scope;
         d3Vis.data = $scope.data;
@@ -313,7 +313,7 @@ d3Vis = {
 
 
         //STARTBUSINESSES
-        /*        var startDataCircle = $scope.startBusiness.filter(function(d) {
+                var startDataCircle = $scope.startBusiness.filter(function(d) {
             return circleFilter(d);
         });
 
@@ -355,7 +355,7 @@ d3Vis = {
              });
 
         d3Vis.startCircles.exit().remove();
-        d3Vis.startPaths.exit().remove();*/
+        d3Vis.startPaths.exit().remove();
 
 
         //CALL TOOLTIPS
@@ -468,7 +468,7 @@ d3Vis = {
                     return (d.toBusiness.centrality != 1 && d3Vis.$scope.showCentrality)
             });
 
-/*            d3Vis.startPaths.attr("d", function (d) {
+            d3Vis.startPaths.attr("d", function (d) {
                 if (d.businessType.localeCompare("Schlachthof") == 0)
                     return calculateTrianglePath(d);
                 else if (d.businessType.localeCompare("Alpung") == 0)
@@ -482,7 +482,7 @@ d3Vis = {
             })
                 .attr("cy", function (d) {
                     return project(d.coordinates[0], d.coordinates[1])[1]
-                });*/
+                });
 
             d3Vis.arrows.attr("x1", function (d) {
                     return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0]
@@ -669,7 +669,7 @@ d3Vis = {
         return difference;
     },
 
-    /*putStartBusinessLast: function(data) {
+    putStartBusinessLast: function(data) {
         console.log(data);
 
         for (var i = 0; i < data.length; i++) {
@@ -685,7 +685,7 @@ d3Vis = {
 
         console.log(data);
         return data;
-    },*/
+    },
 
 
     drawSlider: function(values) {
