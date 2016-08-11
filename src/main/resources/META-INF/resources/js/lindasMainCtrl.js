@@ -37,6 +37,8 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.hideSlaughterhouse = false;
     $scope.individualArrowWidth = false;
     $scope.showAllBusinesses = false;
+    $scope.showAllBusinessesSettings = false;
+    $scope.maxAllBusinesses = 500;
     $scope.showCentrality = false;
 
     $scope.appStarted = false;
@@ -109,6 +111,17 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         }*/
         d3Vis.update($scope);
 
+    });
+
+    $scope.$watchGroup(['showAllBusinesses','maxAllBusinesses'], function() {
+
+        if (!$scope.appStarted)
+            return null;
+
+        if ($scope.showAllBusinesses)
+            loadAllBusinessPoints($scope, function() {d3Vis.update($scope)});
+        else
+            d3Vis.update($scope);
     });
 
     //convert startDate to Milliseconds since 01.01.1970
@@ -277,11 +290,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
                 $scope.tieIds = [{id:33360,valid:true},{id:3782,valid:true},{id:28938,valid:true}];
                 break;
         }
-    })
-
-    angular.element(document).ready(function () {
-        loadAllBusinessPoints($scope);
-    })
+    });
 
 
 

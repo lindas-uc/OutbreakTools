@@ -13,6 +13,7 @@ d3Vis = {
     g3: null,
     g4: null,
     g5: null,
+    g6: null,
 
     //set markers
     marker: null,
@@ -81,6 +82,7 @@ d3Vis = {
         div.selectAll("svg").remove();
         d3Vis.svg = div.append("svg");
         //Add a G (group) element
+        d3Vis.g6 = d3Vis.svg.append("g");
         d3Vis.g4 = d3Vis.svg.append("g");
         d3Vis.g3 = d3Vis.svg.append("g");
         d3Vis.g2 = d3Vis.svg.append("g");
@@ -395,23 +397,6 @@ d3Vis = {
         var bottomLeft = project(bounds.bottom, bounds.left),
             topRight = project(bounds.top, bounds.right);
 
-        /*
-        d3.json("js/mapService/boundaries2.json",function(collection) {
-            path = d3.geo.path().projection(project2);
-
-            //bounds2 = d3.geo.bounds(collection)
-
-            console.log(collection.geometries);
-            var feature = d3Vis.g4.selectAll("path")
-                .data(collection.geometries)
-                .enter().append("path");
-            d3Vis.g4.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
-            feature.attr("d",path)
-                .attr("class","boundaries");
-        });
-        */
-
-
         //place svg element
 
         d3Vis.svg.attr("width", topRight[0] - bottomLeft[0] + 300)
@@ -425,6 +410,7 @@ d3Vis = {
         d3Vis.g3.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
         d3Vis.g4.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
         d3Vis.g5.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
+        d3Vis.g6.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
 
         try {
 
@@ -573,6 +559,47 @@ d3Vis = {
             console.log(err);
         }
 
+        //SHOW ALL BUSINESSES
+        if (d3Vis.$scope.showAllBusinesses && d3Vis.$scope.allBusinessPoints.length != 0)
+            drawAllBusinesses();
+
+        function drawAllBusinesses() {
+            var allBusinessShown = [];
+            var extent = olMap.getExtent();
+
+            d3Vis.g6.selectAll(".allBusinesses").remove();
+
+            for (var i = 0; i<d3Vis.$scope.allBusinessPoints.length; i++) {
+                if (d3Vis.$scope.allBusinessPoints[i].pointX > extent.left &&
+                    d3Vis.$scope.allBusinessPoints[i].pointX < extent.right &&
+                    d3Vis.$scope.allBusinessPoints[i].pointY > extent.bottom &&
+                    d3Vis.$scope.allBusinessPoints[i].pointY < extent.top)
+                    allBusinessShown.push(d3Vis.$scope.allBusinessPoints[i]);
+            }
+
+            if (allBusinessShown.length <= d3Vis.$scope.maxAllBusinesses)
+                draw(allBusinessShown);
+
+            function draw() {
+
+                var allBusinesses = d3Vis.g6.selectAll(".allBusinesses")
+                    .data(allBusinessShown);
+
+                allBusinesses.enter()
+                    .append("circle")
+                    .attr("class", "allBusinesses")
+                    .attr("cx", function (d) {
+                        return project(d.pointX, d.pointY)[0]
+                    })
+                    .attr("cy", function (d) {
+                        return project(d.pointX, d.pointY)[1]
+                    })
+                    .attr("r", d3Vis.r)
+                    .attr("fill", "yellow");
+            }
+
+        }
+
         /*HELPER METHODS*/
 
         function project(x, y) {
@@ -670,7 +697,6 @@ d3Vis = {
     },
 
     putStartBusinessLast: function(data) {
-        console.log(data);
 
         for (var i = 0; i < data.length; i++) {
             var d = data[i];
@@ -682,8 +708,6 @@ d3Vis = {
                 data.push(d);
             }
         }
-
-        console.log(data);
         return data;
     },
 

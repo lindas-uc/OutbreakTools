@@ -124,28 +124,40 @@
 
         <div class="row settings" ng-show="(settingsVisible && nav.resultat)">
             <div class="box">
-                <div class="col-lg-4">
-                    <input type="checkbox" id="ToggleForms" ng-model="showDifferentForms" ng-checked="showDifferentForms"/>
-                    <label for="ToggleForms">Verschiedene Formen einblenden</label>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <input type="checkbox" id="ToggleForms" ng-model="showDifferentForms" ng-checked="showDifferentForms"/>
+                        <label for="ToggleForms">Verschiedene Formen einblenden</label>
+                    </div>
+                    <div class="col-lg-4">
+                        <input type="checkbox" id="toggleSchlachthoefe" ng-model="hideSlaughterhouse" ng-checked="hideSlaughterhouse" />
+                        <label for="toggleSchlachthoefe">Schlachthöfe ausblenden</label>
+                    </div>
+                    <div class="col-lg-4">
+                        <input type="checkbox" id="individualArrowWidth" ng-model="individualArrowWidth" ng-checked="individualArrowWidth" />
+                        <label for="individualArrowWidth">Pfeilstärke anhand Anzahl Tiere definieren</label>
+                    </div>
+                    <div class="col-lg-4">
+                        <input type="checkbox" id="showAllBusinesses" ng-model="showAllBusinesses" ng-checked="showAllBusinesses"/>
+                        <label for="showAllBusinesses">Alle Betriebe anzeigen <button class="btn btn-default btn-xs" ng-click="showAllBusinessesSettings = !showAllBusinessesSettings">
+                            <strong ng-hide="showAllBusinessesSettings">+</strong>
+                            <strong ng-show="showAllBusinessesSettings">-</strong>
+                            </button></label>
+                    </div>
+                    <div class="col-lg-4">
+                        <input type="checkbox" id="showCentrality" ng-model="showCentrality" ng-checked="showCentrality" ng-disabled="!showCentralityButton"/>
+                        <input type="checkbox" id="showCentrality" ng-model="showCentrality" ng-checked="showCentrality" ng-disabled="!showCentralityButton"/>
+                        <label for="showCentrality">Centrality zeigen</label>
+                    </div>
                 </div>
-                <div class="col-lg-4">
-                    <input type="checkbox" id="toggleSchlachthoefe" ng-model="hideSlaughterhouse" ng-checked="hideSlaughterhouse" />
-                    <label for="toggleSchlachthoefe">Schlachthöfe ausblenden</label>
-                </div>
-                <div class="col-lg-4">
-                    <input type="checkbox" id="individualArrowWidth" ng-model="individualArrowWidth" ng-checked="individualArrowWidth" />
-                    <label for="individualArrowWidth">Pfeilstärke anhand Anzahl Tiere definieren</label>
-                </div>
-                <div class="col-lg-4">
-                    <input type="checkbox" id="showAllBusinesses" ng-model="showAllBusinesses" ng-checked="showAllBusinesses"/>
-                    <label for="showAllBusinesses">Alle Betriebe anzeigen</label>
-                </div>
-                <div class="col-lg-4">
-                    <input type="checkbox" id="showCentrality" ng-model="showCentrality" ng-checked="showCentrality" ng-disabled="!showCentralityButton"/>
-                    <input type="checkbox" id="showCentrality" ng-model="showCentrality" ng-checked="showCentrality" ng-disabled="!showCentralityButton"/>
-                    <label for="showCentrality">Centrality zeigen</label>
+                <div class="row" ng-show="showAllBusinessesSettings" id="showAllBusinessesSettings">
+                    <div class="box col-lg-4">
+                        <input type="text" class="form-control" id="defineMaxAllBusinesses" ng-model="maxAllBusinesses"/>
+                        <label for="defineMaxAllBusinesses">Maximale Anzahl Betriebe die angezeigt werden</label>
+                    </div>
                 </div>
             </div>
+            
         </div>
 
         <div class="row" ng-show="(nav.resultat && appFinishedLoading && !noResults)" >
