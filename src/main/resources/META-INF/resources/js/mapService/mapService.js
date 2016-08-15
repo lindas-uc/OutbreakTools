@@ -15,7 +15,7 @@ app.service('map', function() {
 
         function init() {
 
-            //Do this if loading map the first time
+            //Do this if you load map the first time
             if (olMap.getMap() == null) {
                 olMap.preconfigureOpenLayers();
                 olMap.createMap();

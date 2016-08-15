@@ -106,10 +106,6 @@ olMap = {
             var zoom = olMap.map.getZoom();
             var map = $("#map");
             if (zoom != 0) {
-                //set this again after fixing the bug
-                /*map.css("width", "100%");
-                map.css("left", "0");*/
-
                 if (olMap.layerName.localeCompare("wmts_layer2") == 0) {
                     olMap.changeWMTSLayer("wmts_layer1");
                 }

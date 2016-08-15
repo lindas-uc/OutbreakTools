@@ -6,10 +6,14 @@ Als Grundlage dienen die Tierbewegungsdaten,….
 
 ## Funktionsweise
 In der Applikation wurden zwei verschiedenen Algorithmen implementiert. Das Forward- und das Backward-tracing. Das Forward-tracing beruht auf der Idee, die mögliche Ausbreitung der Seuche von einem infizierten Ursprungsbetrieb aus zu visualisieren. 
+
 ![Forward-tracing](forward-tracing.PNG)
+
 Der Algorithmus gibt alle Betriebe zurück, welche in der Kontaktkette nach dem Ursprungsbetrieb folgen.
 Das Backward-tracing untersucht, welchen Ursprung eine beobachtete Tierseuche haben könnte. Dazu werden eine oder mehrere Betriebe als Startbetriebe angegeben, von welchen aus im Netz rückwärts gesucht wird.
+
 ![Backward-tracing](backward-tracing.PNG)
+
 Der Algorithmus gibt alle Betriebe zurück, welche in der Kontaktkette zwischen dem möglichen gemeinsamen Ursprung und den infizierten Betrieben liegen. 
 ## Benützung
 *Eingabemaske*: Unter ID Betrieb werden die IDs von den Betrieben eingegeben, welche als Startbetriebe des Forward- oder Backward-tracing dienen sollen. Beim Forward-tracing kann nur eine ID eingegeben werden, beim Backward-tracing sind mehrere möglich. 
@@ -50,5 +54,31 @@ Alles was mit der Visualisierung der Daten und Anzeigen der Karten zu tun hat, w
 ## Code-Ablauf
 Die User Eingaben im Inputfeld werden alle im lindasMainCtrl.js verarbeitet. Wenn auf den Button „absenden“ geklickt wird, wird die Funktion $scope.initializeVisualization() aufgerufen. Diese überprüft mithilfe des ValidatorServices die Eingaben. Falls alles korrekt ist, wird die Anfrage an den dataInitialisator weitergeleitet. Mithilfe des javaConnectors stellt dieser die Daten zusammen und parst sie in einen Array von moveObjects. Die businessObjects des moveArray erhalten über deren eigene Funktionen via SPARQL-Endpoint ihre Koordinaten, BusinessType und GemeindeURI. 
 Sobald alle Daten komplett sind, wird der Array an den lindasMainCtrl.js zurückgegeben und in $scope als Variable „data“ gespeichert. Eine Kopie davon wird mit Hilfe der Variable „originalData“ erstellt. 
+
 ![The process of getting data](gettingData.PNG)
+
 Sobald diese Aktionen abgeschlossen sind, ruft $scope.initializeVisualization() die Funktion map.initializeMap() in mapService.js auf. 
+Die Funktion map.initializeMap() besteht grob aus zwei Blöcken. Sie startet die Funktionen zum konfigurieren der OpenLayers Map und ruft die Funktionen zum Zeichnen der D3 Visualisierung auf. Der Namespace olMap beinhaltet alle Funktionen zum konfigurieren der OpenLayers Map. Ausserdem zeichnet er die Buttons zum Ändern der Karte.
+Der d3Vis Namespace ist das grösste der Files. Es besteht aus den Funktionen drawVisualization(), update(), reset() sowie einigen Hilfsmethoden und Funktionen zum Zeichnen des Sliders und ermöglichen der Animation. Folgende Liste zeigt die Aufgabenverteilung zwischen den verschiedenen Funktionen:
+
+**drawVisualization():** 
+-	Zeichnen des SVG Elements
+-	Ordnen der Daten (Startbetriebe sollen am Schluss gezeichnet werden)
+-	Hinzufügen der g Elemente
+-	Hinzufügen der Marker für die Pfeilspitzen (ohne genaue Form und Grösse)
+-	Hinzufügen des Map-Events zum resetten der D3 Elemente nach „moveend“
+
+**update():**
+-	Genaue Form und Grösse der Marker Elemente bestimmen
+-	Hinzufügen der verschiedenen Circles und Paths. Circles werden immer dann gezeichnet, wenn die Option „verschiedene Formen einblenden“ nicht aktiviert ist, oder der Betrieb vom Typ „Viehmarkt“ ist. Ansonsten werden Paths gezeichnet. 
+Circle-, bzw. PathFromFarm ist jeweils der Betrieb, von dem eine Tierbewegung aus geht, Circle-, bzw. PathToFarm ist der Betrieb, zu dem die Tiere gelangen. 
+-	Hinzufügen der ToolTips. 
+-	Entfernen der Circles und Paths bei Exit der jeweiligen (z.B. wegen dynamischem Einschränken mittels Filter, ändern der Einstellungen)
+-	Schutz- und Überwachungszonen sowie Pfeile hinzufügen und entfernen  
+
+**reset():**
+-	Grösse des SVG Elements bestimmen
+-	Transformieren der g Elemente
+-	Platzieren der Elemente entsprechende ihrer Koordinaten (Circles, Paths, Arrows)
+-	Bestimmen der Position und Grösse der Schutz- und Überwachungszonen
+-	Alle Betriebe einzeichnen wenn die entsprechende Einstellung gewählt wurde

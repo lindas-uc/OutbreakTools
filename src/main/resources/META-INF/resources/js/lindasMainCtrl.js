@@ -6,7 +6,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         eingabemaske: true,
         resultat: false,
         kontakt: false
-    }
+    };
     
     //tie => tested infected entities
     $scope.tieIds = new Array({id:34155,valid:true});
@@ -18,39 +18,10 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.difference = null;
     $scope.dateInvalid = false;
     $scope.showMultipleIdMessage = false;
-    //set this to false at end
-/*    $scope.mapVisible = false;
-    $scope.settingsVisible = false;
-    $scope.filterStartDateMilliseconds = 0;
-    $scope.filterEndDateMilliseconds = 0;
-    $scope.leafletMap = {};
-    $scope.originalData = [];
-    $scope.animationRunning = false;
-    $scope.data = [];
-    $scope.allBusinessPoints = [];
-    $scope.dataTable = {
-        dataTable1: true,
-        dataTable2: false,
-    };
-    $scope.showDifferentForms = false;
-    $scope.hideSlaughterhouse = false;
-    $scope.individualArrowWidth = false;
-    $scope.showAllBusinesses = false;
-    $scope.showAllBusinessesSettings = false;
-    $scope.maxAllBusinesses = 500;
-    $scope.showCentrality = false;*/
-
-/*    $scope.appStarted = false;
-    $scope.appFinishedLoading = false;*/
-    // $scope.showLayerPossibilities = false;
-    // $scope.startBusiness = [];
-    // $scope.showCentralityButton = false;
 
     $scope.forwardTracing = true;
 
     $scope.dataInitialisator = dataInitialisator;
-
-    // $scope.noResults = false;
 
     $scope.selectedExample = "Beispiel auswählen";
     $scope.timeoutSelectExample = false;
@@ -74,7 +45,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         $scope.individualArrowWidth = false;
         $scope.showAllBusinesses = false;
         $scope.showAllBusinessesSettings = false;
-        $scope.maxAllBusinesses = 500;
+        $scope.maxAllBusinesses = 100;
         $scope.showCentrality = false;
 
         $scope.startBusiness = [];
