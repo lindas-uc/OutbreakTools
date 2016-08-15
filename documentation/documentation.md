@@ -6,10 +6,10 @@ Als Grundlage dienen die Tierbewegungsdaten,….
 
 ## Funktionsweise
 In der Applikation wurden zwei verschiedenen Algorithmen implementiert. Das Forward- und das Backward-tracing. Das Forward-tracing beruht auf der Idee, die mögliche Ausbreitung der Seuche von einem infizierten Ursprungsbetrieb aus zu visualisieren. 
-![Forward-tracing](forward-tracing.PNG)
+![Forward-tracing](forward-tracing.png)
 Der Algorithmus gibt alle Betriebe zurück, welche in der Kontaktkette nach dem Ursprungsbetrieb folgen.
 Das Backward-tracing untersucht, welchen Ursprung eine beobachtete Tierseuche haben könnte. Dazu werden eine oder mehrere Betriebe als Startbetriebe angegeben, von welchen aus im Netz rückwärts gesucht wird.
-![Backward-tracing](backward-tracing.PNG)
+![Backward-tracing](backward-tracing.png)
 Der Algorithmus gibt alle Betriebe zurück, welche in der Kontaktkette zwischen dem möglichen gemeinsamen Ursprung und den infizierten Betrieben liegen. 
 ## Benützung
 *Eingabemaske*: Unter ID Betrieb werden die IDs von den Betrieben eingegeben, welche als Startbetriebe des Forward- oder Backward-tracing dienen sollen. Beim Forward-tracing kann nur eine ID eingegeben werden, beim Backward-tracing sind mehrere möglich. 
@@ -50,5 +50,5 @@ Alles was mit der Visualisierung der Daten und Anzeigen der Karten zu tun hat, w
 ## Code-Ablauf
 Die User Eingaben im Inputfeld werden alle im lindasMainCtrl.js verarbeitet. Wenn auf den Button „absenden“ geklickt wird, wird die Funktion $scope.initializeVisualization() aufgerufen. Diese überprüft mithilfe des ValidatorServices die Eingaben. Falls alles korrekt ist, wird die Anfrage an den dataInitialisator weitergeleitet. Mithilfe des javaConnectors stellt dieser die Daten zusammen und parst sie in einen Array von moveObjects. Die businessObjects des moveArray erhalten über deren eigene Funktionen via SPARQL-Endpoint ihre Koordinaten, BusinessType und GemeindeURI. 
 Sobald alle Daten komplett sind, wird der Array an den lindasMainCtrl.js zurückgegeben und in $scope als Variable „data“ gespeichert. Eine Kopie davon wird mit Hilfe der Variable „originalData“ erstellt. 
-![The process of getting data](gettingData.PNG)
+![The process of getting data](gettingData.png)
 Sobald diese Aktionen abgeschlossen sind, ruft $scope.initializeVisualization() die Funktion map.initializeMap() in mapService.js auf. 
