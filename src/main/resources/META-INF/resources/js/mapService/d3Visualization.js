@@ -598,8 +598,7 @@ d3Vis = {
                     .attr("cy", function (d) {
                         return project(d.pointX, d.pointY)[1]
                     })
-                    .attr("r", d3Vis.r)
-                    .attr("fill", "yellow");
+                    .attr("r", d3Vis.r);
             }
 
         }

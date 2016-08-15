@@ -234,6 +234,13 @@ body {
     fill: rgba(255, 0, 0, 0.43);
 }
 
+.allBusinesses {
+    fill: #545d8d;
+    opacity: 0.7;
+    stroke: black;
+    stroke-width: 1px;
+}
+
 /*=================================================================*/
 
 marker path {
