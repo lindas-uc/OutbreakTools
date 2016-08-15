@@ -14,7 +14,6 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.endDate = "20/02/2012";
     $scope.startDateMilliseconds = 0;
     $scope.endDateMilliseconds = 0;
-    $scope.value = "initialize";
     //difference in days between start- and enddate
     $scope.difference = null;
     $scope.dateInvalid = false;
@@ -55,6 +54,36 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
 
     $scope.selectedExample = "Beispiel auswählen";
     $scope.timeoutSelectExample = false;
+
+    $scope.initializeScope = function() {
+        $scope.mapVisible = false;
+        $scope.settingsVisible = false;
+        $scope.filterStartDateMilliseconds = 0;
+        $scope.filterEndDateMilliseconds = 0;
+        $scope.leafletMap = {};
+        $scope.originalData = [];
+        $scope.animationRunning = false;
+        $scope.data = [];
+        $scope.allBusinessPoints = [];
+        $scope.dataTable = {
+            dataTable1: true,
+            dataTable2: false,
+        };
+        $scope.showDifferentForms = false;
+        $scope.hideSlaughterhouse = false;
+        $scope.individualArrowWidth = false;
+        $scope.showAllBusinesses = false;
+        $scope.showAllBusinessesSettings = false;
+        $scope.maxAllBusinesses = 500;
+        $scope.showCentrality = false;
+
+        $scope.appStarted = false;
+        $scope.appFinishedLoading = false;
+        $scope.showLayerPossibilities = false;
+        $scope.showCentralityButton = false;
+
+        $scope.noResults = false;
+    };
     
     $scope.navigate = function(page) {
         $scope.nav.eingabemaske = false;
@@ -143,6 +172,9 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     };
 
     $scope.initializeVisualisation = function(forwardTracing) {
+
+        $scope.initializeScope();
+
         console.log("start Visualization");
         $scope.appStarted = true;
         $scope.getMillisecondsEndDate();
