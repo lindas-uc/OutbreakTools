@@ -560,7 +560,7 @@ d3Vis = {
         }
 
         //SHOW ALL BUSINESSES
-        if (d3Vis.$scope.showAllBusinesses && d3Vis.$scope.allBusinessPoints.length != 0)
+        if (d3Vis.$scope.allBusinessPoints.length != 0)
             drawAllBusinesses();
 
         function drawAllBusinesses() {
@@ -568,6 +568,10 @@ d3Vis = {
             var extent = olMap.getExtent();
 
             d3Vis.g6.selectAll(".allBusinesses").remove();
+
+            //exit if the businesses shouldn't be shown
+            if (!d3Vis.$scope.showAllBusinesses)
+                return null;
 
             for (var i = 0; i<d3Vis.$scope.allBusinessPoints.length; i++) {
                 if (d3Vis.$scope.allBusinessPoints[i].pointX > extent.left &&

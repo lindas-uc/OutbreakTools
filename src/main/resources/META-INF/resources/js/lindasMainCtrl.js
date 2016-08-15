@@ -67,7 +67,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         $scope.allBusinessPoints = [];
         $scope.dataTable = {
             dataTable1: true,
-            dataTable2: false,
+            dataTable2: false
         };
         $scope.showDifferentForms = false;
         $scope.hideSlaughterhouse = false;
@@ -153,7 +153,9 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
             return null;
 
         if ($scope.showAllBusinesses)
-            loadAllBusinessPoints($scope, function() {d3Vis.update($scope)});
+            loadAllBusinessPoints($scope, function() {
+                d3Vis.update($scope)
+            });
         else
             d3Vis.update($scope);
     });
