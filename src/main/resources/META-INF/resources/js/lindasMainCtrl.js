@@ -19,7 +19,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.dateInvalid = false;
     $scope.showMultipleIdMessage = false;
     //set this to false at end
-    $scope.mapVisible = false;
+/*    $scope.mapVisible = false;
     $scope.settingsVisible = false;
     $scope.filterStartDateMilliseconds = 0;
     $scope.filterEndDateMilliseconds = 0;
@@ -38,19 +38,19 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.showAllBusinesses = false;
     $scope.showAllBusinessesSettings = false;
     $scope.maxAllBusinesses = 500;
-    $scope.showCentrality = false;
+    $scope.showCentrality = false;*/
 
-    $scope.appStarted = false;
-    $scope.appFinishedLoading = false;
-    $scope.showLayerPossibilities = false;
-    $scope.startBusiness = [];
-    $scope.showCentralityButton = false;
+/*    $scope.appStarted = false;
+    $scope.appFinishedLoading = false;*/
+    // $scope.showLayerPossibilities = false;
+    // $scope.startBusiness = [];
+    // $scope.showCentralityButton = false;
 
     $scope.forwardTracing = true;
 
     $scope.dataInitialisator = dataInitialisator;
 
-    $scope.noResults = false;
+    // $scope.noResults = false;
 
     $scope.selectedExample = "Beispiel auswählen";
     $scope.timeoutSelectExample = false;
@@ -77,6 +77,8 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         $scope.maxAllBusinesses = 500;
         $scope.showCentrality = false;
 
+        $scope.startBusiness = [];
+
         $scope.appStarted = false;
         $scope.appFinishedLoading = false;
         $scope.showLayerPossibilities = false;
@@ -84,7 +86,10 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
 
         $scope.noResults = false;
     };
-    
+
+    $scope.initializeScope();
+
+
     $scope.navigate = function(page) {
         $scope.nav.eingabemaske = false;
         $scope.nav.resultat = false;
