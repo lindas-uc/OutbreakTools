@@ -287,17 +287,17 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
                 $scope.tieIds = [{id:51396,valid:true}];
                 $scope.forwardTracing = true;
                 break;
-            case 'Backward#1':
-                $scope.startDate = "20/01/2012";
-                $scope.endDate = "01/02/2012";
-                $scope.tieIds = [{id:5112,valid:true},{id:51122,valid:true}];
-                $scope.forwardTracing = false;
+            case 'Forward#2':
+                $scope.startDate = "01/01/2012";
+                $scope.endDate = "20/02/2012";
+                $scope.tieIds = [{id:34155,valid:true}];
+                $scope.forwardTracing = true;
                 break;
-            case 'Backward#2':
+            case 'Backward#1':
                 $scope.startDate = "01/01/2012";
                 $scope.endDate = "10/01/2012";
-                $scope.forwardTracing = false;
                 $scope.tieIds = [{id:33360,valid:true},{id:3782,valid:true},{id:28938,valid:true}];
+                $scope.forwardTracing = false;
                 break;
         }
     });
