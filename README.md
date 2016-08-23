@@ -30,4 +30,4 @@ The following is an example for the usage of the HTTP interface for contact trac
 
 The following is to trace backwards and find central hot-spots:
 
- * localhost:5000/centrality?startingSite=http://foodsafety.data.admin.ch/business/5112&startingSite=http://foodsafety.data.admin.ch/business/51122&startDate=2012-02-01&endDate=2012-01-20
+ * http://localhost:5000/centrality?startingSite=http://foodsafety.data.admin.ch/business/5112&startingSite=http://foodsafety.data.admin.ch/business/51122&startDate=2012-02-01&endDate=2012-01-20
