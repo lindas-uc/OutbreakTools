@@ -397,20 +397,23 @@ d3Vis = {
         var bottomLeft = project(bounds.bottom, bounds.left),
             topRight = project(bounds.top, bounds.right);
 
+        console.log(bottomLeft);
+        console.log(topRight);
+
         //place svg element
 
         d3Vis.svg.attr("width", topRight[0] - bottomLeft[0] + 300)
             .attr("height", bottomLeft[1] - topRight[1] + 300)
-            .style("margin-left", bottomLeft[0] + "px")
-            .style("margin-top", topRight[1] + "px");
+/*            .style("margin-left", bottomLeft[0] + "px")
+            .style("margin-top", topRight[1] + "px");*/
 
         //place g element
-        d3Vis.g.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
+/*        d3Vis.g.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
         d3Vis.g2.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
         d3Vis.g3.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
         d3Vis.g4.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
         d3Vis.g5.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
-        d3Vis.g6.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
+        d3Vis.g6.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");*/
 
         try {
 
