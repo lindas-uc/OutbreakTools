@@ -396,10 +396,7 @@ d3Vis = {
 
         var bottomLeft = project(bounds.bottom, bounds.left),
             topRight = project(bounds.top, bounds.right);
-
-        console.log(bottomLeft);
-        console.log(topRight);
-
+        
         //place svg element
 
         d3Vis.svg.attr("width", topRight[0] - bottomLeft[0] + 300)
