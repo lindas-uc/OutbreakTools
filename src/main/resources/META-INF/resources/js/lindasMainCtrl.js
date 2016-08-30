@@ -35,6 +35,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         $scope.originalData = [];
         $scope.animationRunning = false;
         $scope.data = [];
+        $scope.centrality = [];
         $scope.allBusinessPoints = [];
         $scope.dataTable = {
             dataTable1: true,
@@ -47,6 +48,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         $scope.showAllBusinessesSettings = false;
         $scope.maxAllBusinesses = 100;
         $scope.showCentrality = false;
+        $scope.showNoCentralityMessage = false;
 
         $scope.startBusiness = [];
 
@@ -209,8 +211,9 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         $scope.mapVisible = true;
         $scope.navigate('resultat');
 
-        $scope.dataInitialisator.initializeData($scope, function(moveArray) {
+        $scope.dataInitialisator.initializeData($scope, function(moveArray, centrality) {
             $scope.data = moveArray;
+            $scope.centrality = centrality;
             $scope.originalData = moveArray;
             console.log($scope.data);
 
@@ -282,9 +285,9 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
 
         switch ($scope.selectedExample) {
             case 'Forward#1':
-                $scope.startDate = "01/01/2012";
-                $scope.endDate = "05/01/2012";
-                $scope.tieIds = [{id:51396,valid:true}];
+                $scope.startDate = "24/01/2012";
+                $scope.endDate = "20/02/2012";
+                $scope.tieIds = [{id:46132,valid:true}];
                 $scope.forwardTracing = true;
                 break;
             case 'Forward#2':
@@ -293,10 +296,22 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
                 $scope.tieIds = [{id:34155,valid:true}];
                 $scope.forwardTracing = true;
                 break;
+            case 'Forward#3':
+                $scope.startDate = "23/05/2012";
+                $scope.endDate = "06/06/2012";
+                $scope.tieIds = [{id:2336,valid:true}];
+                $scope.forwardTracing = true;
+                break;
             case 'Backward#1':
                 $scope.startDate = "01/01/2012";
                 $scope.endDate = "10/01/2012";
                 $scope.tieIds = [{id:33360,valid:true},{id:3782,valid:true},{id:28938,valid:true}];
+                $scope.forwardTracing = false;
+                break;
+            case 'Backward#2':
+                $scope.startDate = "01/01/2012";
+                $scope.endDate = "02/01/2012";
+                $scope.tieIds = [{id:41564,valid:true},{id:42712,valid:true}];
                 $scope.forwardTracing = false;
                 break;
         }

@@ -85,8 +85,8 @@ d3Vis = {
         d3Vis.g6 = d3Vis.svg.append("g");
         d3Vis.g4 = d3Vis.svg.append("g");
         d3Vis.g3 = d3Vis.svg.append("g");
-        d3Vis.g2 = d3Vis.svg.append("g");
-        d3Vis.g = d3Vis.svg.append("g");
+        d3Vis.g2 = d3Vis.svg.append("g").attr("class","g_fromFarm");
+        d3Vis.g = d3Vis.svg.append("g").attr("class","g_toFarm");
         d3Vis.g5 = d3Vis.svg.append("g");
 
         //add defs for marker-end to svg element
@@ -184,12 +184,9 @@ d3Vis = {
 
         d3Vis.circlesToFarm.enter()
             .append("circle")
-            .classed("noCentrality", function(d) {
-                return (d.toBusiness.centrality != 1 && $scope.showCentrality)
-            })
             .classed("circleToFarm", true)
-            //.attr("fill", function(d) {return fillScale(d.value)})
             .attr("r", d3Vis.r)
+            .attr("value", function(d) {return d.toBusiness.id})
             .on("mouseenter", function (d) {
                 tip_to_location.show(d);
             })
@@ -203,7 +200,6 @@ d3Vis = {
         d3Vis.pathsToFarm.enter()
             .append("path")
             .attr("class", "pathToFarm")
-            //.attr("fill", function(d) {return fillScale(d.value)})
             .on("mouseenter", function (d) {
                 hideArrowTips();
                 tip_to_location.show(d);
@@ -218,9 +214,7 @@ d3Vis = {
         d3Vis.circlesFromFarm.enter()
             .append("circle")
             .attr("r", d3Vis.r)
-            .classed("noCentrality", function(d) {
-                return (d.fromBusiness.centrality != 1 && $scope.showCentrality)
-            })
+            .attr("value", function(d) {return d.toBusiness.id})
             .classed("circleFromFarm", true)
             .on("mouseenter", function (d) {
                 hideArrowTips();
@@ -232,12 +226,10 @@ d3Vis = {
             .on("click", function(d) {
                 addOrRemoveMonitoringZone(d.toBusiness.coordinates);
             });
-           // .attr("fill", function(d) {return fillScale(d.value)});
 
         d3Vis.pathsFromFarm.enter()
             .append("path")
             .attr("class", "pathFromFarm")
-          //  .attr("fill", function(d) {return fillScale(d.value)});
             .on("mouseenter", function (d) {
                 hideArrowTips();
                 tip_to_location.show(d);
@@ -400,17 +392,7 @@ d3Vis = {
         //place svg element
 
         d3Vis.svg.attr("width", topRight[0] - bottomLeft[0] + 300)
-            .attr("height", bottomLeft[1] - topRight[1] + 300)
-/*            .style("margin-left", bottomLeft[0] + "px")
-            .style("margin-top", topRight[1] + "px");*/
-
-        //place g element
-/*        d3Vis.g.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
-        d3Vis.g2.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
-        d3Vis.g3.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
-        d3Vis.g4.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
-        d3Vis.g5.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
-        d3Vis.g6.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");*/
+            .attr("height", bottomLeft[1] - topRight[1] + 300);
 
         try {
 
@@ -421,6 +403,13 @@ d3Vis = {
                     return calculateRectanglePath(d.toBusiness);
                 else if (d.toBusiness.businessType.localeCompare("Tierhaltung") == 0)
                     return calculateRectangleRotatedPath(d.toBusiness);
+            }).classed("highCentrality", function (d) {
+                for (var i = 0; i < d3Vis.$scope.centrality.length; i++) {
+                    if (d.toBusiness.URI.localeCompare(d3Vis.$scope.centrality[i][1]) == 0 && d3Vis.$scope.showCentrality) {
+                        return true;
+                    }
+                }
+                return false;
             });
 
             d3Vis.circlesToFarm.attr("cx", function (d) {
@@ -429,9 +418,18 @@ d3Vis = {
                 .attr("cy", function (d) {
                     return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
                 })
-                .classed("noCentrality", function(d) {
-                    return (d.toBusiness.centrality != 1 && d3Vis.$scope.showCentrality)
-            });
+                .classed("highCentrality", function (d) {
+                    for (var i = 0; i < d3Vis.$scope.centrality.length; i++) {
+                        if (d.toBusiness.URI.localeCompare(d3Vis.$scope.centrality[i][1]) == 0 && d3Vis.$scope.showCentrality) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+            //replace element with high centrality
+            var highCentrality_toFarm = $(".g_toFarm").find(".highCentrality");
+            $(".g_toFarm").append(highCentrality_toFarm);
 
             d3Vis.circlesToFarm.transition().attr("r", d3Vis.r);
 
@@ -442,7 +440,15 @@ d3Vis = {
                     return calculateRectanglePath(d.fromBusiness);
                 else if (d.fromBusiness.businessType.localeCompare("Tierhaltung") == 0)
                     return calculateRectangleRotatedPath(d.fromBusiness);
-                });
+                })
+                .classed("highCentrality", function (d) {
+                for (var i = 0; i < d3Vis.$scope.centrality.length; i++) {
+                    if (d.fromBusiness.URI.localeCompare(d3Vis.$scope.centrality[i][1]) == 0 && d3Vis.$scope.showCentrality) {
+                        return true;
+                    }
+                }
+                return false;
+            });
 
             d3Vis.circlesFromFarm.attr("cx", function (d) {
                     return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0]
@@ -452,7 +458,22 @@ d3Vis = {
                 })
                 .classed("noCentrality", function(d) {
                     return (d.toBusiness.centrality != 1 && d3Vis.$scope.showCentrality)
-            });
+                })
+                .classed("highCentrality", function (d) {
+                    for (var i = 0; i < d3Vis.$scope.centrality.length; i++) {
+                        if (d.fromBusiness.URI.localeCompare(d3Vis.$scope.centrality[i][1]) == 0 && d3Vis.$scope.showCentrality) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+            //replace element with high centrality
+            var highCentrality_fromFarm = $(".g_fromFarm").find(".highCentrality");
+            $(".g_fromFarm").append(highCentrality_fromFarm);
+
+            //update scope to show no_centrality_message
+            d3Vis.$scope.showNoCentralityMessage = (highCentrality_fromFarm.length + highCentrality_toFarm.length == 0);
 
             d3Vis.startPaths.attr("d", function (d) {
                 if (d.businessType.localeCompare("Schlachthof") == 0)

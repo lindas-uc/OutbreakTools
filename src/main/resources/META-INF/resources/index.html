@@ -144,10 +144,10 @@
                             <strong ng-show="showAllBusinessesSettings">-</strong>
                             </button></label>
                     </div>
-<!--                    <div class="col-lg-4">
+                    <div class="col-lg-4">
                         <input type="checkbox" id="showCentrality" ng-model="showCentrality" ng-checked="showCentrality" ng-disabled="forwardTracing"/>
-                        <label for="showCentrality">Centrality zeigen</label>
-                    </div>-->
+                        <label for="showCentrality">Centrality zeigen <i ng-show="showCentrality && showNoCentralityMessage">Hier keine Angaben zur Centrality möglich</i></label>
+                    </div>
                 </div>
                 <div class="row" ng-show="showAllBusinessesSettings" id="showAllBusinessesSettings">
                     <div class="box col-lg-4">
@@ -417,10 +417,10 @@
                                                 <ul class="dropdown-menu">
                                                   <li ng-click="selectExample('Forward#1')"><a href="#">Forward#1</a></li>
                                                   <li ng-click="selectExample('Forward#2')"><a href="#">Forward#2</a></li>
-                                                    <!--<li ng-click="selectExample('Forward#3')"><a href="#">Forward#3</a></li>-->
+                                                  <li ng-click="selectExample('Forward#3')"><a href="#">Forward#3</a></li>
                                                   <li ng-click="selectExample('Backward#1')"><a href="#">Backward#1</a></li>
-                                                 <!-- <li ng-click="selectExample('Backward#2')"><a href="#">Backward#2</a></li>
-                                                  <li ng-click="selectExample('Backward#3')"><a href="#">Backward#3</a></li>-->
+                                                  <li ng-click="selectExample('Backward#2')"><a href="#">Backward#2</a></li>
+                                                    <!-- <li ng-click="selectExample('Backward#3')"><a href="#">Backward#3</a></li>-->
                                                 </ul>
                                             </div>
                                         </div>
