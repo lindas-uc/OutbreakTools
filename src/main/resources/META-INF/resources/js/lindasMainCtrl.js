@@ -58,6 +58,8 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         $scope.showCentralityButton = false;
 
         $scope.noResults = false;
+
+        $scope.displaySizeToSmall = false;
     };
 
     $scope.initializeScope();
@@ -317,6 +319,28 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         }
     });
 
+    $(window).resize(function(){
+        $scope.$apply(function(){
+            $scope.testIfScreenResolutionEnough(window.innerWidth);
+        });
+    });
 
+    $(window).ready(function(){
+        $scope.$apply(function(){
+            $scope.testIfScreenResolutionEnough(window.innerWidth);
+            $("#lindasMainContainer").css("display","block");
+        });
+    });
+
+    $scope.testIfScreenResolutionEnough = function(width) {
+        if (width <= 1200) {
+            $scope.displaySizeToSmall = true;
+            $("#screenResolutionToSmall").show();
+        } else {
+            $scope.displaySizeToSmall = false;
+            $("#screenResolutionToSmall").hide();
+        }
+    }
 
 });
+

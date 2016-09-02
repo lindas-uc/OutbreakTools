@@ -30,6 +30,10 @@ body {
     font-weight: normal;
 }
 
+#lindasMainContainer {
+    display: none;
+}
+
 
 #inputPeriod {
     margin-top: 3%;
