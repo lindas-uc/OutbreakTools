@@ -259,10 +259,7 @@ d3Vis = {
 
         //filter data with same similar and end coordinates
         d3Vis.arrows = d3Vis.g3.selectAll(".connection")
-            .data(data.filter(function(d) {
-                return d.fromBusiness.coordinates[0] != d.toBusiness.coordinates[0] &&
-                    d.fromBusiness.coordinates[1] != d.toBusiness.coordinates[1];
-            }));
+            .data(data);
 
         //do this on the right place
         var tooltip = d3.select("body").append("div")
@@ -311,7 +308,7 @@ d3Vis = {
 
 
         //STARTBUSINESSES
-                var startDataCircle = $scope.startBusiness.filter(function(d) {
+        var startDataCircle = $scope.startBusiness.filter(function(d) {
             return circleFilter(d);
         });
 
@@ -510,7 +507,8 @@ d3Vis = {
                     return project(d.coordinates[0], d.coordinates[1])[1]
                 });
 
-            d3Vis.arrows.attr("x1", function (d) {
+            d3Vis.arrows
+                .attr("x1", function (d) {
                     return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0]
                 })
                 .attr("y1", function (d) {
@@ -529,7 +527,22 @@ d3Vis = {
                         project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0],
                         project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1],
                         (r + markerHeight + markerMargin));
+                })
+                //make arrows invisible if distance between start and end business is to small
+                .attr("opacity", function(d) {
+                    return checkDistance(d.fromBusiness.coordinates, d.toBusiness.coordinates);
                 });
+
+            function checkDistance(a, b) {
+                var minDistace = 27;
+                var pointA = d3Vis.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(a));
+                var pointB = d3Vis.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(b));
+                var dist = Math.sqrt(Math.pow(pointA.x - pointB.x,2) + Math.pow(pointA.y - pointB.y,2));
+                if (dist > minDistace)
+                    return 1;
+                else
+                    return 0;
+            }
 
             /* DRAW PROTECTION ZONE */
 
