@@ -146,7 +146,7 @@
                     </div>
                     <div class="col-lg-4">
                         <input type="checkbox" id="showCentrality" ng-model="showCentrality" ng-checked="showCentrality" ng-disabled="forwardTracing"/>
-                        <label for="showCentrality">Centrality zeigen <i ng-show="showCentrality && showNoCentralityMessage">Hier keine Angaben zur Centrality möglich</i></label>
+                        <label for="showCentrality">Centrality zeigen <i ng-show="showCentrality && showNoCentralityMessage">(Hier keine Angaben zur Centrality möglich)</i></label>
                     </div>
                 </div>
                 <div class="row" ng-show="showAllBusinessesSettings" id="showAllBusinessesSettings">
@@ -271,7 +271,7 @@
             </div>
         </div>
         
-        <div class="row loading" ng-show="(appStarted && !appFinishedLoading && !noResults)">
+        <div class="row loading" ng-show="(appStarted && !appFinishedLoading && !noResults && nav.resultat)">
             <div class="box">
                 <div class="col-md-12">
                     <center> 

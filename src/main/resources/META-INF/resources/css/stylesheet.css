@@ -187,8 +187,8 @@ body {
     fill: blue !important;
 }
 
-.noCentrality {
-    fill: #9f9f9f;
+.lowCentrality {
+    fill: #9f9f9f !important;
 }
 
 .pathToFarm {
