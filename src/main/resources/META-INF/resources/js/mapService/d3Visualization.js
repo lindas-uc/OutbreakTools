@@ -332,7 +332,7 @@ d3Vis = {
                  tip_startBusiness.hide(d);
             })
              .on("click", function(d) {
-                addOrRemoveMonitoringZone(d.toBusiness.coordinates);
+                addOrRemoveMonitoringZone(d.coordinates);
              });
 
         d3Vis.startPaths.enter()
@@ -345,7 +345,7 @@ d3Vis = {
                 tip_startBusiness.hide(d);
             })
              .on("click", function(d) {
-                addOrRemoveMonitoringZone(d.toBusiness.coordinates);
+                addOrRemoveMonitoringZone(d.coordinates);
              });
 
         d3Vis.startCircles.exit().remove();
