@@ -214,7 +214,7 @@ d3Vis = {
         d3Vis.circlesFromFarm.enter()
             .append("circle")
             .attr("r", d3Vis.r)
-            .attr("value", function(d) {return d.toBusiness.id})
+            .attr("value", function(d) {return d.fromBusiness.id })
             .classed("circleFromFarm", true)
             .on("mouseenter", function (d) {
                 hideArrowTips();
@@ -224,7 +224,7 @@ d3Vis = {
                 tip_from_location.hide(d);
             })
             .on("click", function(d) {
-                addOrRemoveMonitoringZone(d.toBusiness.coordinates);
+                addOrRemoveMonitoringZone(d.fromBusiness.coordinates);
             });
 
         d3Vis.pathsFromFarm.enter()
@@ -238,7 +238,7 @@ d3Vis = {
                 tip_to_location.hide(d);
             })
             .on("click", function(d) {
-                addOrRemoveMonitoringZone(d.toBusiness.coordinates);
+                addOrRemoveMonitoringZone(d.fromBusiness.coordinates);
             });
 
         d3Vis.circlesToFarm.exit().remove();
@@ -257,8 +257,12 @@ d3Vis = {
             d3Vis.update(d3Vis.$scope);
         }
 
+        //filter data with same similar and end coordinates
         d3Vis.arrows = d3Vis.g3.selectAll(".connection")
-            .data(data);
+            .data(data.filter(function(d) {
+                return d.fromBusiness.coordinates[0] != d.toBusiness.coordinates[0] &&
+                    d.fromBusiness.coordinates[1] != d.toBusiness.coordinates[1];
+            }));
 
         //do this on the right place
         var tooltip = d3.select("body").append("div")
