@@ -59,6 +59,7 @@ dataInitialisator = {
                 var business = new Business(idToURIConverter.convertURIToId(uri), uri);
                 business.getMunicipality(function() {
                     business.getCoordinates(function() {});
+                    business.getCanton(function() {});
                 });
                 business.getBusinessType(function() {});
                 return business;
@@ -73,6 +74,7 @@ dataInitialisator = {
                 var business = new Business(idToURIConverter.convertURIToId(uri), uri);
                 business.getMunicipality(function() {
                     business.getCoordinates(function() {});
+                    business.getCanton(function() {});
                 });
                 business.getBusinessType(function() {});
                 return business;

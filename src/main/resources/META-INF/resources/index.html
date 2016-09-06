@@ -211,8 +211,8 @@
                             <th>Move_id</th>
                             <th>fromBusiness_id</th>
                             <th>toBusiness_id</th>
-                            <th>NumberOfAnimals</th>
-                            <th>Date</th>
+                            <th>Anzahl Tiere</th>
+                            <th>Datum</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -236,9 +236,10 @@
                         <tr>
                             <th>ID</th>
                             <th>URI</th>
-                            <th>coordinates</th>
-                            <th>businessType</th>
-                            <th>date</th>
+                            <th>Koordinaten</th>
+                            <th>Betriebsart</th>
+                            <th>Datum</th>
+                            <th>Kanton</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -248,6 +249,7 @@
                             <td>{{d.toBusiness.coordinates}}</td>
                             <td>{{d.toBusiness.businessType}}</td>
                             <td>{{d.date}}</td>
+                            <td>{{d.toBusiness.canton}}</td>
                         </tr>
                         </tbody>
                     </table>

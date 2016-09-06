@@ -3,6 +3,7 @@ function  Business(id, URI) {
     this.URI = URI;
     this.coordinates = null;
     this.municipality = null;
+    this.canton = null;
     this.name = "randomName";
     this.openLayersLonLat = {};
     this.businessType = null;
@@ -135,6 +136,42 @@ function  Business(id, URI) {
                 return "Tierhaltung";
             else
                 return "Alpung";
+        }
+    };
+
+    this.getCanton = function(callback) {
+        var obj = this;
+
+        if (obj.canton == null) {
+            $.ajax({
+                url: "http://lindas-data.ch/sparql",
+                dataType: "json",
+                data: {
+                    query: "PREFIX gont: <https://gont.ch/> " +
+                            "select ?canton where {" +
+                            obj.municipality + " gont:municipalityVersion ?version." +
+                                    "minus { ?version gont:abolitionEvent ?e}" +
+                                "?version gont:canton ?canton."+
+                            "}"
+                }
+            }).then(function (data) {
+                try {
+                    data = data["results"]["bindings"][0]["canton"]["value"];
+                    obj.canton = parseCanton(data);
+                } catch (err) {
+                    console.log("no canton found");
+                    obj.businessType = "missing_canton";
+                }
+
+            });
+
+            function parseCanton(data) {
+                var a = data.indexOf("canton/") + 7;
+                return data.substring(a);
+            }
+
+        } else {
+            callback(this.businessType);
         }
     }
 }
