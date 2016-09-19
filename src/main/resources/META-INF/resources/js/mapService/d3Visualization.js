@@ -253,6 +253,8 @@ d3Vis = {
             } else {
                 mData.push(coordinates);
             }
+            console.log(mData);
+            console.log(d3Vis.monitoringZoneData);
             olMap.zoomIntoMapIfNeeded(coordinates);
             d3Vis.update(d3Vis.$scope);
         }
@@ -530,7 +532,18 @@ d3Vis = {
                 })
                 //make arrows invisible if distance between start and end business is to small
                 .attr("opacity", function(d) {
-                    return checkDistance(d.fromBusiness.coordinates, d.toBusiness.coordinates);
+                    //Duplicate of checkdistance function
+                    var a = d.fromBusiness.coordinates;
+                    var b = d.toBusiness.coordinates;
+                    var minDistace = 27;
+                    var pointA = d3Vis.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(a));
+                    var pointB = d3Vis.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(b));
+                    var dist = Math.sqrt(Math.pow(pointA.x - pointB.x,2) + Math.pow(pointA.y - pointB.y,2));
+                    if (dist > minDistace)
+                        return 1;
+                    else
+                        return 0;
+                    // return checkDistance(d.fromBusiness.coordinates, d.toBusiness.coordinates);
                 });
 
             function checkDistance(a, b) {
