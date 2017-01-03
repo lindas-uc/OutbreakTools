@@ -76,6 +76,7 @@
         })();
 
         console.log(navigator.sayswho);
+        // warning alert if browser is not firefox or chrome
         if (navigator.sayswho.indexOf("Firefox") < 0 && navigator.sayswho.indexOf("Chrome") < 0) {
             alert("Bei dieser Applikation handelt es sich um einen Prototyp. Deshalb wurde sie nur für die Browser " +
                     "Google Chrome und Firefox entwickelt und getestet. Bei Verwendung von älteren Versionen des Internet Explorer oder " +
