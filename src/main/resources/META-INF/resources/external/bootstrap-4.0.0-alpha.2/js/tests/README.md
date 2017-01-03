@@ -8,7 +8,7 @@ Bootstrap uses [QUnit](http://api.qunitjs.com/), a powerful, easy-to-use JavaScr
 
 To run the unit test suite via [PhantomJS](http://phantomjs.org/), run `grunt test-js`.
 
-To run the unit test suite via a real web browser, open `index.html` in the browser.
+To run the unit test suite via a real web browser, open `index.php` in the browser.
 
 
 ## How do I add a new unit test?
