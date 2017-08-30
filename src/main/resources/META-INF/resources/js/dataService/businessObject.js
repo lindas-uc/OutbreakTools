@@ -11,11 +11,11 @@ function  Business(id, URI) {
     this.centrality = 0;
 
     this.getMunicipality = function(callback) {
-        if (this.municipality == null) {
+        if (this.municipality === null) {
             var obj = this;
             
             $.ajax({
-                url: "http://test.lindas-data.ch/sparql",
+                url: "https://lindas-data.ch/sparql/",
                 dataType: "json",
                 data: {
                     query: "SELECT DISTINCT * FROM <http://test.lindas-data.ch/resource/animaltransports> WHERE "
@@ -41,9 +41,9 @@ function  Business(id, URI) {
 
     this.getCoordinates = function(callback) {
         //create new coordinates if doesn't exist
-        if (this.coordinates == null) {
+        if (this.coordinates === null) {
             //didnt found municipality. return random coordinates
-            if (this.municipality.localeCompare("no value") == 0) {
+            if (this.municipality.localeCompare("no value") === 0) {
                 console.log("Object " + this.URI + " has no municipality, so return random coordinates");
                 this.returnNullCoordinates(callback);
             } else {
@@ -52,13 +52,21 @@ function  Business(id, URI) {
 
                 this.getMunicipality(function (municipality) {
                     $.ajax({
-                        url: "http://lindas.zazuko.com/blazegraph/namespace/swisstopo/sparql",
+                        url: "https://sparql.geo.admin.ch/",
                         dataType: "json",
                         data: {
-                            query: "SELECT ?wtk WHERE { " +
-                            "?G <https://gont.ch/municipality> " + municipality + " ." +
-                            "?G    <http://linkeddata.interlis.ch/IlisMeta07.MetaElemOID/swissBOUNDARIES3D_ili2_LV03_V1_3_ceis.TLM_GRENZEN.TLM_HOHEITSGEBIET.RefPoint> ?S." +
-                            "?S <http://www.opengis.net/ont/geosparql#asWKT> ?wtk}"
+                            query: "SELECT ?wkt WHERE {"
+                            +"?geomuni <http://www.w3.org/2000/01/rdf-schema#seeAlso> "+municipality+"."
+                            +"?geomuni <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.geonames.org/ontology#A.ADM3>."
+                            +"?geomuni <http://purl.org/dc/terms/hasVersion> ?geomuniVersion ."
+
+                            +"?geomuniVersion <http://purl.org/dc/terms/issued> ?issued."
+                            +"?geomuniVersion <http://www.opengis.net/ont/geosparql#hasGeometry> ?geometry."
+                            +"?geometry <http://www.opengis.net/ont/geosparql#asWKT> ?wkt."
+                            +"}"
+
+                            +"ORDER BY DESC(?issued)"
+                            +"LIMIT 1"
                         }
                     }).then(function (data) {
                        try {
@@ -101,12 +109,12 @@ function  Business(id, URI) {
         //delete the following line
        // this.businessType = translateBusinessType("loeschen");
 
-        if (this.businessType == null) {
+        if (this.businessType === null) {
             $.ajax({
-                url: "http://test.lindas-data.ch/sparql",
+                url: "http://lindas-data.ch/sparql/",
                 dataType: "json",
                 data: {
-                    query: "SELECT DISTINCT * FROM <http://test.lindas-data.ch/resource/animaltransports> WHERE "
+                    query: "SELECT DISTINCT * FROM <http://lindas-data.ch/resource/animaltransports> WHERE "
                     +"{"+obj.URI+" <http://blv.ch/cat> ?o}"
                 }
             }).then(function(data) {
@@ -142,9 +150,9 @@ function  Business(id, URI) {
     this.getCanton = function(callback) {
         var obj = this;
 
-        if (obj.canton == null) {
+        if (obj.canton === null) {
             $.ajax({
-                url: "http://lindas-data.ch/sparql",
+                url: "https://lindas-data.ch/sparql",
                 dataType: "json",
                 data: {
                     query: "PREFIX gont: <https://gont.ch/> " +
