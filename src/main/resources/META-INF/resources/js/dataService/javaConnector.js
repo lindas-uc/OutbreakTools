@@ -23,6 +23,12 @@ javaConnector = {
             url: "/trace?"+businessString+"startDate="+startDate+"&endDate="+endDate,
             success: function(data){
                 callback(data);
+            },
+            error: function (request, status, error) {
+                // FEHLERCODE 101
+                console.log(request.responseText)
+                alert("Ein Fehler ist aufgetreten. (Fehlercode 101) \nFalls dieses Problem weiterhin auftritt, " +
+                    "wenden Sie sich bitte and die Forschungsstelle Digitale Nachhaltigkeit")
             }
         });
     },
@@ -51,16 +57,13 @@ javaConnector = {
             url: "/centrality?"+businessString+"startDate="+endDate+"&endDate="+startDate,
             success: function(data){
                 callback(data);
+            },
+            error: function (request, status, error) {
+                // FEHLERCODE 102
+                console.log(request.responseText)
+                alert("Ein Fehler ist aufgetreten. (Fehlercode 102) \nFalls dieses Problem weiterhin auftritt, " +
+                    "wenden Sie sich bitte and die Forschungsstelle Digitale Nachhaltigkeit")
             }
         });
-
-/*        $.ajax({
-            type: "GET",
-            //   dataType: "json",
-            url: "/centrality?startingSite=http://foodsafety.data.admin.ch/business/5112&startingSite=http://foodsafety.data.admin.ch/business/51122&startDate=2012-02-01&endDate=2012-01-20",
-            success: function(data){
-                callback(data);
-            }
-        });*/
     }
 };

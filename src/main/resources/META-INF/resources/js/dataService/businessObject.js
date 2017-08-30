@@ -1,3 +1,5 @@
+var errorOccured = false;
+
 function  Business(id, URI) {
     this.id = id;
     this.URI = URI;
@@ -20,6 +22,15 @@ function  Business(id, URI) {
                 data: {
                     query: "SELECT DISTINCT * FROM <http://test.lindas-data.ch/resource/animaltransports> WHERE "
                     + "{" + obj.URI + " <https://gont.ch/municipality> ?o}"
+                },
+                error: function (request, status, error) {
+                    // FEHLERCODE 201
+                    if (!errorOccured) {
+                        errorOccured = true;
+                        console.log(request.responseText)
+                        alert("Ein Fehler ist aufgetreten. (Fehlercode 201) \nFalls dieses Problem weiterhin auftritt, " +
+                            "wenden Sie sich bitte and die Forschungsstelle Digitale Nachhaltigkeit")
+                    }
                 }
             }).then(function (data) {
                 try {
@@ -67,6 +78,15 @@ function  Business(id, URI) {
 
                             +"ORDER BY DESC(?issued)"
                             +"LIMIT 1"
+                        },
+                        error: function (request, status, error) {
+                            // FEHLERCODE 202
+                            if (!errorOccured) {
+                                errorOccured = true;
+                                console.log(request.responseText)
+                                alert("Ein Fehler ist aufgetreten. (Fehlercode 202) \nFalls dieses Problem weiterhin auftritt, " +
+                                    "wenden Sie sich bitte and die Forschungsstelle Digitale Nachhaltigkeit")
+                            }
                         }
                     }).then(function (data) {
                        try {
@@ -116,6 +136,15 @@ function  Business(id, URI) {
                 data: {
                     query: "SELECT DISTINCT * FROM <http://lindas-data.ch/resource/animaltransports> WHERE "
                     +"{"+obj.URI+" <http://blv.ch/cat> ?o}"
+                },
+                error: function (request, status, error) {
+                    // FEHLERCODE 203
+                    if (!errorOccured) {
+                        errorOccured = true;
+                        console.log(request.responseText)
+                        alert("Ein Fehler ist aufgetreten. (Fehlercode 203) \nFalls dieses Problem weiterhin auftritt, " +
+                            "wenden Sie sich bitte and die Forschungsstelle Digitale Nachhaltigkeit")
+                    }
                 }
             }).then(function(data) {
                 try {
