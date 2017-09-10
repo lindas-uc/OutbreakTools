@@ -20,7 +20,7 @@ function  Business(id, URI) {
                 url: "https://lindas-data.ch/sparql/",
                 dataType: "json",
                 data: {
-                    query: "SELECT DISTINCT * FROM <http://test.lindas-data.ch/resource/animaltransports> WHERE "
+                    query: "SELECT DISTINCT * FROM <https://linked.opendata.swiss/graph/FSVO/outbreak> WHERE "
                     + "{" + obj.URI + " <https://gont.ch/municipality> ?o}"
                 },
                 error: function (request, status, error) {
@@ -131,10 +131,10 @@ function  Business(id, URI) {
 
         if (this.businessType === null) {
             $.ajax({
-                url: "http://lindas-data.ch/sparql/",
+                url: "https://lindas-data.ch/sparql/",
                 dataType: "json",
                 data: {
-                    query: "SELECT DISTINCT * FROM <http://lindas-data.ch/resource/animaltransports> WHERE "
+                    query: "SELECT DISTINCT * FROM <https://linked.opendata.swiss/graph/FSVO/outbreak> WHERE "
                     +"{"+obj.URI+" <http://blv.ch/cat> ?o}"
                 },
                 error: function (request, status, error) {

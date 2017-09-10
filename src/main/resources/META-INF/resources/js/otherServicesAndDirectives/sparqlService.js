@@ -1,12 +1,12 @@
 app.service('sparql', function() {
 
     var sparqlQuery = {
-        endpoint: "http://test.lindas-data.ch/sparql",
+        endpoint: "https://lindas-data.ch/sparql",
         prefixBlv: "<http://blv.ch/>",
         tieIds: [],
         prefixXsd: "<http://www.w3.org/2001/XMLSchema#>",
-        from: "<http://test.lindas-data.ch/resource/animaltransports>",
-        sparql: "PREFIX blv: <http://blv.ch/>PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>SELECT DISTINCT ?T ?D FROM <http://test.lindas-data.ch/resource/animaltransports>WHERE {?M blv:fromFarm <http://foodsafety.data.admin.ch/business/51122>.?M blv:toFarm ?T.?M blv:date ?D.}"
+        from: "<https://linked.opendata.swiss/graph/FSVO/outbreak>",
+        sparql: "PREFIX blv: <http://blv.ch/>PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>SELECT DISTINCT ?T ?D FROM <https://linked.opendata.swiss/graph/FSVO/outbreak> WHERE {?M blv:fromFarm <http://foodsafety.data.admin.ch/business/51122>.?M blv:toFarm ?T.?M blv:date ?D.}"
     }
 
     this.executeSparql = function () {
