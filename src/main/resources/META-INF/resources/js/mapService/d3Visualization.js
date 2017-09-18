@@ -85,8 +85,8 @@ d3Vis = {
         d3Vis.g6 = d3Vis.svg.append("g");
         d3Vis.g4 = d3Vis.svg.append("g");
         d3Vis.g3 = d3Vis.svg.append("g");
-        d3Vis.g2 = d3Vis.svg.append("g");
-        d3Vis.g = d3Vis.svg.append("g");
+        d3Vis.g2 = d3Vis.svg.append("g").attr("class","g_fromFarm");
+        d3Vis.g = d3Vis.svg.append("g").attr("class","g_toFarm");
         d3Vis.g5 = d3Vis.svg.append("g");
 
         //add defs for marker-end to svg element
@@ -184,12 +184,9 @@ d3Vis = {
 
         d3Vis.circlesToFarm.enter()
             .append("circle")
-            .classed("noCentrality", function(d) {
-                return (d.toBusiness.centrality != 1 && $scope.showCentrality)
-            })
             .classed("circleToFarm", true)
-            //.attr("fill", function(d) {return fillScale(d.value)})
             .attr("r", d3Vis.r)
+            .attr("value", function(d) {return d.toBusiness.id})
             .on("mouseenter", function (d) {
                 tip_to_location.show(d);
             })
@@ -203,7 +200,6 @@ d3Vis = {
         d3Vis.pathsToFarm.enter()
             .append("path")
             .attr("class", "pathToFarm")
-            //.attr("fill", function(d) {return fillScale(d.value)})
             .on("mouseenter", function (d) {
                 hideArrowTips();
                 tip_to_location.show(d);
@@ -218,9 +214,7 @@ d3Vis = {
         d3Vis.circlesFromFarm.enter()
             .append("circle")
             .attr("r", d3Vis.r)
-            .classed("noCentrality", function(d) {
-                return (d.fromBusiness.centrality != 1 && $scope.showCentrality)
-            })
+            .attr("value", function(d) {return d.fromBusiness.id })
             .classed("circleFromFarm", true)
             .on("mouseenter", function (d) {
                 hideArrowTips();
@@ -230,14 +224,12 @@ d3Vis = {
                 tip_from_location.hide(d);
             })
             .on("click", function(d) {
-                addOrRemoveMonitoringZone(d.toBusiness.coordinates);
+                addOrRemoveMonitoringZone(d.fromBusiness.coordinates);
             });
-           // .attr("fill", function(d) {return fillScale(d.value)});
 
         d3Vis.pathsFromFarm.enter()
             .append("path")
             .attr("class", "pathFromFarm")
-          //  .attr("fill", function(d) {return fillScale(d.value)});
             .on("mouseenter", function (d) {
                 hideArrowTips();
                 tip_to_location.show(d);
@@ -246,7 +238,7 @@ d3Vis = {
                 tip_to_location.hide(d);
             })
             .on("click", function(d) {
-                addOrRemoveMonitoringZone(d.toBusiness.coordinates);
+                addOrRemoveMonitoringZone(d.fromBusiness.coordinates);
             });
 
         d3Vis.circlesToFarm.exit().remove();
@@ -261,10 +253,13 @@ d3Vis = {
             } else {
                 mData.push(coordinates);
             }
+            console.log(mData);
+            console.log(d3Vis.monitoringZoneData);
             olMap.zoomIntoMapIfNeeded(coordinates);
             d3Vis.update(d3Vis.$scope);
         }
 
+        //filter data with same similar and end coordinates
         d3Vis.arrows = d3Vis.g3.selectAll(".connection")
             .data(data);
 
@@ -315,7 +310,7 @@ d3Vis = {
 
 
         //STARTBUSINESSES
-                var startDataCircle = $scope.startBusiness.filter(function(d) {
+        var startDataCircle = $scope.startBusiness.filter(function(d) {
             return circleFilter(d);
         });
 
@@ -340,7 +335,7 @@ d3Vis = {
                  tip_startBusiness.hide(d);
             })
              .on("click", function(d) {
-                addOrRemoveMonitoringZone(d.toBusiness.coordinates);
+                addOrRemoveMonitoringZone(d.coordinates);
              });
 
         d3Vis.startPaths.enter()
@@ -353,7 +348,7 @@ d3Vis = {
                 tip_startBusiness.hide(d);
             })
              .on("click", function(d) {
-                addOrRemoveMonitoringZone(d.toBusiness.coordinates);
+                addOrRemoveMonitoringZone(d.coordinates);
              });
 
         d3Vis.startCircles.exit().remove();
@@ -396,21 +391,11 @@ d3Vis = {
 
         var bottomLeft = project(bounds.bottom, bounds.left),
             topRight = project(bounds.top, bounds.right);
-
+        
         //place svg element
 
         d3Vis.svg.attr("width", topRight[0] - bottomLeft[0] + 300)
-            .attr("height", bottomLeft[1] - topRight[1] + 300)
-            .style("margin-left", bottomLeft[0] + "px")
-            .style("margin-top", topRight[1] + "px");
-
-        //place g element
-        d3Vis.g.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
-        d3Vis.g2.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
-        d3Vis.g3.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
-        d3Vis.g4.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
-        d3Vis.g5.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
-        d3Vis.g6.attr("transform", "translate(" + -bottomLeft[0] + "," + -topRight[1] + ")");
+            .attr("height", bottomLeft[1] - topRight[1] + 300);
 
         try {
 
@@ -421,6 +406,16 @@ d3Vis = {
                     return calculateRectanglePath(d.toBusiness);
                 else if (d.toBusiness.businessType.localeCompare("Tierhaltung") == 0)
                     return calculateRectangleRotatedPath(d.toBusiness);
+            }).classed("lowCentrality", function (d) {
+                if (d3Vis.$scope.forwardTracing)
+                    return false;
+
+                for (var i = 0; i < d3Vis.$scope.centrality.length; i++) {
+                    if (d.toBusiness.URI.localeCompare(d3Vis.$scope.centrality[i][1]) == 0 || !d3Vis.$scope.showCentrality) {
+                        return false;
+                    }
+                }
+                return true;
             });
 
             d3Vis.circlesToFarm.attr("cx", function (d) {
@@ -429,9 +424,24 @@ d3Vis = {
                 .attr("cy", function (d) {
                     return project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1]
                 })
-                .classed("noCentrality", function(d) {
-                    return (d.toBusiness.centrality != 1 && d3Vis.$scope.showCentrality)
-            });
+                .classed("lowCentrality", function (d) {
+                    if (d3Vis.$scope.forwardTracing)
+                        return false;
+
+                    for (var i = 0; i < d3Vis.$scope.centrality.length; i++) {
+                        if (d.toBusiness.URI.localeCompare(d3Vis.$scope.centrality[i][1]) == 0 || !d3Vis.$scope.showCentrality) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+
+            //duplicate element with high centrality and add it to the end
+            var highCentrality_toFarm = [];
+            if (d3Vis.$scope.showCentrality) {
+                var highCentrality_toFarm = $(".g_toFarm").find(".circleToFarm:not(.lowCentrality)");
+                $(".g_toFarm").append(highCentrality_toFarm);
+            }
 
             d3Vis.circlesToFarm.transition().attr("r", d3Vis.r);
 
@@ -442,7 +452,18 @@ d3Vis = {
                     return calculateRectanglePath(d.fromBusiness);
                 else if (d.fromBusiness.businessType.localeCompare("Tierhaltung") == 0)
                     return calculateRectangleRotatedPath(d.fromBusiness);
-                });
+                })
+                .classed("lowCentrality", function (d) {
+                    if (d3Vis.$scope.forwardTracing)
+                        return false;
+
+                    for (var i = 0; i < d3Vis.$scope.centrality.length; i++) {
+                        if (d.fromBusiness.URI.localeCompare(d3Vis.$scope.centrality[i][1]) == 0 || !d3Vis.$scope.showCentrality) {
+                            return false;
+                        }
+                    }
+                    return true;
+            });
 
             d3Vis.circlesFromFarm.attr("cx", function (d) {
                     return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0]
@@ -450,9 +471,27 @@ d3Vis = {
                 .attr("cy", function (d) {
                     return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[1]
                 })
-                .classed("noCentrality", function(d) {
-                    return (d.toBusiness.centrality != 1 && d3Vis.$scope.showCentrality)
-            });
+                .classed("lowCentrality", function (d) {
+                    if (d3Vis.$scope.forwardTracing)
+                        return false;
+
+                    for (var i = 0; i < d3Vis.$scope.centrality.length; i++) {
+                        if (d.fromBusiness.URI.localeCompare(d3Vis.$scope.centrality[i][1]) == 0 || !d3Vis.$scope.showCentrality) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+
+            //duplicate element with high centrality and add it to the end
+            var highCentrality_fromFarm = [];
+            if (d3Vis.$scope.showCentrality) {
+                highCentrality_fromFarm = $(".g_fromFarm").find(".circleFromFarm:not(.lowCentrality)");
+                $(".g_fromFarm").append(highCentrality_fromFarm);
+            }
+
+            //update scope to show no_centrality_message
+            d3Vis.$scope.showNoCentralityMessage = (highCentrality_fromFarm.length + highCentrality_toFarm.length == 0);
 
             d3Vis.startPaths.attr("d", function (d) {
                 if (d.businessType.localeCompare("Schlachthof") == 0)
@@ -470,7 +509,8 @@ d3Vis = {
                     return project(d.coordinates[0], d.coordinates[1])[1]
                 });
 
-            d3Vis.arrows.attr("x1", function (d) {
+            d3Vis.arrows
+                .attr("x1", function (d) {
                     return project(d.fromBusiness.coordinates[0], d.fromBusiness.coordinates[1])[0]
                 })
                 .attr("y1", function (d) {
@@ -489,7 +529,33 @@ d3Vis = {
                         project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[0],
                         project(d.toBusiness.coordinates[0], d.toBusiness.coordinates[1])[1],
                         (r + markerHeight + markerMargin));
+                })
+                //make arrows invisible if distance between start and end business is to small
+                .attr("opacity", function(d) {
+                    //Duplicate of checkdistance function
+                    var a = d.fromBusiness.coordinates;
+                    var b = d.toBusiness.coordinates;
+                    var minDistace = 27;
+                    var pointA = d3Vis.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(a));
+                    var pointB = d3Vis.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(b));
+                    var dist = Math.sqrt(Math.pow(pointA.x - pointB.x,2) + Math.pow(pointA.y - pointB.y,2));
+                    if (dist > minDistace)
+                        return 1;
+                    else
+                        return 0;
+                    // return checkDistance(d.fromBusiness.coordinates, d.toBusiness.coordinates);
                 });
+
+            function checkDistance(a, b) {
+                var minDistace = 27;
+                var pointA = d3Vis.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(a));
+                var pointB = d3Vis.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(b));
+                var dist = Math.sqrt(Math.pow(pointA.x - pointB.x,2) + Math.pow(pointA.y - pointB.y,2));
+                if (dist > minDistace)
+                    return 1;
+                else
+                    return 0;
+            }
 
             /* DRAW PROTECTION ZONE */
 
@@ -560,7 +626,7 @@ d3Vis = {
         }
 
         //SHOW ALL BUSINESSES
-        if (d3Vis.$scope.showAllBusinesses && d3Vis.$scope.allBusinessPoints.length != 0)
+        if (d3Vis.$scope.allBusinessPoints.length != 0)
             drawAllBusinesses();
 
         function drawAllBusinesses() {
@@ -568,6 +634,10 @@ d3Vis = {
             var extent = olMap.getExtent();
 
             d3Vis.g6.selectAll(".allBusinesses").remove();
+
+            //exit if the businesses shouldn't be shown
+            if (!d3Vis.$scope.showAllBusinesses)
+                return null;
 
             for (var i = 0; i<d3Vis.$scope.allBusinessPoints.length; i++) {
                 if (d3Vis.$scope.allBusinessPoints[i].pointX > extent.left &&
@@ -594,8 +664,7 @@ d3Vis = {
                     .attr("cy", function (d) {
                         return project(d.pointX, d.pointY)[1]
                     })
-                    .attr("r", d3Vis.r)
-                    .attr("fill", "yellow");
+                    .attr("r", d3Vis.r);
             }
 
         }

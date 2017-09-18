@@ -6,7 +6,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         eingabemaske: true,
         resultat: false,
         kontakt: false
-    }
+    };
     
     //tie => tested infected entities
     $scope.tieIds = new Array({id:34155,valid:true});
@@ -14,48 +14,57 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     $scope.endDate = "20/02/2012";
     $scope.startDateMilliseconds = 0;
     $scope.endDateMilliseconds = 0;
-    $scope.value = "initialize";
     //difference in days between start- and enddate
     $scope.difference = null;
     $scope.dateInvalid = false;
     $scope.showMultipleIdMessage = false;
-    //set this to false at end
-    $scope.mapVisible = false;
-    $scope.settingsVisible = false;
-    $scope.filterStartDateMilliseconds = 0;
-    $scope.filterEndDateMilliseconds = 0;
-    $scope.leafletMap = {};
-    $scope.originalData = [];
-    $scope.animationRunning = false;
-    $scope.data = [];
-    $scope.allBusinessPoints = [];
-    $scope.dataTable = {
-        dataTable1: true,
-        dataTable2: false,
-    };
-    $scope.showDifferentForms = false;
-    $scope.hideSlaughterhouse = false;
-    $scope.individualArrowWidth = false;
-    $scope.showAllBusinesses = false;
-    $scope.showAllBusinessesSettings = false;
-    $scope.maxAllBusinesses = 500;
-    $scope.showCentrality = false;
-
-    $scope.appStarted = false;
-    $scope.appFinishedLoading = false;
-    $scope.showLayerPossibilities = false;
-    $scope.startBusiness = [];
-    $scope.showCentralityButton = false;
 
     $scope.forwardTracing = true;
 
     $scope.dataInitialisator = dataInitialisator;
 
-    $scope.noResults = false;
-
     $scope.selectedExample = "Beispiel auswählen";
     $scope.timeoutSelectExample = false;
-    
+
+    $scope.initializeScope = function() {
+        $scope.mapVisible = false;
+        $scope.settingsVisible = false;
+        $scope.filterStartDateMilliseconds = 0;
+        $scope.filterEndDateMilliseconds = 0;
+        $scope.leafletMap = {};
+        $scope.originalData = [];
+        $scope.animationRunning = false;
+        $scope.data = [];
+        $scope.centrality = [];
+        $scope.allBusinessPoints = [];
+        $scope.dataTable = {
+            dataTable1: true,
+            dataTable2: false
+        };
+        $scope.showDifferentForms = false;
+        $scope.hideSlaughterhouse = false;
+        $scope.individualArrowWidth = false;
+        $scope.showAllBusinesses = false;
+        $scope.showAllBusinessesSettings = false;
+        $scope.maxAllBusinesses = 100;
+        $scope.showCentrality = false;
+        $scope.showNoCentralityMessage = false;
+
+        $scope.startBusiness = [];
+
+        $scope.appStarted = false;
+        $scope.appFinishedLoading = false;
+        $scope.showLayerPossibilities = false;
+        $scope.showCentralityButton = false;
+
+        $scope.noResults = false;
+
+        $scope.displaySizeToSmall = false;
+    };
+
+    $scope.initializeScope();
+
+
     $scope.navigate = function(page) {
         $scope.nav.eingabemaske = false;
         $scope.nav.resultat = false;
@@ -119,7 +128,9 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
             return null;
 
         if ($scope.showAllBusinesses)
-            loadAllBusinessPoints($scope, function() {d3Vis.update($scope)});
+            loadAllBusinessPoints($scope, function() {
+                d3Vis.update($scope)
+            });
         else
             d3Vis.update($scope);
     });
@@ -143,6 +154,9 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     };
 
     $scope.initializeVisualisation = function(forwardTracing) {
+
+        $scope.initializeScope();
+
         console.log("start Visualization");
         $scope.appStarted = true;
         $scope.getMillisecondsEndDate();
@@ -199,8 +213,9 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         $scope.mapVisible = true;
         $scope.navigate('resultat');
 
-        $scope.dataInitialisator.initializeData($scope, function(moveArray) {
+        $scope.dataInitialisator.initializeData($scope, function(moveArray, centrality) {
             $scope.data = moveArray;
+            $scope.centrality = centrality;
             $scope.originalData = moveArray;
             console.log($scope.data);
 
@@ -272,26 +287,64 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
 
         switch ($scope.selectedExample) {
             case 'Forward#1':
+                $scope.startDate = "24/01/2012";
+                $scope.endDate = "20/02/2012";
+                $scope.tieIds = [{id:46132,valid:true}];
+                $scope.forwardTracing = true;
+                break;
+            case 'Forward#2':
                 $scope.startDate = "01/01/2012";
-                $scope.endDate = "05/01/2012";
-                $scope.tieIds = [{id:51396,valid:true}];
+                $scope.endDate = "20/02/2012";
+                $scope.tieIds = [{id:34155,valid:true}];
+                $scope.forwardTracing = true;
+                break;
+            case 'Forward#3':
+                $scope.startDate = "23/05/2012";
+                $scope.endDate = "06/06/2012";
+                $scope.tieIds = [{id:2336,valid:true}];
                 $scope.forwardTracing = true;
                 break;
             case 'Backward#1':
-                $scope.startDate = "20/01/2012";
-                $scope.endDate = "01/02/2012";
-                $scope.tieIds = [{id:5112,valid:true},{id:51122,valid:true}];
+                $scope.startDate = "01/01/2012";
+                $scope.endDate = "10/01/2012";
+                $scope.tieIds = [{id:33360,valid:true},{id:3782,valid:true},{id:28938,valid:true}];
                 $scope.forwardTracing = false;
                 break;
             case 'Backward#2':
                 $scope.startDate = "01/01/2012";
-                $scope.endDate = "10/01/2012";
+                $scope.endDate = "02/01/2012";
+                $scope.tieIds = [{id:41564,valid:true},{id:42712,valid:true}];
                 $scope.forwardTracing = false;
-                $scope.tieIds = [{id:33360,valid:true},{id:3782,valid:true},{id:28938,valid:true}];
                 break;
         }
     });
 
+    $(window).resize(function(){
+        $scope.$apply(function(){
+            $scope.testIfScreenResolutionEnough(window.innerWidth);
+        });
+    });
 
+    $(window).ready(function(){
+        $scope.$apply(function(){
+            $scope.testIfScreenResolutionEnough(window.innerWidth);
+            $("#lindasMainContainer").css("display","block");
+        });
+    });
+
+    $scope.testIfScreenResolutionEnough = function(width) {
+        if (width <= 1200) {
+            $scope.displaySizeToSmall = true;
+            $("#screenResolutionToSmall").show();
+        } else {
+            $scope.displaySizeToSmall = false;
+            $("#screenResolutionToSmall").hide();
+        }
+    }
 
 });
+
+function showScope() {
+    console.log(angular.element(document.getElementById('lindasMainContainer')).scope());
+}
+

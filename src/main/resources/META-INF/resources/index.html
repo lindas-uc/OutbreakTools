@@ -17,11 +17,15 @@
 	<meta name="author" content="Janik Endtner">
 
     <!--Include new Stylesheets CHANGE!!-->
-    <link rel="stylesheet" href="https://www.procrastinatio.org/mf-chsdi-build/build/api.css" type="text/css">
-    <script src="https://www.procrastinatio.org/gsm-coverage/js/proj4js-compressed.js"></script>
-    <script src="https://www.procrastinatio.org/assets/lib/ol2/OpenLayers-2.13.1/lib/OpenLayers.js"></script>
+    <!--<link rel="stylesheet" href="https://www.procrastinatio.org/mf-chsdi-build/build/api.css" type="text/css">-->
+    <!--<script src="https://www.procrastinatio.org/gsm-coverage/js/proj4js-compressed.js"></script>-->
+    <!--<script src="https://www.procrastinatio.org/assets/lib/ol2/OpenLayers-2.13.1/lib/OpenLayers.js"></script>-->
 
-    <script src="https://www.procrastinatio.org/examples/matrixDefs.js"></script>
+    <!--include openlayers-->
+    <script type="text/javascript" src="external/OpenLayers-2.13.1/OpenLayers.js"></script>
+    <script type="text/javascript" src="external/proj4js-compressed.js"></script>
+
+    <!--<script src="https://www.procrastinatio.org/examples/matrixDefs.js"></script>-->
     <script src="https://d3js.org/d3.v2.min.js?2.9.3"></script>
 
 	<link rel="stylesheet" type="text/css" href="css/stylesheet.css">
@@ -56,17 +60,46 @@
     <!--Include d3-tip-->
     <link rel="stylesheet" href="external/d3-tip-master/examples/example-styles.css">
     <script type="text/javascript" src="external/d3-tip-master/index.js"></script>
-    <script type="text/javascript">
 
-        var errorCounter = 0;
-        window.onerror = function (errorMsg, url, lineNumber) {
-            errorCounter += 1;
-            if (errorCounter <= 15) {
-                console.log("external error catched");
-                return true;
+    <script type="text/javascript">
+        // check browser and browser version
+        navigator.sayswho= (function(){
+            var ua= navigator.userAgent, tem,
+                    M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+            if(/trident/i.test(M[1])){
+                tem=  /\brv[ :]+(\d+)/g.exec(ua) || [];
+                return 'IE '+(tem[1] || '');
             }
+            if(M[1]=== 'Chrome'){
+                tem= ua.match(/\b(OPR|Edge)\/(\d+)/);
+                if(tem!= null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
+            }
+            M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+            if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1]);
+            return M.join(' ');
+        })();
+
+        console.log(navigator.sayswho);
+        // warning alert if browser is not firefox or chrome
+        if (navigator.sayswho.indexOf("Firefox") < 0 && navigator.sayswho.indexOf("Chrome") < 0) {
+            alert("Bei dieser Applikation handelt es sich um einen Prototyp. Deshalb wurde sie nur für die Browser " +
+                    "Google Chrome und Firefox entwickelt und getestet. Bei Verwendung von älteren Versionen des Internet Explorer oder " +
+                    "anderen Browsern können Probleme auftreten.")
         }
     </script>
+
+    <!--<script type="text/javascript">-->
+
+        <!--// catch errors from external script. This errors don't change the code flow-->
+        <!--var errorCounter = 0;-->
+        <!--window.onerror = function (errorMsg, url, lineNumber) {-->
+            <!--errorCounter += 1;-->
+            <!--if (errorCounter <= 15) {-->
+                <!--console.log("external error catched");-->
+                <!--return true;-->
+            <!--}-->
+        <!--}-->
+    <!--</script>-->
 
 
     <!--Include CSS for Checkboxes-->
@@ -80,16 +113,16 @@
     <div id="wrapper">
 
     <div class="row headerrow">
-        <div class="col-md-3" id="logo_suisse">
+        <div class="col-xs-3" id="logo_suisse">
             <img src="img/logo_suisse.png">
         </div>
-        <div class="col-md-9">
+        <div class="col-xs-9">
             <p>LINDAS<br>
             Showcase Linked Data: Ausbruchsabklärung von Tierseuchen</p>
         </div>
     </div>
         
-    <div class="container" ng-app="lindasMain" ng-controller="lindasMainCtrl" id="lindasMainContainer">
+    <div class="container" ng-app="lindasMain" ng-controller="lindasMainCtrl" id="lindasMainContainer" ng-hide="displaySizeToSmall">
         
         <nav class="nav-main yamm navbar">
             <ul class="nav navbar-nav">
@@ -104,18 +137,18 @@
 
         <div class="row" ng-show="(nav.resultat && appFinishedLoading && !noResults)">
             <div class="box">
-                <div class="col-lg-9 text-center">
+                <div class="col-xs-9 text-center">
                     <div id="slider"></div>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-xs-2">
                     <button id="startAnimation" class="btn" aria-label="Left Align">
                         <span class="glyphicon glyphicon-play" aria-hidden="true" ng-hide="animationRunning"></span>
                         <span class="glyphicon glyphicon-stop" aria-hidden="true" ng-show="animationRunning"></span>
                         Animation starten
                     </button>
                 </div>
-                <div class="col-lg-1">
-                    <button id="startAnimation" ng-click="settingsVisible = !settingsVisible" class="btn" aria-label="Left Align">
+                <div class="col-xs-1">
+                    <button ng-click="settingsVisible = !settingsVisible" class="btn" aria-label="Left Align">
                         Settings
                     </button>
                 </div>
@@ -125,33 +158,32 @@
         <div class="row settings" ng-show="(settingsVisible && nav.resultat)">
             <div class="box">
                 <div class="row">
-                    <div class="col-lg-4">
+                    <div class="col-xs-4">
                         <input type="checkbox" id="ToggleForms" ng-model="showDifferentForms" ng-checked="showDifferentForms"/>
                         <label for="ToggleForms">Verschiedene Formen einblenden</label>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-xs-4">
                         <input type="checkbox" id="toggleSchlachthoefe" ng-model="hideSlaughterhouse" ng-checked="hideSlaughterhouse" />
                         <label for="toggleSchlachthoefe">Schlachthöfe ausblenden</label>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-xs-4">
                         <input type="checkbox" id="individualArrowWidth" ng-model="individualArrowWidth" ng-checked="individualArrowWidth" />
                         <label for="individualArrowWidth">Pfeilstärke anhand Anzahl Tiere definieren</label>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-xs-4">
                         <input type="checkbox" id="showAllBusinesses" ng-model="showAllBusinesses" ng-checked="showAllBusinesses"/>
                         <label for="showAllBusinesses">Alle Betriebe anzeigen <button class="btn btn-default btn-xs" ng-click="showAllBusinessesSettings = !showAllBusinessesSettings">
                             <strong ng-hide="showAllBusinessesSettings">+</strong>
                             <strong ng-show="showAllBusinessesSettings">-</strong>
                             </button></label>
                     </div>
-                    <div class="col-lg-4">
-                        <input type="checkbox" id="showCentrality" ng-model="showCentrality" ng-checked="showCentrality" ng-disabled="!showCentralityButton"/>
-                        <input type="checkbox" id="showCentrality" ng-model="showCentrality" ng-checked="showCentrality" ng-disabled="!showCentralityButton"/>
-                        <label for="showCentrality">Centrality zeigen</label>
+                    <div class="col-xs-4">
+                        <input type="checkbox" id="showCentrality" ng-model="showCentrality" ng-checked="showCentrality" ng-disabled="forwardTracing"/>
+                        <label for="showCentrality">Centrality zeigen <i ng-show="showCentrality && showNoCentralityMessage">(Hier keine Angaben zur Centrality möglich)</i></label>
                     </div>
                 </div>
                 <div class="row" ng-show="showAllBusinessesSettings" id="showAllBusinessesSettings">
-                    <div class="box col-lg-4">
+                    <div class="box col-xs-4">
                         <input type="text" class="form-control" id="defineMaxAllBusinesses" ng-model="maxAllBusinesses"/>
                         <label for="defineMaxAllBusinesses">Maximale Anzahl Betriebe die angezeigt werden</label>
                     </div>
@@ -162,7 +194,7 @@
 
         <div class="row" ng-show="(nav.resultat && appFinishedLoading && !noResults)" >
             <div class="box">
-                <div class="col-lg-12 text-center">
+                <div class="col-xs-12 text-center">
                     <div id="map">
                         <button id="centerMap" onclick="olMap.zoomInAndSetCenter()" type="button" class="btn btn-default btn-circle btn-lg"><i class="glyphicon glyphicon-screenshot"></i></button>
                         <button id="changeOlMap" ng-click="toggleLayersVisibility()" type="button" class="btn btn-default btn-circle btn-lg"><i class="glyphicon glyphicon-globe"></i></button>
@@ -212,8 +244,8 @@
                             <th>Move_id</th>
                             <th>fromBusiness_id</th>
                             <th>toBusiness_id</th>
-                            <th>NumberOfAnimals</th>
-                            <th>Date</th>
+                            <th>Anzahl Tiere</th>
+                            <th>Datum</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -237,9 +269,10 @@
                         <tr>
                             <th>ID</th>
                             <th>URI</th>
-                            <th>coordinates</th>
-                            <th>businessType</th>
-                            <th>date</th>
+                            <th>Koordinaten</th>
+                            <th>Betriebsart</th>
+                            <th>Datum</th>
+                            <th>Kanton</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -249,6 +282,7 @@
                             <td>{{d.toBusiness.coordinates}}</td>
                             <td>{{d.toBusiness.businessType}}</td>
                             <td>{{d.date}}</td>
+                            <td>{{d.toBusiness.canton}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -258,7 +292,7 @@
         
         <div class="row" ng-show="(!appStarted && nav.resultat)">
             <div class="box">
-                <div class="col-md-12">
+                <div class="col-xs-12">
                     <p>Bitte starten Sie zuerst eine Abfrage mit der Eingabemaske</p>
                 </div>
             </div>
@@ -266,15 +300,15 @@
 
         <div class="row" ng-show="(noResults && nav.resultat)">
             <div class="box">
-                <div class="col-md-12">
+                <div class="col-xs-12">
                     <p>Zu dieser Abfrage konnten keine Bewegungen gefunden werden. Bitte ändern Sie die Abfrage</p>
                 </div>
             </div>
         </div>
         
-        <div class="row loading" ng-show="(appStarted && !appFinishedLoading && !noResults)">
+        <div class="row loading" ng-show="(appStarted && !appFinishedLoading && !noResults && nav.resultat)">
             <div class="box">
-                <div class="col-md-12">
+                <div class="col-xs-12">
                     <center> 
                         <img src="img/rolling.gif">
                     </center>
@@ -284,7 +318,7 @@
 
         <div class="row" ng-show="nav.eingabemaske">
             <div class="box">
-                <div class="col-lg-12">
+                <div class="col-xs-12">
                     <hr>
                     <h2 class="intro-text text-center">Eingabemaske</h2>
                     <hr>
@@ -292,35 +326,35 @@
                     <form>
                         <fieldset>
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-xs-12">
                                     <label><strong>ID Betrieb:</strong></label>
                                 </div>
                             </div>
                             <div id="inputFieldID">
                                 <div class="row" ng-repeat="x in tieIds track by $index">
-                                        <div class="col-md-8">
+                                        <div class="col-xs-8">
                                             <div class="form-group">
                                                 <input class="form-control" type="text" placeholder="&lt;&lt;ID Eingeben&gt;&gt;" ng-model="tieIds[$index].id">
                                             </div>
                                         </div>
-                                        <div class="col-md-1">
+                                        <div class="col-xs-1">
                                             <button type="button" class="btn" aria-label="Left Align" ng-click="removeTieIds($index)">
                                                 <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                                             </button>
                                         </div>
-                                        <div class="col-md-8">
+                                        <div class="col-xs-8">
                                             <div class="alert alert-danger" role="alert" ng-hide="tieIds[$index].valid">Id ungültig</div>
                                         </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6" ng-mouseenter="showMultipleIdMessage = true" ng-mouseleave="showMultipleIdMessage = false">
+                                <div class="col-xs-6" ng-mouseenter="showMultipleIdMessage = true" ng-mouseleave="showMultipleIdMessage = false">
                                     <button type="button" class="btn btn-border" aria-label="Left Align" ng-click="addEmptyTieIds()">
                                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                                         Weitere ID eingeben
                                     </button>  <span ng-show="showMultipleIdMessage">(Momentan nur bei Backward tracing möglich)</span>
                                 </div>
-                                <!--<div class="col-md-4">
+                                <!--<div class="col-xs-4">
                                     <button type="submit" class="btn btn-border" aria-label="Left Align">
                                         <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
                                         CSV hochladen
@@ -331,10 +365,10 @@
                                 <div class="alert alert-danger" role="alert" ng-show="(tieIds.length != 1 && forwardTracing)">Momentan kann beim Forward tracing nur eine ID angegeben werden</div>
                             </div>
                             <div class="row" id="inputPeriod">
-                                <div class="col-md-12 paddingNull">
+                                <div class="col-xs-12 paddingNull">
                                     <label><strong>Zeitraum</strong>:</label>
                                         <div class="row">
-                                            <div class='col-sm-4'>
+                                            <div class='col-xs-4'>
                                                 <label>Von:</label>
                                                 <div class="form-group">
                                                     <div class='input-group date' id='datetimepicker1'>
@@ -356,7 +390,7 @@
                                                     });
                                             });
                                             </script>
-                                            <div class='col-sm-4'>
+                                            <div class='col-xs-4'>
                                                 <label>Bis:</label>
                                                 <div class="form-group">
                                                     <div class='input-group date' id='datetimepicker2'>
@@ -378,7 +412,7 @@
                                                     });
                                             });
                                             </script>
-                                            <div class='col-sm-4'>
+                                            <div class='col-xs-4'>
                                                 <label>Anzahl Tage von Enddatum subtrahieren:</label>
                                                 <div class="form-group">
                                                     <div class='input-group' id="difference">
@@ -394,24 +428,24 @@
                                     </div>
                             </div>
                             <div class="row margin-top-plus">
-                                <div class="col-lg-2">
+                                <div class="col-xs-2">
                                     <input id="toggleForwardTracing" type="checkbox" ng-model="forwardTracing" ng-checked="forwardTracing"/>
                                     <label for="toggleForwardTracing">Forward tracing</label>
                                 </div>
-                                <div class="col-lg-2">
+                                <div class="col-xs-2">
                                     <input id="toggleBackwardTracing" type="checkbox" ng-model="forwardTracing" ng-checked="!forwardTracing" ng-true-value="false" ng-false-value="true"/>
                                     <label for="toggleBackwardTracing">Backward tracing</label>
                                 </div>
                             </div>
                             <div class="row margin-top-plus">
-                                <div class="col-md-12">
+                                <div class="col-xs-12">
                                     <div class="row">
-                                        <div class="col-md-1">
+                                        <div class="col-xs-1">
                                             <button type="button" class="btn btn-border btn-primary bull" aria-label="Left Align" ng-click="initializeVisualisation()">
                                                 Absenden
                                             </button>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-xs-2">
                                             <div class="dropdown" id="selectExample">
                                                 <button class="btn btn-border dropdown-toggle" type="button" data-toggle="dropdown">{{selectedExample}}
                                                 <span class="caret"></span></button>
@@ -421,20 +455,20 @@
                                                   <li ng-click="selectExample('Forward#3')"><a href="#">Forward#3</a></li>
                                                   <li ng-click="selectExample('Backward#1')"><a href="#">Backward#1</a></li>
                                                   <li ng-click="selectExample('Backward#2')"><a href="#">Backward#2</a></li>
-                                                  <li ng-click="selectExample('Backward#3')"><a href="#">Backward#3</a></li>
+                                                    <!-- <li ng-click="selectExample('Backward#3')"><a href="#">Backward#3</a></li>-->
                                                 </ul>
                                             </div>
                                         </div>
-                                        <div class="col-md-2 pull-right">
+<!--                                        <div class="col-xs-2 pull-right">
                                             <button type="button" class="btn btn-border bull" aria-label="Left Align" onclick="test.testJsonData()">
                                                 TestData
                                             </button>
-                                        </div>
-                                        <div class="col-md-2 pull-right">
+                                        </div>-->
+<!--                                        <div class="col-xs-2 pull-right">
                                             <button type="button" class="btn btn-border bull" aria-label="Left Align" onclick="test.loadBackwardSettings()">
                                                 Test Backward
                                             </button>
-                                        </div>
+                                        </div>-->
                                     </div>
                                 </div>
                             </div>
@@ -446,7 +480,7 @@
         
         <div class="row" ng-show="nav.kontakt">
             <div class="box">
-                <div class="col-md-12">
+                <div class="col-xs-12">
                     
                     <h1>Impressum</h1>
                     <br>
@@ -483,13 +517,21 @@
         <footer>
             <div class="container" id="impressum">
                 <div class="row">
-                    <div class="col-lg-12 text-center">
+                    <div class="col-xs-12 text-center">
                         <p ng-click="navigate('kontakt')"><a>Impressum</a></p>
                     </div>
                 </div>
             </div>
         </footer>
         
+    </div>
+
+    <div id="screenResolutionToSmall">
+        <div class="container">
+            <div class="row">
+                <p>Momentan ist diese Seite nur ab einer Bildschirmbreite von mindestens 1200px verfügbar</p>
+            </div>
+        </div>
     </div>
 
     <!--Scripts for Controller and Model-->

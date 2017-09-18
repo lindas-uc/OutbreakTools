@@ -30,4 +30,25 @@ The following is an example for the usage of the HTTP interface for contact trac
 
 The following is to trace backwards and find central hot-spots:
 
- * localhost:5000/centrality?startingSite=http://foodsafety.data.admin.ch/business/5112&startingSite=http://foodsafety.data.admin.ch/business/51122&startDate=2012-02-01&endDate=2012-01-20
+ * http://localhost:5000/centrality?startingSite=http://foodsafety.data.admin.ch/business/5112&startingSite=http://foodsafety.data.admin.ch/business/51122&startDate=2012-02-01&endDate=2012-01-20
+
+
+## Geo Data
+
+The data in the animal transport graph references municipalities using IRIs like `<http://classifications.data.admin.ch/municipality/4551>`, the https://sparql.geo.admin.ch/ endpoint can be used to get the shape of such a municipality as wkt with a query like:
+
+```
+SELECT ?wkt WHERE {
+
+?geomuni <http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://classifications.data.admin.ch/municipality/4551>.
+?geomuni <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.geonames.org/ontology#A.ADM3>.
+?geomuni <http://purl.org/dc/terms/hasVersion> ?geomuniVersion .
+
+?geomuniVersion <http://purl.org/dc/terms/issued> ?issued.
+?geomuniVersion <http://www.opengis.net/ont/geosparql#hasGeometry> ?geometry.
+?geometry <http://www.opengis.net/ont/geosparql#asWKT> ?wkt.
+}
+
+ORDER BY DESC(?issued)
+LIMIT 1
+```

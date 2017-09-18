@@ -1,8 +1,11 @@
+var errorOccured = false;
+
 function  Business(id, URI) {
     this.id = id;
     this.URI = URI;
     this.coordinates = null;
     this.municipality = null;
+    this.canton = null;
     this.name = "randomName";
     this.openLayersLonLat = {};
     this.businessType = null;
@@ -10,17 +13,33 @@ function  Business(id, URI) {
     this.centrality = 0;
 
     this.getMunicipality = function(callback) {
-        if (this.municipality == null) {
+        if (this.municipality === null) {
             var obj = this;
+            console.log("SELECT DISTINCT * FROM <https://linked.opendata.swiss/graph/FSVO/outbreak> WHERE "
+            + "{" + obj.URI + " <https://gont.ch/municipality> ?o}");
             
             $.ajax({
-                url: "http://test.lindas-data.ch/sparql",
+                url: "https://lindas-data.ch/sparql/",
+                headers: {
+                    Accept: "application/sparql-results+json"
+                },
                 dataType: "json",
                 data: {
-                    query: "SELECT DISTINCT * FROM <http://test.lindas-data.ch/resource/animaltransports> WHERE "
+                    query: "SELECT DISTINCT * FROM <https://linked.opendata.swiss/graph/FSVO/outbreak> WHERE "
                     + "{" + obj.URI + " <https://gont.ch/municipality> ?o}"
+                },
+                error: function (request, status, error) {
+                    debugger;
+                    // FEHLERCODE 201
+                    if (!errorOccured) {
+                        errorOccured = true;
+                        console.log(request)
+                        alert("Ein Fehler ist aufgetreten. (Fehlercode 201) \nFalls dieses Problem weiterhin auftritt, " +
+                            "wenden Sie sich bitte and die Forschungsstelle Digitale Nachhaltigkeit")
+                    }
                 }
             }).then(function (data) {
+                debugger;
                 try {
                     data = data["results"]["bindings"][0]["o"]["value"];
                     data = "<" + data + ">";
@@ -40,9 +59,9 @@ function  Business(id, URI) {
 
     this.getCoordinates = function(callback) {
         //create new coordinates if doesn't exist
-        if (this.coordinates == null) {
+        if (this.coordinates === null) {
             //didnt found municipality. return random coordinates
-            if (this.municipality.localeCompare("no value") == 0) {
+            if (this.municipality.localeCompare("no value") === 0) {
                 console.log("Object " + this.URI + " has no municipality, so return random coordinates");
                 this.returnNullCoordinates(callback);
             } else {
@@ -50,16 +69,38 @@ function  Business(id, URI) {
                 var obj = this;
 
                 this.getMunicipality(function (municipality) {
+
                     $.ajax({
-                        url: "http://lindas.zazuko.com/blazegraph/namespace/swisstopo/sparql",
+                        url: "https://ld.geo.admin.ch/query/",
+                        headers: {
+                            Accept: "application/sparql-results+json"
+                        },
                         dataType: "json",
                         data: {
-                            query: "SELECT ?wtk WHERE { " +
-                            "?G <https://gont.ch/municipality> " + municipality + " ." +
-                            "?G    <http://linkeddata.interlis.ch/IlisMeta07.MetaElemOID/swissBOUNDARIES3D_ili2_LV03_V1_3_ceis.TLM_GRENZEN.TLM_HOHEITSGEBIET.RefPoint> ?S." +
-                            "?S <http://www.opengis.net/ont/geosparql#asWKT> ?wtk}"
+                            query: "SELECT ?wkt WHERE {"
+                            +"?geomuni <http://www.w3.org/2000/01/rdf-schema#seeAlso> "+municipality+"."
+                            +"?geomuni <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.geonames.org/ontology#A.ADM3>."
+                            +"?geomuni <http://purl.org/dc/terms/hasVersion> ?geomuniVersion ."
+
+                            +"?geomuniVersion <http://purl.org/dc/terms/issued> ?issued."
+                            +"?geomuniVersion <http://www.opengis.net/ont/geosparql#hasGeometry> ?geometry."
+                            +"?geometry <http://www.opengis.net/ont/geosparql#asWKT> ?wkt."
+                            +"}"
+
+                            +"ORDER BY DESC(?issued)"
+                            +"LIMIT 1"
+                        },
+                        error: function (request, status, error) {
+                            // FEHLERCODE 202
+                            if (!errorOccured) {
+                                errorOccured = true;
+                                console.log(request.responseText)
+                                alert("Ein Fehler ist aufgetreten. (Fehlercode 202) \nFalls dieses Problem weiterhin auftritt, " +
+                                    "wenden Sie sich bitte and die Forschungsstelle Digitale Nachhaltigkeit")
+                            }
                         }
                     }).then(function (data) {
+                        debugger;
                        try {
                             data = data["results"]["bindings"][0]["wtk"]["value"];
                             data = data.substring(data.search("POINT") + 8, data.length - 2);
@@ -100,13 +141,25 @@ function  Business(id, URI) {
         //delete the following line
        // this.businessType = translateBusinessType("loeschen");
 
-        if (this.businessType == null) {
+        if (this.businessType === null) {
             $.ajax({
-                url: "http://test.lindas-data.ch/sparql",
+                url: "http://lindas-data.ch/sparql/",
+                headers: {
+                    Accept: "application/sparql-results+json"
+                },
                 dataType: "json",
                 data: {
-                    query: "SELECT DISTINCT * FROM <http://test.lindas-data.ch/resource/animaltransports> WHERE "
+                    query: "SELECT DISTINCT * FROM <https://linked.opendata.swiss/graph/FSVO/outbreak> WHERE "
                     +"{"+obj.URI+" <http://blv.ch/cat> ?o}"
+                },
+                error: function (request, status, error) {
+                    // FEHLERCODE 203
+                    if (!errorOccured) {
+                        errorOccured = true;
+                        console.log(request.responseText)
+                        alert("Ein Fehler ist aufgetreten. (Fehlercode 203) \nFalls dieses Problem weiterhin auftritt, " +
+                            "wenden Sie sich bitte and die Forschungsstelle Digitale Nachhaltigkeit")
+                    }
                 }
             }).then(function(data) {
                 try {
@@ -127,14 +180,53 @@ function  Business(id, URI) {
 
         function translateBusinessType(uri) {
             var value = parseInt(obj.id) % 4;
-            if (value == 0)
+            if (value === 0)
                 return "Schlachthof";
-            else if (value == 1)
+            else if (value === 1)
                 return "Viehmarkt";
-            else if (value == 2)
+            else if (value === 2)
                 return "Tierhaltung";
             else
                 return "Alpung";
+        }
+    };
+
+    this.getCanton = function(callback) {
+        var obj = this;
+
+        if (obj.canton === null) {
+            $.ajax({
+                url: "https://lindas-data.ch/sparql",
+                headers: {
+                    Accept: "application/sparql-results+json"
+                },
+                dataType: "json",
+                data: {
+                    query: "PREFIX gont: <https://gont.ch/> " +
+                            "select ?canton where {" +
+                            obj.municipality + " gont:municipalityVersion ?version." +
+                                    "minus { ?version gont:abolitionEvent ?e}" +
+                                "?version gont:canton ?canton."+
+                            "}"
+                }
+            }).then(function (data) {
+                try {
+                    data = data["results"]["bindings"][0]["canton"]["value"];
+                    obj.canton = parseCanton(data);
+                } catch (err) {
+                    console.log("no canton found");
+                    obj.businessType = "missing_canton";
+                }
+
+            });
+
+            function parseCanton(data) {
+                var a = data.indexOf("canton/") + 7;
+                return data.substring(a);
+            }
+
+        } else {
+            callback(this.businessType);
         }
     }
 }

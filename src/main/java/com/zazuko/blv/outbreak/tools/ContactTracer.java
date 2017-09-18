@@ -29,7 +29,7 @@ public class ContactTracer {
      */
     final public boolean allowMultipleHopsInInterval = true;
     final static int interval = 24*60*60*1000;
-    final SparqlClient sparqlClient = new SparqlClient("http://test.lindas-data.ch/sparql");
+    final SparqlClient sparqlClient = new SparqlClient("https://lindas-data.ch/sparql");
     final static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     final boolean forward;
     
@@ -106,7 +106,7 @@ public class ContactTracer {
                 + "PREFIX schema:     <http://schema.org/>\n"
                 + "PREFIX dct:     <http://purl.org/dc/elements/1.1/>\n"
                 + "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>\n"
-                + "SELECT DISTINCT ?M ?T FROM <http://test.lindas-data.ch/resource/animaltransports> "
+                + "SELECT DISTINCT ?M ?T FROM <https://linked.opendata.swiss/graph/FSVO/outbreak> "
                 + "WHERE { "
                         + "   ?M schema:fromLocation <"+startingSite.getUnicodeString()+"> ."
                         + "   ?M schema:toLocation ?T."
@@ -116,7 +116,7 @@ public class ContactTracer {
                 + "PREFIX schema:     <http://schema.org/>\n"
                 + "PREFIX dct:     <http://purl.org/dc/elements/1.1/>\n"
                 + "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>\n"
-                + "SELECT DISTINCT ?M ?T FROM <http://test.lindas-data.ch/resource/animaltransports> "
+                + "SELECT DISTINCT ?M ?T FROM <https://linked.opendata.swiss/graph/FSVO/outbreak> "
                 + "WHERE { "
                         + "   ?M schema:toLocation<"+startingSite.getUnicodeString()+"> ."
                         + "   ?M schema:fromLocation ?T."
@@ -131,9 +131,9 @@ public class ContactTracer {
     }
     
     public static void main(String... args) throws Exception {
-        final Date startDate = dateFormat.parse("2012-01-01");
-        final Date endDate = dateFormat.parse("2012-02-01");
-        final IRI startingSite = new IRI("http://foodsafety.data.admin.ch/business/51122");
+        final Date startDate = dateFormat.parse("2012-01-24");
+        final Date endDate = dateFormat.parse("2012-02-20");
+        final IRI startingSite = new IRI("http://foodsafety.data.admin.ch/business/46132");
         final ContactTracer tracer = new ContactTracer();
         Set<Move> moves = tracer.getPotentiallyInfectedSites(startingSite, 
                 startDate,
