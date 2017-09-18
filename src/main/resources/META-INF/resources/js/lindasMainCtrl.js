@@ -91,7 +91,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
     };
 
     $scope.calculateDifference = function() {
-        if ($scope.difference == 0)
+        if ($scope.difference === 0)
             return null;
         var d = moment($scope.endDate, 'DD/MM/YYYY').toDate();
         d.setDate(d.getDate()-$scope.difference);
@@ -109,7 +109,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
             var date = d.date.getTime();
             if ($scope.hideSlaughterhouse)
                 return (date >= $scope.filterStartDateMilliseconds && date <= $scope.filterEndDateMilliseconds
-                && d.toBusiness.businessType.localeCompare("Schlachthof") != 0);
+                && d.toBusiness.businessType.localeCompare("Schlachthof") !== 0);
             else
                 return (date >= $scope.filterStartDateMilliseconds && date <= $scope.filterEndDateMilliseconds);
         });
@@ -173,7 +173,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
         }
 
         //check if more than one id in forward tracing
-        if ($scope.tieIds.length != 1 && $scope.forwardTracing) {
+        if ($scope.tieIds.length !== 1 && $scope.forwardTracing) {
             $scope.appStarted = false;
             return null;
         }
@@ -219,7 +219,7 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
             $scope.originalData = moveArray;
             console.log($scope.data);
 
-            if ($scope.data.length == 0) {
+            if ($scope.data.length === 0) {
                 $scope.noResults = true;
                 $scope.appFinishedLoading = true;
                 $scope.$apply();
@@ -266,13 +266,13 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
 
     //change button to 'Beispiel auswählen' if user changes the settings
     $scope.$watchGroup(['startDate','endDate', 'forwardTracing'], function(){
-        if ($scope.selectedExample.localeCompare('Beispiel auswählen') != 0 && !$scope.timeoutSelectExample) {
+        if ($scope.selectedExample.localeCompare('Beispiel auswählen') !== 0 && !$scope.timeoutSelectExample) {
             $scope.selectedExample = 'Beispiel auswählen'
         }
     });
 
     $scope.$watch('tieIds', function () {
-        if ($scope.selectedExample.localeCompare('Beispiel auswählen') != 0 && !$scope.timeoutSelectExample) {
+        if ($scope.selectedExample.localeCompare('Beispiel auswählen') !== 0 && !$scope.timeoutSelectExample) {
             $scope.selectedExample = 'Beispiel auswählen'
         }
     }, true);
@@ -347,4 +347,5 @@ app.controller('lindasMainCtrl', function($scope, sparql, validator, map, $timeo
 function showScope() {
     console.log(angular.element(document.getElementById('lindasMainContainer')).scope());
 }
+
 

@@ -33,7 +33,7 @@ function  Business(id, URI) {
                     // FEHLERCODE 201
                     if (!errorOccured) {
                         errorOccured = true;
-                        console.log(request)
+                        console.log(request.responseText)
                         alert("Ein Fehler ist aufgetreten. (Fehlercode 201) \nFalls dieses Problem weiterhin auftritt, " +
                             "wenden Sie sich bitte and die Forschungsstelle Digitale Nachhaltigkeit")
                     }
