@@ -15,21 +15,18 @@ function  Business(id, URI) {
     this.getMunicipality = function(callback) {
         if (this.municipality === null) {
             var obj = this;
-            console.log("SELECT DISTINCT * FROM <https://linked.opendata.swiss/graph/FSVO/outbreak> WHERE "
-            + "{" + obj.URI + " <https://gont.ch/municipality> ?o}");
-            
+
             $.ajax({
                 url: "https://lindas-data.ch/sparql/",
                 headers: {
                     Accept: "application/sparql-results+json"
                 },
                 dataType: "json",
-                data: { 
+                data: {
                     query: "SELECT DISTINCT * FROM <https://linked.opendata.swiss/graph/FSVO/outbreak> WHERE "
                     + "{" + obj.URI + " <https://gont.ch/municipality> ?o}"
                 },
                 error: function (request, status, error) {
-                    debugger;
                     // FEHLERCODE 201
                     if (!errorOccured) {
                         errorOccured = true;
@@ -39,7 +36,6 @@ function  Business(id, URI) {
                     }
                 }
             }).then(function (data) {
-                debugger;
                 try {
                     data = data["results"]["bindings"][0]["o"]["value"];
                     data = "<" + data + ">";
@@ -100,18 +96,24 @@ function  Business(id, URI) {
                             }
                         }
                     }).then(function (data) {
-                        debugger;
                        try {
-                            data = data["results"]["bindings"][0]["wtk"]["value"];
-                            debugger;
-                            data = data.substring(data.search("POINT") + 8, data.length - 2);
-                            data = data.split(" ");
-                            data[0] = parseInt(data[0]);
-                            data[1] = parseInt(data[1]);
-                            obj.coordinates = data;
-                            obj.openLayersLonLat = new OpenLayers.LonLat(data);
-                            callback(obj.coordinates);
-                            //didn't found coordinates. return random coordinates
+                            data = data["results"]["bindings"][0]["wkt"]["value"];
+                            var wgs84coordinates = GeojsonCenterCalculator.calculateCenter(data);
+                            // convert coordinates from wgs84 to lv94
+                           $.get( "http://geodesy.geo.admin.ch/reframe/wgs84tolv03",
+                               { easting: wgs84coordinates.x, northing: wgs84coordinates.y, format: "json" },
+                               function (res) {
+                                    try {
+                                        obj.coordinates = [parseFloat(res.easting), parseFloat(res.northing)];
+                                        obj.openLayersLonLat = new OpenLayers.LonLat(parseFloat(res.easting), parseFloat(res.northing));
+                                        callback(obj.coordinates);
+                                        //didn't found coordinates. return random coordinates
+                                    } catch (err) {
+                                        console.log("Object " + obj.URI + " has no coordinates, so return random coordinates");
+                                        obj.returnNullCoordinates(callback);
+                                    }
+                                }
+                           );
                         } catch (err) {
                             console.log("Object " + obj.URI + " has no coordinates, so return random coordinates");
                             obj.returnNullCoordinates(callback);

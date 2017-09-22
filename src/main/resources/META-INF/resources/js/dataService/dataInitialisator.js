@@ -116,8 +116,6 @@ dataInitialisator = {
         var c = valueBlock.indexOf('>', b) + 1;
         var uri = valueBlock.substring(b, c);
 
-        console.log(uri);
-
         return [centrality,uri];
     }
     
