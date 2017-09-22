@@ -3,7 +3,7 @@
  */
 
 function loadAllBusinessPoints($scope, callback) {
-    if ($scope.allBusinessPoints.length == 0) {
+    if ($scope.allBusinessPoints.length === 0) {
         $.ajax({
             url: "http://lindas.zazuko.com/blazegraph/namespace/swisstopo/sparql",
             dataType: "json",

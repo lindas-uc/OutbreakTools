@@ -15,15 +15,21 @@ function  Business(id, URI) {
     this.getMunicipality = function(callback) {
         if (this.municipality === null) {
             var obj = this;
+            console.log("SELECT DISTINCT * FROM <https://linked.opendata.swiss/graph/FSVO/outbreak> WHERE "
+            + "{" + obj.URI + " <https://gont.ch/municipality> ?o}");
             
             $.ajax({
                 url: "https://lindas-data.ch/sparql/",
+                headers: {
+                    Accept: "application/sparql-results+json"
+                },
                 dataType: "json",
-                data: {
+                data: { 
                     query: "SELECT DISTINCT * FROM <https://linked.opendata.swiss/graph/FSVO/outbreak> WHERE "
                     + "{" + obj.URI + " <https://gont.ch/municipality> ?o}"
                 },
                 error: function (request, status, error) {
+                    debugger;
                     // FEHLERCODE 201
                     if (!errorOccured) {
                         errorOccured = true;
@@ -33,6 +39,7 @@ function  Business(id, URI) {
                     }
                 }
             }).then(function (data) {
+                debugger;
                 try {
                     data = data["results"]["bindings"][0]["o"]["value"];
                     data = "<" + data + ">";
@@ -62,8 +69,12 @@ function  Business(id, URI) {
                 var obj = this;
 
                 this.getMunicipality(function (municipality) {
+
                     $.ajax({
-                        url: "https://sparql.geo.admin.ch/",
+                        url: "https://ld.geo.admin.ch/query/",
+                        headers: {
+                            Accept: "application/sparql-results+json"
+                        },
                         dataType: "json",
                         data: {
                             query: "SELECT ?wkt WHERE {"
@@ -89,8 +100,10 @@ function  Business(id, URI) {
                             }
                         }
                     }).then(function (data) {
+                        debugger;
                        try {
                             data = data["results"]["bindings"][0]["wtk"]["value"];
+                            debugger;
                             data = data.substring(data.search("POINT") + 8, data.length - 2);
                             data = data.split(" ");
                             data[0] = parseInt(data[0]);
@@ -131,12 +144,16 @@ function  Business(id, URI) {
 
         if (this.businessType === null) {
             $.ajax({
-                url: "https://lindas-data.ch/sparql/",
+                url: "http://lindas-data.ch/sparql/",
+                headers: {
+                    Accept: "application/sparql-results+json"
+                },
                 dataType: "json",
                 data: {
                     query: "SELECT DISTINCT * FROM <https://linked.opendata.swiss/graph/FSVO/outbreak> WHERE "
                     +"{"+obj.URI+" <http://blv.ch/cat> ?o}"
                 },
+
                 error: function (request, status, error) {
                     // FEHLERCODE 203
                     if (!errorOccured) {
@@ -165,11 +182,11 @@ function  Business(id, URI) {
 
         function translateBusinessType(uri) {
             var value = parseInt(obj.id) % 4;
-            if (value == 0)
+            if (value === 0)
                 return "Schlachthof";
-            else if (value == 1)
+            else if (value === 1)
                 return "Viehmarkt";
-            else if (value == 2)
+            else if (value === 2)
                 return "Tierhaltung";
             else
                 return "Alpung";
@@ -182,6 +199,9 @@ function  Business(id, URI) {
         if (obj.canton === null) {
             $.ajax({
                 url: "https://lindas-data.ch/sparql",
+                headers: {
+                    Accept: "application/sparql-results+json"
+                },
                 dataType: "json",
                 data: {
                     query: "PREFIX gont: <https://gont.ch/> " +

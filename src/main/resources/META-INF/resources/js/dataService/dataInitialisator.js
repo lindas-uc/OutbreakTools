@@ -25,13 +25,13 @@ dataInitialisator = {
         var centrality = [];
 
         for (var i = 0 ; i < data.length; i++) {
-            if (data[i].indexOf("ns#value") >= 0) {
+            if (data[i].indexOf("foodsafety.data.admin.ch/move") >= 0) {
                 centrality.push(dataInitialisator.parseValue(data[i]));
             }
         }
 
         for (var i = 0 ; i < data.length; i++) {
-            if (data[i].indexOf("move") == -1)
+            if (data[i].indexOf("move") === -1)
                 data.splice(i, 1);
         }
 
@@ -91,7 +91,7 @@ dataInitialisator = {
         var interval = setInterval(function() {
             var found = true;
             for (var i = 0; i < moveArray.length && found; i++) {
-                if (moveArray[i].toBusiness.coordinates == null || moveArray[i].fromBusiness.coordinates == null) {
+                if (moveArray[i].toBusiness.coordinates === null || moveArray[i].fromBusiness.coordinates === null) {
                     found = false;
                 }
             }
