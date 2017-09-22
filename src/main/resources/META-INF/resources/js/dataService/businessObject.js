@@ -66,6 +66,19 @@ function  Business(id, URI) {
 
                 this.getMunicipality(function (municipality) {
 
+                    var query = "SELECT ?wkt WHERE {"
+                    +"?geomuni <http://www.w3.org/2000/01/rdf-schema#seeAlso> "+municipality+"."
+                    +"?geomuni <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.geonames.org/ontology#A.ADM3>."
+                    +"?geomuni <http://purl.org/dc/terms/hasVersion> ?geomuniVersion ."
+
+                    +"?geomuniVersion <http://purl.org/dc/terms/issued> ?issued."
+                    +"?geomuniVersion <http://www.opengis.net/ont/geosparql#hasGeometry> ?geometry."
+                    +"?geometry <http://www.opengis.net/ont/geosparql#asWKT> ?wkt."
+                    +"}"
+
+                    +"ORDER BY DESC(?issued)"
+                    +"LIMIT 1"
+
                     $.ajax({
                         url: "https://ld.geo.admin.ch/query/",
                         headers: {
